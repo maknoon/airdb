@@ -1,6 +1,3 @@
-# airdb
-airline simulation for cpsc 304
-
 ```
             d8,               d8b  d8b      
            `8P                88P  ?88      
@@ -8,10 +5,9 @@ airline simulation for cpsc 304
  d888b8b    88b  88bd88b d888888    888888b 
 d8P' ?88    88P  88P'  `d8P' ?88    88P `?8b
 88b  ,88b  d88  d88     88b  ,88b  d88,  d88
-`?88P'`88bd88' d88'     `?88P'`88bd88'`?88P'
-                                            
-                                            
-                                            
+`?88P'`88bd88' d88'     `?88P'`88bd88'`?88P'                                             
+
+an airline simulation for CPSC 304
 ```
 
 ### prerequisites
@@ -27,7 +23,8 @@ d8P' ?88    88P  88P'  `d8P' ?88    88P `?8b
 - Add our private SSH key `cpsc304.pem` to your `~/.ssh` directory  
 - Change permissions on key to read-only: `$ chmod 400 ~/.ssh/cpsc304.pem`
 - Add the following to your `~/.ssh/config` file (create one if it does not exist):  
-  ```Host air
+  ```.ssh/config
+  Host air
   			Hostname x.x.x.x
   			User ubuntu
   			IdentityFile ~/.ssh/cpsc304.pem
