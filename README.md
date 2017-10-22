@@ -25,11 +25,11 @@ an airline simulation for CPSC 304
 - Add the following to your `~/.ssh/config` file (create one if it does not exist):  
   ```.ssh/config
   Host air
-  			Hostname x.x.x.x
-  			User ubuntu
-  			IdentityFile ~/.ssh/cpsc304.pem
+  	Hostname [ipv4 addr]
+  	User ubuntu
+  	IdentityFile ~/.ssh/cpsc304.pem
   ```
-- rsync your (tested!) changes to EC2 instance:
+- rsync your (**tested!**) changes to EC2 instance:
   - in parent directory of repo, execute: `$ rsync -av --exclude-from 'airdb/excl.txt' airdb/ air:airdb/`  
 - SSH into instance and type: `$ sudo apachectl restart`  
 - Restart the server and exit to see your changes live  
