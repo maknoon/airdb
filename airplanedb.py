@@ -11,10 +11,10 @@ class AirplaneDb(object):
         self.pw = pw
         self.db = db
 
-    	self.airdb = MySQLdb.connect(host=self.host,
-    								 user=self.user,
-                	            	 passwd=self.pw,
-                    	        	 db=self.db)
+        self.airdb = MySQLdb.connect(host=self.host,
+                                     user=self.user,
+                                     passwd=self.pw,
+                                     db=self.db)
 
     '''
     EXAMPLE

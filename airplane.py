@@ -35,6 +35,6 @@ def reset():
 
 
 if __name__ == '__main__':
-	print('Connecting to db...{}'.format(config.dbname))
+    print('Connecting to db...{}'.format(config.dbname))
 
-	app.run()
+    app.run()
