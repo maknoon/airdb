@@ -14,6 +14,8 @@ echo "Installed libmysqlclient-dev"
 
 sudo apt-get install python-pip
 echo "Installed pip."
+sudo apt-get install python-dev
+echo "Installed python-dev."
 sudo pip install flask
 echo "Installed flask."
 sudo pip install MySQL-python
