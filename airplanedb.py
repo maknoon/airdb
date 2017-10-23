@@ -11,6 +11,10 @@ class AirplaneDb(object):
         self.pw = pw
         self.db = db
 
+    	self.airdb = MySQLdb.connect(host=self.host,
+    								 user=self.user,
+                	            	 passwd=self.pw,
+                    	        	 db=self.db)
 
     '''
     EXAMPLE
@@ -19,11 +23,7 @@ class AirplaneDb(object):
     notes: need to do in this order bc the tables are key-dependent
     '''
     def reset_db(self):
-        airdb = MySQLdb.connect(host=self.host,
-                                user=self.user,
-                                passwd=self.pw,
-                                db=self.db)
-        cursor = airdb.cursor()
+        cursor = self.airdb.cursor()
 
         drop = 'DROP TABLE IF EXISTS {}'
         cursor.execute(drop.format('USERS'))
@@ -37,6 +37,6 @@ class AirplaneDb(object):
         cursor.execute(raw_users_query)
         print(('Created new {0} table in {1}').format('USERS',self.db))
 
-        airdb.close()
+        self.airdb.close()
 
 
