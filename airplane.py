@@ -25,7 +25,6 @@ def test_name(name):
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------
-
 # reset the database
 @app.route('/reset')
 def reset():
