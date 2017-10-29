@@ -83,7 +83,7 @@ class AirplaneDb(object):
                                 PRIMARY KEY (AC_ID),
                                 FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID)
                                 )"""
-        # TODO: FIX
+                                
         create_flight_table = """CREATE TABLE FLIGHT (
                                 F_ID VARCHAR(32) NOT NULL UNIQUE,
                                 AC_ID VARCHAR(32) NOT NULL,
@@ -98,8 +98,8 @@ class AirplaneDb(object):
                                 PRIMARY KEY (F_ID),
                                 CHECK (F_DEPARTUREAIRPORTID <> F_ARRIVALAIRPORTID),
                                 FOREIGN KEY (AC_ID) REFERENCES AIRCRAFT(AC_ID),
-                                FOREIGN KEY (F_DEPARTUREAIRPORTID, F_DEPARTUREGATEID) REFERENCES GATE(F_DEPARTUREAIRPORTID, F_DEPARTUREGATEID),
-                                FOREIGN KEY (F_ARRIVALAIRPORTID, F_ARRIVALGATEID) REFERENCES GATE(F_ARRIVALAIRPORTID, F_ARRIVALGATEID)
+                                FOREIGN KEY (F_DEPARTUREAIRPORTID, F_DEPARTUREGATEID) REFERENCES GATE(AP_ID, G_ID),
+                                FOREIGN KEY (F_ARRIVALAIRPORTID, F_ARRIVALGATEID) REFERENCES GATE(AP_ID, G_ID)
                                 )"""
 
         create_employee_table = """CREATE TABLE EMPLOYEE (
@@ -110,20 +110,18 @@ class AirplaneDb(object):
                                 PRIMARY KEY (E_ID)
                                 )"""
 
-        # TODO: FIX
         create_itinerary_table = """CREATE TABLE ITINERARY (
                                 I_ID VARCHAR(32) NOT NULL UNIQUE,
                                 I_SEATTYPE VARCHAR(32) NOT NULL,
                                 I_SEATCOST FLOAT NOT NULL,
                                 I_STATUS VARCHAR(32) NOT NULL,
-                                C_ID VARCHAR(32) NOT NULL,
+                                C_ID INT NOT NULL,
                                 PRIMARY KEY (I_ID),
                                 FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID)
                                 )"""
 
-        # TODO: FIX
         create_frequentflier_table = """CREATE TABLE FREQUENTFLIER (
-                                    C_ID VARCHAR(32) NOT NULL,
+                                    C_ID INT NOT NULL,
                                     FF_MILES FLOAT NOT NULL,
                                     PRIMARY KEY (C_ID),
                                     FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID)
@@ -160,22 +158,22 @@ class AirplaneDb(object):
         cursor.execute(create_aircraft_table)
     	print(('Created new {0} table in {1}').format('AIRCRAFT',self.db))
 
-        #cursor.execute(create_flight_table)
-    	#print(('Created new {0} table in {1}').format('FLIGHT',self.db))
+        cursor.execute(create_flight_table)
+    	print(('Created new {0} table in {1}').format('FLIGHT',self.db))
 
         cursor.execute(create_employee_table)
     	print(('Created new {0} table in {1}').format('EMPLOYEE',self.db))
 
-        # cursor.execute(create_itinerary_table)
-    	# print(('Created new {0} table in {1}').format('ITINERARY',self.db))
+        cursor.execute(create_itinerary_table)
+    	print(('Created new {0} table in {1}').format('ITINERARY',self.db))
 
-        # cursor.execute(create_frequentflier_table)
-    	# print(('Created new {0} table in {1}').format('FREQUENTFLIER',self.db))
+        cursor.execute(create_frequentflier_table)
+    	print(('Created new {0} table in {1}').format('FREQUENTFLIER',self.db))
 
-        # cursor.execute(create_workson_table)
-    	# print(('Created new {0} table in {1}').format('WORKSON',self.db))
+        cursor.execute(create_workson_table)
+    	print(('Created new {0} table in {1}').format('WORKSON',self.db))
 
-        # cursor.execute(create_schedule_table)
-    	# print(('Created new {0} table in {1}').format('SCHEDULE',self.db))
+        cursor.execute(create_schedule_table)
+    	print(('Created new {0} table in {1}').format('SCHEDULE',self.db))
 
         self.airdb.close()
