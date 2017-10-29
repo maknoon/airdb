@@ -38,35 +38,35 @@ class AirplaneDb(object):
         cursor.execute(drop.format('CUSTOMER'))
 
         create_customer_table = """CREATE TABLE CUSTOMER (
-				                C_ID INT AUTO_INCREMENT,
-                            	C_NAME VARCHAR(32) NOT NULL,
-                            	C_AGE INT NOT NULL,
-                            	C_EMAIL VARCHAR(128) NOT NULL,
-                            	C_PHONE VARCHAR(32) NOT NULL,
-	                            PRIMARY KEY (C_ID)
-				                )"""
+                                C_ID INT AUTO_INCREMENT,
+                                C_NAME VARCHAR(32) NOT NULL,
+                                C_AGE INT NOT NULL,
+                                C_EMAIL VARCHAR(128) NOT NULL,
+                                C_PHONE VARCHAR(32) NOT NULL,
+                                PRIMARY KEY (C_ID)
+                                )"""
 
         create_baggage_table = """CREATE TABLE BAGGAGE (
-                				B_ID INT,
-                				C_ID INT NOT NULL,
-                				B_WEIGHT DECIMAL(5,2) NOT NULL,
-                				PRIMARY KEY (B_ID, C_ID),
-                				FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
+                                B_ID INT,
+                                C_ID INT NOT NULL,
+                                B_WEIGHT DECIMAL(5,2) NOT NULL,
+                                PRIMARY KEY (B_ID, C_ID),
+                                FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
 
         create_airport_table = """CREATE TABLE AIRPORT (
-                				AP_ID VARCHAR(32),
-                				AP_CITY VARCHAR(32) NOT NULL,
-                				AP_COUNTRY VARCHAR(32) NOT NULL,
-                				PRIMARY KEY (AP_ID)
-                				)"""
+                                AP_ID VARCHAR(32),
+                                AP_CITY VARCHAR(32) NOT NULL,
+                                AP_COUNTRY VARCHAR(32) NOT NULL,
+                                PRIMARY KEY (AP_ID)
+                                )"""
 
         create_gate_table = """CREATE TABLE GATE (
-            				G_ID VARCHAR(32),
-            				AP_ID VARCHAR(32),
-            				FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-            				PRIMARY KEY (AP_ID, G_ID)
-            				)"""
+                            G_ID VARCHAR(32),
+                            AP_ID VARCHAR(32),
+                            FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+                            PRIMARY KEY (AP_ID, G_ID)
+                            )"""
 
         create_aircraft_table = """CREATE TABLE AIRCRAFT (
                                 AC_ID VARCHAR(32),
@@ -144,37 +144,37 @@ class AirplaneDb(object):
                                 PRIMARY KEY (I_ID, F_ID)
                                 )"""
 
-    	cursor.execute(create_customer_table)
-    	print(('Created new {0} table in {1}').format('CUSTOMER',self.db))
+        cursor.execute(create_customer_table)
+        print(('Created new {0} table in {1}').format('CUSTOMER',self.db))
 
         cursor.execute(create_baggage_table)
         print(('Created new {0} table in {1}').format('BAGGAGE',self.db))
 
-    	cursor.execute(create_airport_table)
-    	print(('Created new {0} table in {1}').format('AIRPORT',self.db))
+        cursor.execute(create_airport_table)
+        print(('Created new {0} table in {1}').format('AIRPORT',self.db))
 
         cursor.execute(create_gate_table)
-    	print(('Created new {0} table in {1}').format('GATE',self.db))
+        print(('Created new {0} table in {1}').format('GATE',self.db))
 
         cursor.execute(create_aircraft_table)
-    	print(('Created new {0} table in {1}').format('AIRCRAFT',self.db))
+        print(('Created new {0} table in {1}').format('AIRCRAFT',self.db))
 
         cursor.execute(create_flight_table)
-    	print(('Created new {0} table in {1}').format('FLIGHT',self.db))
+        print(('Created new {0} table in {1}').format('FLIGHT',self.db))
 
         cursor.execute(create_employee_table)
-    	print(('Created new {0} table in {1}').format('EMPLOYEE',self.db))
+        print(('Created new {0} table in {1}').format('EMPLOYEE',self.db))
 
         cursor.execute(create_itinerary_table)
-    	print(('Created new {0} table in {1}').format('ITINERARY',self.db))
+        print(('Created new {0} table in {1}').format('ITINERARY',self.db))
 
         cursor.execute(create_frequentflier_table)
-    	print(('Created new {0} table in {1}').format('FREQUENTFLIER',self.db))
+        print(('Created new {0} table in {1}').format('FREQUENTFLIER',self.db))
 
         cursor.execute(create_workson_table)
-    	print(('Created new {0} table in {1}').format('WORKSON',self.db))
+        print(('Created new {0} table in {1}').format('WORKSON',self.db))
 
         cursor.execute(create_schedule_table)
-    	print(('Created new {0} table in {1}').format('SCHEDULE',self.db))
+        print(('Created new {0} table in {1}').format('SCHEDULE',self.db))
 
         cursor.close()
