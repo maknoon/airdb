@@ -51,7 +51,7 @@ class AirplaneDb(object):
                 				B_ID INT NOT NULL,
                 				C_ID INT NOT NULL,
                 				B_WEIGHT DECIMAL(5,2) NOT NULL,
-                				FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID),
+                				FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                 				PRIMARY KEY (B_ID)
                                 )"""
 
@@ -65,7 +65,7 @@ class AirplaneDb(object):
         create_gate_table = """CREATE TABLE GATE (
             				G_ID VARCHAR(32) NOT NULL,
             				AP_ID VARCHAR(32) NOT NULL,
-            				FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID),
+            				FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID) ON DELETE CASCADE ON UPDATE CASCADE,
             				PRIMARY KEY (AP_ID, G_ID)
             				)"""
 
@@ -81,9 +81,9 @@ class AirplaneDb(object):
                                 AC_NUM_FIRSTCLASS INT NOT NULL,
                                 AP_ID VARCHAR(32),
                                 PRIMARY KEY (AC_ID),
-                                FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID)
+                                FOREIGN KEY (AP_ID) REFERENCES AIRPORT(AP_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
-                                
+
         create_flight_table = """CREATE TABLE FLIGHT (
                                 F_ID VARCHAR(32) NOT NULL UNIQUE,
                                 AC_ID VARCHAR(32) NOT NULL,
@@ -98,8 +98,10 @@ class AirplaneDb(object):
                                 PRIMARY KEY (F_ID),
                                 CHECK (F_DEPARTUREAIRPORTID <> F_ARRIVALAIRPORTID),
                                 FOREIGN KEY (AC_ID) REFERENCES AIRCRAFT(AC_ID),
-                                FOREIGN KEY (F_DEPARTUREAIRPORTID, F_DEPARTUREGATEID) REFERENCES GATE(AP_ID, G_ID),
+                                FOREIGN KEY (F_DEPARTUREAIRPORTID, F_DEPARTUREGATEID) REFERENCES GATE(AP_ID, G_ID)
+                                ON DELETE CASCADE ON UPDATE CASCADE,
                                 FOREIGN KEY (F_ARRIVALAIRPORTID, F_ARRIVALGATEID) REFERENCES GATE(AP_ID, G_ID)
+                                ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
 
         create_employee_table = """CREATE TABLE EMPLOYEE (
@@ -117,29 +119,29 @@ class AirplaneDb(object):
                                 I_STATUS VARCHAR(32) NOT NULL,
                                 C_ID INT NOT NULL,
                                 PRIMARY KEY (I_ID),
-                                FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID)
+                                FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
 
         create_frequentflier_table = """CREATE TABLE FREQUENTFLIER (
                                     C_ID INT NOT NULL,
                                     FF_MILES FLOAT NOT NULL,
                                     PRIMARY KEY (C_ID),
-                                    FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID)
+                                    FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                     )"""
 
         create_workson_table = """CREATE TABLE WORKSON (
                                 E_ID VARCHAR(32) NOT NULL,
                                 F_ID VARCHAR(32) NOT NULL,
-                                FOREIGN KEY (E_ID) REFERENCES EMPLOYEE(E_ID),
-                                FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID),
+                                FOREIGN KEY (E_ID) REFERENCES EMPLOYEE(E_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+                                FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 PRIMARY KEY (E_ID, F_ID)
                                 )"""
 
         create_schedule_table = """CREATE TABLE SCHEDULE (
                                 I_ID VARCHAR(32) NOT NULL,
                                 F_ID VARCHAR(32) NOT NULL,
-                                FOREIGN KEY (I_ID) REFERENCES ITINERARY(I_ID),
-                                FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID),
+                                FOREIGN KEY (I_ID) REFERENCES ITINERARY(I_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+                                FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 PRIMARY KEY (I_ID, F_ID)
                                 )"""
 
