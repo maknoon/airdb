@@ -11,11 +11,6 @@ class AirplaneDb(object):
         self.pw = pw
         self.db = db
 
-        self.airdb = MySQLdb.connect(host=self.host,
-                                     user=self.user,
-                                     passwd=self.pw,
-                                     db=self.db)
-
     '''
     EXAMPLE
     function: reset_db
@@ -23,7 +18,11 @@ class AirplaneDb(object):
     notes: need to do in this order bc the tables are key-dependent
     '''
     def reset_db(self):
-        cursor = self.airdb.cursor()
+        db = MySQLdb.connect(host=self.host,
+                                     user=self.user,
+                                     passwd=self.pw,
+                                     db=self.db)
+        cursor = db.cursor()
         drop = 'DROP TABLE IF EXISTS {}'
         cursor.execute(drop.format('SCHEDULE'))
         cursor.execute(drop.format('WORKSON'))
@@ -179,7 +178,7 @@ class AirplaneDb(object):
 
         cursor.close()
 
-		#==============================================================================
+#==============================================================================
 #   function: update_customer
 #   description: update fields in customer
 #==============================================================================
@@ -188,11 +187,12 @@ class AirplaneDb(object):
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
-        update_customer_query = """ UPDATE CUSTOMER
-                  SET %s = '%s'
-                  WHERE C_ID = %s """ % (field, new_value, custID)
+
+        update_customer_query = """UPDATE CUSTOMER
+                                   SET %s = '%s'
+                                   WHERE C_ID = %s""" % (field, new_value, custID)
                                    
-        cursor = self.airdb.cursor()
+        cursor = db.cursor()
         try:
             cursor.execute(update_customer_query)
             db.commit()
@@ -212,10 +212,11 @@ class AirplaneDb(object):
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
+
         add_baggage_query = """INSERT INTO BAGGAGE(B_ID,C_ID,B_WEIGHT)
                                 VALUES('%s','%s','%s')""" % (bag_ID, cust_ID, bag_weight)
-        cursor = self.airdb.cursor()
-        
+
+        cursor = db.cursor()
         try:
             cursor.execute(add_baggage_query)
             db.commit()
@@ -230,14 +231,17 @@ class AirplaneDb(object):
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
 #==============================================================================
-    def add_customer(self, cust_ID, cust_name, cust_age, cust_email, cust_phone):
+    def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
          db = MySQLdb.connect(host=self.host, 
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
-         add_customer_query = """INSERT INTO CUSTOMER(C_ID, C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                                 VALUES('%s','%s','%s','%s','%s')""" % (cust_ID, cust_name, cust_age, cust_email, cust_phone)
-         cursor = self.airdb.cursor()
+
+         add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
+                                 VALUES('%s','%s','%s','%s')""" % (cust_name, cust_age,
+                                 cust_email, cust_phone)
+
+         cursor = db.cursor()
          try:
              cursor.execute(add_customer_query)
              db.commit()
@@ -257,15 +261,17 @@ class AirplaneDb(object):
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
-        add_ff_query = """ INSERT INTO FREQUENTFLIER(C_ID, FF_MILES)
-                            VALUES('%s', '%s') """ % (cust_ID, miles)
-        cursor = self.airdb.cursor()
+
+        add_ff_query = """INSERT INTO FREQUENTFLIER(C_ID, FF_MILES)
+                          VALUES('%s', '%s')""" % (cust_ID, miles)
+
+        cursor = db.cursor()
         try:
             cursor.execute(add_ff_query)
             db.commit()
             print("Add Frequent Flier")
         except:
-            print("Add Customer Failed")
+            print("Add Frequent Flier Failed")
             db.rollback()
         
         db.close()
