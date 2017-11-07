@@ -28,8 +28,8 @@ def test_name(name):
 @app.route('/reset')
 def reset():
     airdb.reset_db()
-
-    return 'DB HAS BEEN RESET'
+    airdb.populate_db()
+    return 'DB HAS BEEN RESET AND POPULATED'
 
 # test create new customer
 @app.route('/customer')
