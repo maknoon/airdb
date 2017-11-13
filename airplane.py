@@ -42,6 +42,7 @@ def logout():
 def test_name(name):
     return 'Welcome, {}!'.format(name)
 
+
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------
