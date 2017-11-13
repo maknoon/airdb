@@ -1,5 +1,5 @@
 #!~/usr/bin/python
-from flask import Flask, request
+from flask import Flask
 from airplanedb import AirplaneDb
 import config
 
@@ -20,6 +20,7 @@ def index():
 @app.route('/test/<name>')
 def test_name(name):
     return 'Welcome, {}!'.format(name)
+
 
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
