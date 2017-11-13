@@ -19,18 +19,11 @@ class AirplaneDb(object):
     notes: need to do in this order bc the tables are key-dependent
     '''
     def reset_db(self):
-<<<<<<< HEAD
         db = MySQLdb.connect(host=self.host,
                                      user=self.user,
                                      passwd=self.pw,
                                      db=self.db)
         cursor = db.cursor()
-=======
-        cursor = MySQLdb.connect(host=self.host,
-                                 user=self.user,
-                                 passwd=self.pw,
-                                 db=self.db).cursor()
->>>>>>> completed task #13
         drop = 'DROP TABLE IF EXISTS {}'
         cursor.execute(drop.format('USERS'))
         cursor.execute(drop.format('SCHEDULE'))
@@ -120,7 +113,7 @@ class AirplaneDb(object):
                                 )"""
 
         create_itinerary_table = """CREATE TABLE ITINERARY (
-                                I_ID VARCHAR(32),
+                                I_ID INT AUTO_INCREMENT,
                                 I_SEATTYPE VARCHAR(32) NOT NULL,
                                 I_SEATCOST DECIMAL(5, 2) NOT NULL,
                                 I_STATUS VARCHAR(32) NOT NULL,
@@ -402,11 +395,11 @@ class AirplaneDb(object):
             print(e)
 
         ''' insert test itinerary '''
-        insert_itinerary_1 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('XMASXPECIAL', 'FIRSTCLASS', 153.2, 'PENDING', 1)
+        insert_itinerary_1 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES (FIRSTCLASS', 153.2, 'PENDING', 1)
                              """
-        insert_itinerary_2 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('HOLIDAYSPECIAL', 'BUSINESS', 84.7, 'PENDING', 2)
+        insert_itinerary_2 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES (BUSINESS', 84.7, 'PENDING', 2)
                              """
         try:
             cursor.execute(insert_itinerary_1)
@@ -454,13 +447,13 @@ class AirplaneDb(object):
 
         ''' insert test schedule '''
         insert_schedule_1 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('XMASXPECIAL', 2)
+                            VALUES (1, 2)
                             """
         insert_schedule_2 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('XMASXPECIAL', 1)
+                            VALUES (1, 1)
                             """
         insert_schedule_3 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('HOLIDAYSPECIAL', 3)
+                            VALUES (2, 3)
                             """
         try:
             cursor.execute(insert_schedule_1)
@@ -478,15 +471,15 @@ class AirplaneDb(object):
 #   description: update fields in customer
 #==============================================================================
     def update_customer(self, custID, field, new_value):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
         update_customer_query = """UPDATE CUSTOMER
                                    SET %s = '%s'
                                    WHERE C_ID = %s""" % (field, new_value, custID)
-                                   
+
         cursor = db.cursor()
         try:
             cursor.execute(update_customer_query)
@@ -495,7 +488,7 @@ class AirplaneDb(object):
         except:
             print("Update Customer Failed")
             db.rollback()
-        
+
         db.close()
 
 #==============================================================================
@@ -503,9 +496,9 @@ class AirplaneDb(object):
 #   description: adds an instance of baggage to BAGGAGE table
 #==============================================================================
     def add_baggage(self, bag_ID, cust_ID, bag_weight):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
         add_baggage_query = """INSERT INTO BAGGAGE(B_ID,C_ID,B_WEIGHT)
@@ -519,7 +512,7 @@ class AirplaneDb(object):
         except:
             print("Add Baggage Failed")
             db.rollback()
-        
+
         db.close()
 
 #==============================================================================
@@ -527,9 +520,9 @@ class AirplaneDb(object):
 #   description: adds an instance of customer to CUSTOMER table
 #==============================================================================
     def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
-         db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
          add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
@@ -544,17 +537,17 @@ class AirplaneDb(object):
          except:
              print("Add Customer Failed")
              db.rollback()
-        
+
          db.close()
 
 #==============================================================================
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
-#==============================================================================    
+#==============================================================================
     def add_frequent_flier(self, cust_ID, miles):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
         add_ff_query = """INSERT INTO FREQUENTFLIER(C_ID, FF_MILES)
@@ -568,5 +561,5 @@ class AirplaneDb(object):
         except:
             print("Add Frequent Flier Failed")
             db.rollback()
-        
+
         db.close()
