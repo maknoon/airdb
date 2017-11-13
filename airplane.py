@@ -1,8 +1,7 @@
 #!~/usr/bin/python
-from flask import Flask, flash, request, render_template, session
+from flask import Flask, request
 from airplanedb import AirplaneDb
 import config
-import os
 
 app = Flask(__name__)
 airdb = AirplaneDb(host=config.host,
@@ -16,27 +15,7 @@ airdb = AirplaneDb(host=config.host,
 
 @app.route('/')
 def index():
-    if session.get('type') == 'user':
-        return 'Logged in as user!'
-    elif session.get('type') == 'admin':
-        return 'Logged in as admin!'
-    else:
-        return render_template('index.html')
-
-@app.route('/login', methods=['POST'])
-def login():
-    if request.form['password'] == config.adminpwd and request.form['username'] == 'admin':
-        session['type'] = 'admin'
-    elif request.form['password'] == config.userpwd and request.form['username'] == 'user':
-        session['type'] = 'user'
-    else:
-        flash('wrong password!')
-    return index()
-
-@app.route('/logout')
-def logout():
-    session['type'] = 'none'
-    return index()
+    return 'airdb'
 
 @app.route('/test/<name>')
 def test_name(name):
@@ -51,6 +30,7 @@ def reset():
     airdb.reset_db()
 
     return 'DB HAS BEEN RESET'
+
 
 # test create new customer
 @app.route('/customer')
