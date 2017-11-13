@@ -11,11 +11,6 @@ class AirplaneDb(object):
         self.pw = pw
         self.db = db
 
-        self.airdb = MySQLdb.connect(host=self.host,
-                                     user=self.user,
-                                     passwd=self.pw,
-                                     db=self.db)
-
     '''
     EXAMPLE
     function: reset_db
@@ -23,7 +18,11 @@ class AirplaneDb(object):
     notes: need to do in this order bc the tables are key-dependent
     '''
     def reset_db(self):
-        cursor = self.airdb.cursor()
+        db = MySQLdb.connect(host=self.host,
+                                     user=self.user,
+                                     passwd=self.pw,
+                                     db=self.db)
+        cursor = db.cursor()
         drop = 'DROP TABLE IF EXISTS {}'
         cursor.execute(drop.format('SCHEDULE'))
         cursor.execute(drop.format('WORKSON'))
@@ -208,14 +207,14 @@ class AirplaneDb(object):
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
 #==============================================================================
-    def add_baggage(self, bag_ID, cust_ID, bag_weight):
+    def add_baggage(self, cust_ID, bag_weight):
         db = MySQLdb.connect(host=self.host, 
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
 
-        add_baggage_query = """INSERT INTO BAGGAGE(B_ID,C_ID,B_WEIGHT)
-                                VALUES('%s','%s','%s')""" % (bag_ID, cust_ID, bag_weight)
+        add_baggage_query = """INSERT INTO BAGGAGE(C_ID,B_WEIGHT)
+                                VALUES(%s,'%s')""" % (cust_ID, bag_weight)
 
         cursor = db.cursor()
         try:
@@ -232,21 +231,21 @@ class AirplaneDb(object):
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
 #==============================================================================
-    def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
+    def add_customer(self cust_name, cust_age, cust_email, cust_phone):
          db = MySQLdb.connect(host=self.host, 
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
 
-         add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                                 VALUES('%s','%s','%s','%s')""" % (cust_name, cust_age,
+         add_customer_query = """INSERT INTO CUSTOMER( C_NAME, C_AGE, C_EMAIL, C_PHONE)
+                                 VALUES('%s',%s,'%s','%s')""" % (cust_name, cust_age,
                                  cust_email, cust_phone)
 
          cursor = db.cursor()
          try:
              cursor.execute(add_customer_query)
              db.commit()
-             print("Add Customer Success")
+             print("Add Customer Success " + C_ID)
          except:
              print("Add Customer Failed")
              db.rollback()
@@ -264,95 +263,39 @@ class AirplaneDb(object):
                              db=self.db)
 
         add_ff_query = """INSERT INTO FREQUENTFLIER(C_ID, FF_MILES)
-                          VALUES('%s', '%s')""" % (cust_ID, miles)
+                          VALUES(%s, %s)""" % (cust_ID, miles)
 
         cursor = db.cursor()
         try:
             cursor.execute(add_ff_query)
             db.commit()
-            print("Add Frequent Flier Success")
+            print("Add Frequent Flier")
         except:
             print("Add Frequent Flier Failed")
             db.rollback()
         
         db.close()
-		
 #==============================================================================
-#   function: add_itinerary
-#   description: adds a new itinerary instance to ITINERARY table
-#==============================================================================    
-	def add_itinerary(self, it_ID, seat_type, seat_cost, status, cust_ID):
-		db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
-                             db=self.db)
-		add_itinerary_query = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-									VALUES('%s', '%s', '%s', '%s', '%s') """ % (it_ID, seat_type, seat_cost, status, cust_ID)
-		cursor = self.airdb.cursor()
-		try:
-			cursor.execute(add_itinerary_query)
-			db.commit()
-			print("Add Itinerary Success")
-		except:
-			print("Add Itinerary Failed")
-			db.rollback()
-		db.close()
-
-#==============================================================================
-#   function: update_itinerary
-#   description: updates fields in ITINERARY
-#==============================================================================   
-	def update_itinerary(self, it_ID, field, new_value):
+#   function: update_frequent_flier
+#   description: updates miles on frequent flier account
+#==============================================================================    		
+	 def update_frequent_flier(self, cust_ID, miles):
         db = MySQLdb.connect(host=self.host, 
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
-        update_itinerary_query = """ UPDATE CUSTOMER
-                  SET %s = '%s'
-                  WHERE I_ID = %s """ % (field, new_value, it_ID)
-                                   
-        cursor = self.airdb.cursor()
+
+        add_ff_query = """UPDATE FREQUENT_FLIER
+                                   SET %s += %s
+                                   WHERE C_ID = %s """ % (field, new_value, custID)
+
+        cursor = db.cursor()
         try:
-            cursor.execute(update_itinerary_query)
+            cursor.execute(add_ff_query)
             db.commit()
-            print("Update Itinerary Success")
+            print("Updated Frequent Flier" + "Miles = " + "%s") %miles
         except:
-            print("Update Itinerary Failed")
+            print("Update Frequent Flier Failed")
             db.rollback()
+        
         db.close()
-		
-#==============================================================================
-#   function: delete_itinerary
-#   description: delete all data related to given itinerary id
-#============================================================================== 
-	def delete_itinerary(self, it_ID):
-		db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
-                             db=self.db)
-		delete_itinerary_query = """ DELETE FROM ITINERARY WHERE I_ID = '%s' """ % (it_ID)
-
-		cursor = self.airdb.cursor()
-		try:
-			cursor.execute(delete_itinerary_query)
-			db.commit()
-			print("Delete Itinerary Success")
-		except:
-			print("Delete Itinerary Failure")
-			db.rollback()
-		db.close()
-		
-#==============================================================================
-#   function: add_flight
-#   description: add flight instance to FLIGHT
-#============================================================================== 
-
-#==============================================================================
-#   function: update_flight
-#   description: update flight instance in FLIGHT
-#============================================================================== 
-
-#==============================================================================
-#   function: delete_flight
-#   description: delete flight instance from FLIGHT
-#============================================================================== 
