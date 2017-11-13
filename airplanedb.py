@@ -19,11 +19,18 @@ class AirplaneDb(object):
     notes: need to do in this order bc the tables are key-dependent
     '''
     def reset_db(self):
+<<<<<<< HEAD
         db = MySQLdb.connect(host=self.host,
                                      user=self.user,
                                      passwd=self.pw,
                                      db=self.db)
         cursor = db.cursor()
+=======
+        cursor = MySQLdb.connect(host=self.host,
+                                 user=self.user,
+                                 passwd=self.pw,
+                                 db=self.db).cursor()
+>>>>>>> 9c87e7b4cb5b50c43094d8612ccfe84d31aa5697
         drop = 'DROP TABLE IF EXISTS {}'
         cursor.execute(drop.format('USERS'))
         cursor.execute(drop.format('SCHEDULE'))
@@ -395,11 +402,19 @@ class AirplaneDb(object):
             print(e)
 
         ''' insert test itinerary '''
+<<<<<<< HEAD
         insert_itinerary_1 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
                              VALUES (FIRSTCLASS', 153.2, 'PENDING', 1)
                              """
         insert_itinerary_2 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
                              VALUES (BUSINESS', 84.7, 'PENDING', 2)
+=======
+        insert_itinerary_1 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('XMASXPECIAL', 'FIRSTCLASS', 153.2, 'PENDING', 1)
+                             """
+        insert_itinerary_2 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('HOLIDAYSPECIAL', 'BUSINESS', 84.7, 'PENDING', 2)
+>>>>>>> 9c87e7b4cb5b50c43094d8612ccfe84d31aa5697
                              """
         try:
             cursor.execute(insert_itinerary_1)
@@ -447,6 +462,7 @@ class AirplaneDb(object):
 
         ''' insert test schedule '''
         insert_schedule_1 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+<<<<<<< HEAD
                             VALUES (1, 2)
                             """
         insert_schedule_2 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
@@ -454,6 +470,15 @@ class AirplaneDb(object):
                             """
         insert_schedule_3 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
                             VALUES (2, 3)
+=======
+                            VALUES ('XMASXPECIAL', 2)
+                            """
+        insert_schedule_2 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES ('XMASXPECIAL', 1)
+                            """
+        insert_schedule_3 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES ('HOLIDAYSPECIAL', 3)
+>>>>>>> 9c87e7b4cb5b50c43094d8612ccfe84d31aa5697
                             """
         try:
             cursor.execute(insert_schedule_1)
