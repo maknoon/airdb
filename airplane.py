@@ -1,5 +1,5 @@
 #!~/usr/bin/python
-from flask import Flask, request
+from flask import Flask
 from airplanedb import AirplaneDb
 import config
 
@@ -21,6 +21,7 @@ def index():
 def test_name(name):
     return 'Welcome, {}!'.format(name)
 
+
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------
@@ -28,23 +29,8 @@ def test_name(name):
 @app.route('/reset')
 def reset():
     airdb.reset_db()
-    airdb.populate_db()
-    return 'DB HAS BEEN RESET AND POPULATED'
-<<<<<<< HEAD
 
-# test create new customer
-@app.route('/customer')
-def add_customer():
-    cust_name = request.args.get('name')
-    cust_age = request.args.get('age')
-    cust_email = request.args.get('email')
-    cust_phone = request.args.get('phone')
-
-    airdb.add_customer(cust_name, cust_age, cust_email, cust_phone)
-
-    return 'ADDED NEW CUSTOMER %s' % cust_name
-=======
->>>>>>> 9c87e7b4cb5b50c43094d8612ccfe84d31aa5697
+    return 'DB HAS BEEN RESET'
 
 
 if __name__ == '__main__':
