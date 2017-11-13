@@ -50,7 +50,7 @@ class AirplaneDb(object):
                                 )"""
 
         create_baggage_table = """CREATE TABLE BAGGAGE (
-                                B_ID INT,
+                                B_ID INT AUTO_INCREMENT,
                                 C_ID INT NOT NULL,
                                 B_WEIGHT DECIMAL(5,2) NOT NULL,
                                 PRIMARY KEY (B_ID, C_ID),
@@ -72,7 +72,7 @@ class AirplaneDb(object):
                             )"""
 
         create_aircraft_table = """CREATE TABLE AIRCRAFT (
-                                AC_ID VARCHAR(32),
+                                AC_ID INT AUTO_INCREMENT,
                                 AC_STATUS VARCHAR(32) NOT NULL,
                                 AC_MAKE VARCHAR(32) NOT NULL,
                                 AC_MILEAGE FLOAT NOT NULL,
@@ -87,8 +87,8 @@ class AirplaneDb(object):
                                 )"""
 
         create_flight_table = """CREATE TABLE FLIGHT (
-                                F_ID VARCHAR(32),
-                                AC_ID VARCHAR(32) NOT NULL,
+                                F_ID INT AUTO_INCREMENT,
+                                AC_ID INT NOT NULL,
                                 F_DISTANCE FLOAT NOT NULL,
                                 F_DEPARTURETIME VARCHAR(32) NOT NULL,
                                 F_ARRIVALTIME VARCHAR(32) NOT NULL,
@@ -107,7 +107,7 @@ class AirplaneDb(object):
                                 )"""
 
         create_employee_table = """CREATE TABLE EMPLOYEE (
-                                E_ID VARCHAR(32),
+                                E_ID INT AUTO_INCREMENT,
                                 E_HOURS FLOAT NOT NULL,
                                 E_TYPE VARCHAR(32) NOT NULL,
                                 E_WAGE FLOAT NOT NULL,
@@ -115,7 +115,7 @@ class AirplaneDb(object):
                                 )"""
 
         create_itinerary_table = """CREATE TABLE ITINERARY (
-                                I_ID VARCHAR(32),
+                                I_ID INT AUTO_INCREMENT,
                                 I_SEATTYPE VARCHAR(32) NOT NULL,
                                 I_SEATCOST FLOAT NOT NULL,
                                 I_STATUS VARCHAR(32) NOT NULL,
@@ -132,16 +132,16 @@ class AirplaneDb(object):
                                     )"""
 
         create_workson_table = """CREATE TABLE WORKSON (
-                                E_ID VARCHAR(32),
-                                F_ID VARCHAR(32),
+                                E_ID INT,
+                                F_ID INT,
                                 FOREIGN KEY (E_ID) REFERENCES EMPLOYEE(E_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 PRIMARY KEY (E_ID, F_ID)
                                 )"""
 
         create_schedule_table = """CREATE TABLE SCHEDULE (
-                                I_ID VARCHAR(32),
-                                F_ID VARCHAR(32),
+                                I_ID INT,
+                                F_ID INT,
                                 FOREIGN KEY (I_ID) REFERENCES ITINERARY(I_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 PRIMARY KEY (I_ID, F_ID)
@@ -398,10 +398,10 @@ class AirplaneDb(object):
 
         ''' insert test itinerary '''
         insert_itinerary_1 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES (FIRSTCLASS', 153.2, 'PENDING', 1)
+                             VALUES ('FIRSTCLASS', 153.2, 'PENDING', 1)
                              """
         insert_itinerary_2 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES (BUSINESS', 84.7, 'PENDING', 2)
+                             VALUES ('BUSINESS', 84.7, 'PENDING', 2)
                              """
         try:
             cursor.execute(insert_itinerary_1)
