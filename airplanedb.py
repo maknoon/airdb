@@ -609,26 +609,51 @@ class AirplaneDb(object):
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
 #==============================================================================
-    # def update_frequent_flier(self, cust_id, miles):
-    #     db = MySQLdb.connect(host=self.host,
-    #                          user=self.user,
-    #                          passwd=self.pw,
-    #                          db=self.db)
 
-    #     add_ff_query = """UPDATE FREQUENT_FLIER
-    #                       SET %s += %s
-    #                       WHERE C_ID = %s """ % (field, new_value, cust_id)
+    def update_frequent_flier(self, cust_id, miles):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        update_ff_query = """UPDATE FREQUENT_FLIER
+                           SET FF_MILES = FF_MILES + %.2f
+                           WHERE C_ID = %s """ % (float(miles), int(cust_id))
 
-    #     cursor = db.cursor()
-    #     try:
-    #         cursor.execute(add_ff_query)
-    #         db.commit()
-    #         print("Updated Frequent Flier" + "Miles = " + "%s") % miles
-    #     except:
-    #         print("Update Frequent Flier Failed")
-    #         db.rollback()
+        cursor = db.cursor()
+        try:
+            cursor.execute(update_ff_query)
+            db.commit()
+            #print("Updated Frequent Flier" + "Miles = " + "%s") % miles
+        except:
+            print("Update Frequent Flier Failed")
+            db.rollback()
 
-    #     db.close()
+        db.close()
+
+#==============================================================================
+#   function: add_itinerary
+#   description: add a new row to ITINERARY table
+#==============================================================================
+    def add_itinerary(self, seat_type, seat_cost, itinerary_status, cust_ID):
+	db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        add_itinerary_query = """ INSERT INTO ITINERARY (I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                              VALUES ('%s',%.2f, '%s', %d)""" % (seat_type, float(seat_cost), itinerary_status, int(cust_ID))
+
+        cursor = db.cursor()
+        inserted = 0
+
+        try:
+            cursor.execute(add_itinerary_query)
+            db.commit()
+            inserted = cursor.lastrowid
+            print 'Created new {0}: {1}'.format('ITINERARY', cust_id)
+        except:
+            print 'Add Itinerary Failed'
+            db.rollback()
+
+        db.close()
+        return inserted
 
 #==============================================================================
 #   function: get_airport
