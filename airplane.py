@@ -81,19 +81,24 @@ def add_frequent_flier():
 # test add baggage
 @app.route('/baggage')
 def add_baggage():
-    airdb.add_baggage(request.args.get('id'),
-        request.args.get('weight'))
-
+    airdb.add_baggage(request.args.get('id'), request.args.get('weight'))
     return 'ADDED BAGGAGE'
 
-# @app.route('/ffupdate')
-# def update_frequent_flier():
-#     cust_id = request.args.get('id')
-#     miles = request.args.get('miles')
-#     airdb.update_frequent_flier(cust_id, miles)
-    
-#     return 'ADDED %s MILES TO ACCOUNT' % miles
+@app.route('/ffupdate')
+def update_frequent_flier():
+    cust_id = request.args.get('id')
+    miles = request.args.get('miles')
+    airdb.update_frequent_flier(cust_id, miles)  
+    return 'ADDED %s MILES TO ACCOUNT' %(str(miles))
 
+# test add itinerary
+@app.route('/itinerary')
+def add_itinerary():
+    cust_ID = request.args.get('id')
+    added = airdb.add_itinerary(request.args.get('seattype'),
+                                request.args.get('seatcost'),
+                                request.args.get('status'), cust_ID)
+    return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_ID))
 
 # ---------------------------------------------------------
 # SERVE THE APP
