@@ -1,6 +1,5 @@
 #!~/usr/bin/python
 import MySQLdb
-from flask import request
 from datetime import datetime
 
 
@@ -11,6 +10,11 @@ class AirplaneDb(object):
         self.user = user
         self.pw = pw
         self.db = db
+
+        self.airdb = MySQLdb.connect(host=self.host,
+                                     user=self.user,
+                                     passwd=self.pw,
+                                     db=self.db)
 
     '''
     EXAMPLE
@@ -24,7 +28,6 @@ class AirplaneDb(object):
                                  passwd=self.pw,
                                  db=self.db).cursor()
         drop = 'DROP TABLE IF EXISTS {}'
-        cursor.execute(drop.format('USERS'))
         cursor.execute(drop.format('SCHEDULE'))
         cursor.execute(drop.format('WORKSON'))
         cursor.execute(drop.format('FREQUENTFLIER'))
@@ -72,7 +75,7 @@ class AirplaneDb(object):
                                 AC_ID INT AUTO_INCREMENT,
                                 AC_STATUS VARCHAR(32) NOT NULL,
                                 AC_MAKE VARCHAR(32) NOT NULL,
-                                AC_MILEAGE DECIMAL(15, 2) NOT NULL,
+                                AC_MILEAGE FLOAT NOT NULL,
                                 AC_DATE_CREATED VARCHAR(32) NOT NULL,
                                 AC_LAST_MAINTAINED VARCHAR(32),
                                 AC_NUM_ECONOMY INT NOT NULL,
@@ -107,14 +110,14 @@ class AirplaneDb(object):
                                 E_ID INT AUTO_INCREMENT,
                                 E_HOURS FLOAT NOT NULL,
                                 E_TYPE VARCHAR(32) NOT NULL,
-                                E_WAGE DECIMAL(5, 2) NOT NULL,
+                                E_WAGE FLOAT NOT NULL,
                                 PRIMARY KEY (E_ID)
                                 )"""
 
         create_itinerary_table = """CREATE TABLE ITINERARY (
-                                I_ID VARCHAR(32),
+                                I_ID INT AUTO_INCREMENT,
                                 I_SEATTYPE VARCHAR(32) NOT NULL,
-                                I_SEATCOST DECIMAL(5, 2) NOT NULL,
+                                I_SEATCOST FLOAT NOT NULL,
                                 I_STATUS VARCHAR(32) NOT NULL,
                                 C_ID INT NOT NULL,
                                 PRIMARY KEY (I_ID),
@@ -137,7 +140,7 @@ class AirplaneDb(object):
                                 )"""
 
         create_schedule_table = """CREATE TABLE SCHEDULE (
-                                I_ID VARCHAR(32),
+                                I_ID INT,
                                 F_ID INT,
                                 FOREIGN KEY (I_ID) REFERENCES ITINERARY(I_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                 FOREIGN KEY (F_ID) REFERENCES FLIGHT(F_ID) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -181,6 +184,11 @@ class AirplaneDb(object):
         cursor.close()
 
 
+    '''
+    function: populate_db
+    description: populate database with test data
+    notes: do this right after reset_db()
+    '''
     '''
     function: populate_db
     description: populate database with test data
@@ -394,11 +402,11 @@ class AirplaneDb(object):
             print(e)
 
         ''' insert test itinerary '''
-        insert_itinerary_1 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('XMASXPECIAL', 'FIRSTCLASS', 153.2, 'PENDING', 1)
+        insert_itinerary_1 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 153.2, 'PENDING', 1)
                              """
-        insert_itinerary_2 = """ INSERT INTO ITINERARY(I_ID, I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('HOLIDAYSPECIAL', 'BUSINESS', 84.7, 'PENDING', 2)
+        insert_itinerary_2 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 84.7, 'PENDING', 2)
                              """
         try:
             cursor.execute(insert_itinerary_1)
@@ -446,13 +454,13 @@ class AirplaneDb(object):
 
         ''' insert test schedule '''
         insert_schedule_1 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('XMASXPECIAL', 2)
+                            VALUES (1, 2)
                             """
         insert_schedule_2 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('XMASXPECIAL', 1)
+                            VALUES (1, 1)
                             """
         insert_schedule_3 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
-                            VALUES ('HOLIDAYSPECIAL', 3)
+                            VALUES (2, 3)
                             """
         try:
             cursor.execute(insert_schedule_1)
@@ -463,4 +471,142 @@ class AirplaneDb(object):
         except Exception as e:
             print(e)
         print(('{0} POPULATE COMPLETE').format(self.db))
+
         cursor.close()
+
+#==============================================================================
+#   function: add_baggage
+#   description: adds an instance of baggage to BAGGAGE table
+#==============================================================================
+
+    def add_baggage(self, cust_id, bag_weight):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        add_baggage_query = """INSERT INTO BAGGAGE(C_ID, B_WEIGHT)
+                                VALUES(%s, %.2f)""" % (cust_id, float(bag_weight))
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(add_baggage_query)
+            db.commit()
+            print("Add Baggage Success")
+        except:
+            print("Add Baggage Failed")
+            db.rollback()
+        
+        db.close()
+
+
+#==============================================================================
+#   function: get_customer
+#   description: returns an instance of customer based on cust_id
+#==============================================================================
+    def get_customer(self, cust_id):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        get_customer_query = """SELECT * FROM CUSTOMER
+                                WHERE C_ID = %d""" % int(cust_id)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(get_customer_query)
+            data = cursor.fetchone()
+            print('Get Customer Success')
+            print('C_ID: {0} | C_NAME: {1} | C_AGE: {2} | \
+                   C_EMAIL: {3} | U_PHONE: {4}'.format(data[0], data[1], data[2], data[3], data[4]))
+            db.close()
+
+            return data
+        except:
+            print('Get Customer Failed')
+            db.close()
+
+            return 0
+
+
+#==============================================================================
+#   function: add_customer
+#   description: adds an instance of customer to CUSTOMER table
+#==============================================================================
+
+    def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
+         db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+
+         add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
+                                 VALUES('%s',%d,'%s','%s')""" % (cust_name, int(cust_age),
+                                 cust_email, cust_phone)
+         cursor = db.cursor()
+         inserted = 0
+         try:
+             cursor.execute(add_customer_query)
+             db.commit()
+             print("Add Customer Success")
+             inserted = cursor.lastrowid
+         except:
+             print("Add Customer Failed")
+             db.rollback()
+        
+         db.close()
+
+         # return the customer ID that was inserted
+         return inserted
+
+
+#==============================================================================
+#   function: add_frequent_flier
+#   description: adds a new frequent flier instance to FREQUENTFLIER table
+#==============================================================================    
+
+    def add_frequent_flier(self, cust_id):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+
+        add_ff_query = """ INSERT INTO FREQUENTFLIER (C_ID, FF_MILES)
+                           VALUES (%d, 0.0)""" % int(cust_id)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(add_ff_query)
+            db.commit()
+            print(('Created new {0}: {1}').format('FREQUENTFLIER', cust_id))
+        except:
+            print("Add Frequent Flier Failed")
+            db.rollback()
+        
+        db.close()
+
+
+#==============================================================================
+#   function: update_frequent_flier
+#   description: updates miles on frequent flier account
+#==============================================================================         
+
+    # def update_frequent_flier(self, cust_id, miles):
+    #     db = MySQLdb.connect(host=self.host, 
+    #                          user=self.user, 
+    #                          passwd=self.pw, 
+    #                          db=self.db)
+
+    #     add_ff_query = """UPDATE FREQUENT_FLIER
+    #                       SET %s += %s
+    #                       WHERE C_ID = %s """ % (field, new_value, cust_id)
+
+    #     cursor = db.cursor()
+    #     try:
+    #         cursor.execute(add_ff_query)
+    #         db.commit()
+    #         print("Updated Frequent Flier" + "Miles = " + "%s") % miles
+    #     except:
+    #         print("Update Frequent Flier Failed")
+    #         db.rollback()
+        
+    #     db.close()
