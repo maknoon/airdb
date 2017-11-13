@@ -30,7 +30,6 @@ def reset():
     airdb.reset_db()
     airdb.populate_db()
     return 'DB HAS BEEN RESET AND POPULATED'
-<<<<<<< HEAD
 
 # test create new customer
 @app.route('/customer')
@@ -43,8 +42,6 @@ def add_customer():
     airdb.add_customer(cust_name, cust_age, cust_email, cust_phone)
 
     return 'ADDED NEW CUSTOMER %s' % cust_name
-=======
->>>>>>> 9c87e7b4cb5b50c43094d8612ccfe84d31aa5697
 
 
 if __name__ == '__main__':
