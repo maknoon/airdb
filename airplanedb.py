@@ -603,7 +603,7 @@ class AirplaneDb(object):
         try:
             cursor.execute(update_ff_query)
             db.commit()
-            #print("Updated Frequent Flier" + "Miles = " + "%s") % miles
+            #print("Updated Frequent Flier Miles")
         except:
             print("Update Frequent Flier Failed")
             db.rollback()
@@ -635,3 +635,46 @@ class AirplaneDb(object):
         db.close()
         return inserted
  
+#==============================================================================
+#   function: delete_itinerary
+#   description: delete itinerary given itinerary ID
+#==============================================================================  
+    def delete_itinerary(self, itinerary_ID):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        delete_itinerary_query = """ DELETE FROM ITINERARY WHERE I_ID = '%s' """ % (itinerary_ID)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(delete_itinerary_query)
+            db.commit()
+            print 'Deleted {0}: {1}'.format('ITINERARY', itinerary_ID)
+        except:
+            print 'Delete Itinerary Failed'
+            db.rollback()
+
+        db.close()
+		
+#==============================================================================
+#   function: update_itinerary
+#   description: update itinerary fields given itinerary ID
+#==============================================================================  		
+    def update_itinerary(self, itinerary_ID, itinerary_field, new_value):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        update_itinerary_query = """UPDATE ITINERARY
+                           SET '%s' = '%s'
+                           WHERE I_ID = '%s' """ % (itinerary_field, new_value, itinerary_ID)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(update_itinerary_query)
+            db.commit()
+            print 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, itinerary_ID, new_value)   
+        except:
+            print("Update Itinerary Failed")
+            db.rollback()
+        
+        db.close()

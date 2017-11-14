@@ -100,6 +100,22 @@ def add_itinerary():
                                 request.args.get('status'), cust_ID)
     return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_ID))
 
+# test delete itinerary
+@app.route('/itinerarydelete')
+def delete_itinerary():
+	id = request.args.get('i_id')
+	airdb.delete_itinerary(id)
+	return 'DELETED ITINERARY %s' % (id)
+
+# test update itinerary
+@app.route('/itineraryupdate')
+def update_itinerary():
+    id = request.args.get('i_id')
+    new_value = request.args.get('new')
+    itinerary_field = request.args.get('field')
+    airdb.update_itinerary(id, itinerary_field, new_value)
+    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, id, new_value)
+
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
