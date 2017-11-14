@@ -678,3 +678,54 @@ class AirplaneDb(object):
             db.rollback()
         
         db.close()
+
+#==============================================================================
+#   function: add_flight
+#   description: add new flight to FLIGHT table
+#==============================================================================  		
+    def add_flight(self, aircraft_ID, distance, departtime, arrivetime, departairport, arriveairport,
+	               departgate, arrivegate, status):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        add_flight_query = """ INSERT INTO ITINERARY (AC_ID, F_DISTANCE, F_DEPARTURETIME, F_ARRIVALTIME,
+		                       F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                              VALUES (%d,%.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_ID), float(distance), departtime, arrivetime,
+							                                   departairport, arriveairport, departgate, arrivegate, status)
+
+        cursor = db.cursor()
+        inserted = 0
+        try:
+            cursor.execute(add_flight_query)
+            db.commit()
+            inserted = cursor.lastrowid
+            print 'Created new {0}: {1}'.format('FLIGHT', inserted)
+        except:
+            print 'Add Flight Failed'
+            db.rollback()
+
+        db.close()
+        return inserted
+
+#==============================================================================
+#   function: update_flight
+#   description: update fields in FLIGHT given flight ID
+#==============================================================================  	
+    def update_flight(self, flight_ID, flight_field, new_value):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        update_flight_query = """UPDATE FLIGHT
+                           SET '%s' = '%s'
+                           WHERE F_ID = '%s' """ % (flight_field, new_value, flight_ID)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(update_flight_query)
+            db.commit()
+            print 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, itinerary_ID, new_value)   
+        except:
+            print("Update Flight Failed")
+            db.rollback()
+        
+        db.close()
