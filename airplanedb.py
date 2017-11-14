@@ -472,6 +472,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
 
+
 #==============================================================================
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
@@ -630,15 +631,16 @@ class AirplaneDb(object):
 
         db.close()
 
+
 #==============================================================================
 #   function: add_itinerary
 #   description: add a new row to ITINERARY table
 #==============================================================================
-    def add_itinerary(self, seat_type, seat_cost, itinerary_status, cust_ID):
-	db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+    def add_itinerary(self, seat_type, seat_cost, itinerary_status, cust_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
         add_itinerary_query = """ INSERT INTO ITINERARY (I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                              VALUES ('%s',%.2f, '%s', %d)""" % (seat_type, float(seat_cost), itinerary_status, int(cust_ID))
+                              VALUES ('%s',%.2f, '%s', %d)""" % (seat_type, float(seat_cost), itinerary_status, int(cust_id))
 
         cursor = db.cursor()
         inserted = 0
@@ -654,6 +656,8 @@ class AirplaneDb(object):
 
         db.close()
         return inserted
+
+
 #==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
@@ -673,6 +677,7 @@ class AirplaneDb(object):
             db.rollback()
 
         db.close()
+
 
 #==============================================================================
 #   function: update_itinerary
@@ -698,18 +703,19 @@ class AirplaneDb(object):
 
         db.close()
 
+
 #==============================================================================
 #   function: add_flight
 #   description: add new flight to FLIGHT table
 #==============================================================================
     def add_flight(self, aircraft_ID, distance, departtime, arrivetime, departairport, arriveairport,
-	               departgate, arrivegate, status):
+                   departgate, arrivegate, status):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
         add_flight_query = """ INSERT INTO ITINERARY (AC_ID, F_DISTANCE, F_DEPARTURETIME, F_ARRIVALTIME,
-		                       F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                               F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
                               VALUES (%d,%.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_ID), float(distance), departtime, arrivetime,
-							                                   departairport, arriveairport, departgate, arrivegate, status)
+                                                               departairport, arriveairport, departgate, arrivegate, status)
 
         cursor = db.cursor()
         inserted = 0
@@ -724,6 +730,7 @@ class AirplaneDb(object):
 
         db.close()
         return inserted
+
 
 #==============================================================================
 #   function: update_flight
