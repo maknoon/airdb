@@ -748,3 +748,163 @@ class AirplaneDb(object):
         db.close()
         return data
 
+#==============================================================================
+#   function: get_gates_of_airport
+#   description: get all the gates from an airport
+#   returns: the list of all the gates from a specified airport_id
+#==============================================================================
+    def get_gates_of_airport(self, ap_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         if ap_id is None:
+             return "Airport ID is NULL"
+         else:
+             get_gate_query = """SELECT * FROM GATE WHERE AP_ID = '%s'""" % (ap_id)
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_gate_query)
+             gates = cursor.fetchall()
+             for g in gates:
+                 gate = {
+                    'Gate_ID': g[0],
+                    'AP_ID': g[1]
+                 }
+                 dataList.append(gate)
+             data = jsonify(gates=dataList)
+         except Exception as e:
+             data = ("Get Airport Failed with error: {0}").format(e)
+             db.rollback()
+             print(data)
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: delete_gate
+#   description: delete a gate with specified gate id and airport id
+#==============================================================================
+    def delete_gate(self, ap_id, g_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         delete_gate_query = """DELETE FROM GATE WHERE AP_ID = '%s' and G_ID = '%s'""" % (ap_id, g_id)
+         cursor = db.cursor()
+         deleted_gate = {
+            'AP_ID': ap_id,
+            'G_ID': g_id
+         }
+         try:
+             cursor.execute(delete_gate_query)
+             db.commit()
+             data = jsonify(deleted_gate)
+         except Exception as e:
+             data = ("Delete Gate Failed with error: {0}").format(e)
+             print(data)
+             db.rollback()
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: get_schedule_for_itinerary
+#   description: get all the schedules with itinerary ID
+#   returns: the list of all the schedules with a specified itinerary ID
+#==============================================================================
+    def get_schedule_for_itinerary(self, i_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         if i_id is None:
+             return "Itinerary ID is NULL"
+         else:
+             get_schedule_query = """SELECT * FROM SCHEDULE WHERE I_ID = '%s'""" % (i_id)
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_schedule_query)
+             schedules = cursor.fetchall()
+             for s in schedules:
+                 schedule = {
+                    'I_ID': s[0],
+                    'F_ID': s[1]
+                 }
+                 dataList.append(schedule)
+             data = jsonify(schedules=dataList)
+         except Exception as e:
+             data = ("Get Schedules Failed with error: {0}").format(e)
+             db.rollback()
+             print(data)
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: add_schedule
+#   description: create a schedule with a flight ID and itinerary ID
+#   return: json object of added schedule
+#==============================================================================
+    def add_schedule(self, i_id, f_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         add_schedule_query = """INSERT INTO SCHEDULE VALUES ('%s', '%s')""" % (i_id, f_id)
+         cursor = db.cursor()
+         added_schedule = {
+            'I_ID': i_id,
+            'F_ID': f_id
+         }
+         try:
+             cursor.execute(add_schedule_query)
+             db.commit()
+             data = jsonify(added_schedule)
+         except Exception as e:
+             data = ("Add Schedule Failed with error: {0}").format(e)
+             print(data)
+             db.rollback()
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: delete_schedule
+#   description: delete a schedule with specified itinerary id and flight id
+#   return: deleted schedule object
+#==============================================================================
+    def delete_schedule(self, i_id, f_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         delete_schedule_query = """DELETE FROM SCHEDULE WHERE I_ID = '%s' and F_ID = '%s'""" % (i_id, f_id)
+         cursor = db.cursor()
+         deleted_schedule = {
+            'I_ID': i_id,
+            'F_ID': f_id
+         }
+         try:
+             cursor.execute(delete_schedule_query)
+             db.commit()
+             data = jsonify(deleted_schedule)
+         except Exception as e:
+             data = ("Delete Schedule Failed with error: {0}").format(e)
+             print(data)
+             db.rollback()
+
+         cursor.close()
+         db.close()
+         return data
