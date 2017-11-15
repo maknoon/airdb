@@ -110,10 +110,42 @@ def add_baggage():
 #     cust_id = request.args.get('id')
 #     miles = request.args.get('miles')
 #     airdb.update_frequent_flier(cust_id, miles)
-    
+
 #     return 'ADDED %s MILES TO ACCOUNT' % miles
 
+# Add airport route
+@app.route('/airport/newairport')
+def add_airport():
+    msg = airdb.add_airport(request.args.get('id'),
+        request.args.get('city'), request.args.get('country'))
 
+    return msg
+
+# Add airport route
+@app.route('/airport/getairport')
+def get_airport():
+    apid = request.args.get('id')
+    data = airdb.get_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/delete')
+def delete_airport():
+    apid = request.args.get('id')
+    data = airdb.delete_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/update')
+def update_airport():
+    apid = request.args.get('id')
+    data = airdb.update_airport(apid, request.args.get('city'),
+         request.args.get('country'), request.args.get('newcity'),
+         request.args.get('newcountry'))
+
+    return data
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
@@ -123,4 +155,3 @@ if __name__ == '__main__':
     app.secret_key = os.urandom(12)
 
     app.run()
-
