@@ -614,8 +614,10 @@ class AirplaneDb(object):
     #     db.close()
 
 #==============================================================================
-#   function: get_airports
+#   function: get_airport
 #   description: get all the airports
+#   returns: the list of all the airports if there are no specified Airport_id
+#        or: the airport where aiport_id matches the inputted airport_id
 #==============================================================================
     def get_airport(self, ap_id):
          db = MySQLdb.connect(host=self.host,
@@ -630,8 +632,21 @@ class AirplaneDb(object):
              get_airport_query = """SELECT * FROM AIRPORT WHERE AP_ID = '%s'""" % (ap_id)
          cursor = db.cursor()
          try:
+             dataList = []
              cursor.execute(get_airport_query)
-             data = jsonify(data=cursor.fetchall())
+             if ap_id is None:
+                 airports = cursor.fetchall()
+             else:
+                 airports = cursor.fetchone()
+
+             for airport in airports:
+                 ap_object = {
+                    'Id': airport[0],
+                    'City': airport[1],
+                    'Country': airport[2]
+                 }
+                 dataList.append(ap_object)
+             data = jsonify(airport=dataList)
          except Exception as e:
              data = ("Get Airport Failed with error: {0}").format(e)
              db.rollback()
@@ -654,19 +669,22 @@ class AirplaneDb(object):
                                  VALUES('%s', '%s', '%s')""" % (ap_id,
                                  ap_city, ap_country)
          cursor = db.cursor()
-         message = ""
+         airport = {
+            'Id': ap_id,
+            'City': ap_city,
+            'Country': ap_country
+         }
          try:
              cursor.execute(add_airport_query)
              db.commit()
-             message = ("ADDED NEW AIRPORT {0} IN {1}").format(ap_id, ap_country)
+             data = jsonify(airport=airport)
          except Exception as e:
-             message = ("Add Airport Failed with error: {0}").format(e)
-             print(message)
+             data = ("Add Airport Failed with error: {0}").format(e)
              db.rollback()
 
          cursor.close()
          db.close()
-         return message
+         return data
 
 #==============================================================================
 #   function: delete_airport
@@ -704,31 +722,38 @@ class AirplaneDb(object):
                              passwd=self.pw,
                              db=self.db)
 
+
         if new_city is None:
             cityString = ("AP_CITY = '{0}'").format(city)
+            ap_city = city
         else:
             cityString = ("AP_CITY = '{0}'").format(new_city)
+            ap_city = new_city
 
         if new_country is None:
             countryString = ("AP_COUNTRY = '{0}'").format(country)
+            ap_country = country
         else:
             countryString = ("AP_COUNTRY = '{0}'").format(new_country)
+            ap_country = new_country
 
         update_string = "SET " + cityString + ", " + countryString
-
         update_airport_query = """UPDATE AIRPORT %s WHERE AP_ID = '%s'""" % (update_string, ap_id)
-        print(update_airport_query)
+        airport = {
+            'Id': ap_id,
+            'City': ap_city,
+            'Country': ap_country
+        }
         cursor = db.cursor()
-        message = ""
         try:
             cursor.execute(update_airport_query)
             db.commit()
-            message = ("UPDATED AIRPORT {0}").format(ap_id)
+            data = jsonify(airport=airport)
         except Exception as e:
-            message = ("Update Airport Failed with error: {0}").format(e)
-            print(message)
+            data = ("Update Airport Failed with error: {0}").format(e)
+            print(data)
             db.rollback()
 
         cursor.close()
         db.close()
-        return message
+        return data
