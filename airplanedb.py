@@ -688,14 +688,15 @@ class AirplaneDb(object):
 #   function: add_flight
 #   description: add new flight to FLIGHT table
 #==============================================================================         
-    def add_flight(self, aircraft_ID, distance, departtime, arrivetime, departairport, arriveairport,
+    def add_flight(self, aircraft_id, distance, departtime, arrivetime, departairport, arriveairport,
                    departgate, arrivegate, status):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
-        add_flight_query = """ INSERT INTO ITINERARY (AC_ID, F_DISTANCE, F_DEPARTURETIME, F_ARRIVALTIME,
-                               F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                              VALUES (%d,%.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_ID), float(distance), departtime, arrivetime,
-                                                               departairport, arriveairport, departgate, arrivegate, status)
+        add_flight_query = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE, F_DEPARTURETIME, F_ARRIVALTIME,
+                               F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, 
+                               F_STATUS) VALUES (%d, %.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_id), 
+                                float(distance), departtime, arrivetime, departairport, arriveairport, departgate, 
+                                arrivegate, status)
 
         cursor = db.cursor()
         inserted = 0
@@ -716,14 +717,14 @@ class AirplaneDb(object):
 #   function: update_flight
 #   description: update fields in FLIGHT given flight ID
 #==============================================================================     
-    def update_flight(self, flight_ID, flight_field, new_value):
+    def update_flight(self, flight_id, flight_field, new_value):
         db = MySQLdb.connect(host=self.host, 
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
         update_flight_query = """UPDATE FLIGHT
-                           SET '%s' = '%s'
-                           WHERE F_ID = '%s' """ % (flight_field, new_value, flight_ID)
+                                 SET %s = '%s'
+                                 WHERE F_ID = %s """ % (flight_field, new_value, flight_id)
 
         cursor = db.cursor()
         try:
