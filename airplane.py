@@ -189,12 +189,12 @@ def add_flight():
 # test update flight
 @app.route('/flightupdate')
 def update_flight():
-    id = request.args.get('f_id')
+    f_id = request.args.get('id')
     new_value = request.args.get('new')
     flight_field=request.args.get('field')
-    airdb.update_flight(id, flight_field, new_value)
+    airdb.update_flight(f_id, flight_field, new_value)
 
-    return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, id, new_value)
+    return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, f_id, new_value)
 
 # Add airport route
 @app.route('/airport/new')
