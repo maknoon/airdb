@@ -662,16 +662,16 @@ class AirplaneDb(object):
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
 #==============================================================================
-    def delete_itinerary(self, itinerary_ID):
+    def delete_itinerary(self, itinerary_id):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
-        delete_itinerary_query = """ DELETE FROM ITINERARY WHERE I_ID = '%s' """ % (itinerary_ID)
+        delete_itinerary_query = """ DELETE FROM ITINERARY WHERE I_ID = '%s' """ % (itinerary_id)
 
         cursor = db.cursor()
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
-            print 'Deleted {0}: {1}'.format('ITINERARY', itinerary_ID)
+            print 'Deleted {0}: {1}'.format('ITINERARY', itinerary_id)
         except:
             print 'Delete Itinerary Failed'
             db.rollback()
@@ -683,20 +683,20 @@ class AirplaneDb(object):
 #   function: update_itinerary
 #   description: update itinerary fields given itinerary ID
 #==============================================================================
-    def update_itinerary(self, itinerary_ID, itinerary_field, new_value):
+    def update_itinerary(self, itinerary_id, itinerary_field, new_value):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
         update_itinerary_query = """UPDATE ITINERARY
-                           SET '%s' = '%s'
-                           WHERE I_ID = '%s' """ % (itinerary_field, new_value, itinerary_ID)
+                           SET %s = '%s'
+                           WHERE I_ID = %s """ % (itinerary_field, new_value, itinerary_id)
 
         cursor = db.cursor()
         try:
             cursor.execute(update_itinerary_query)
             db.commit()
-            print 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, itinerary_ID, new_value)
+            print 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, itinerary_id, new_value)
         except:
             print("Update Itinerary Failed")
             db.rollback()
@@ -749,7 +749,11 @@ class AirplaneDb(object):
         try:
             cursor.execute(update_flight_query)
             db.commit()
+<<<<<<< HEAD
             print 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, itinerary_ID, new_value)
+=======
+            print 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, itinerary_id, new_value)
+>>>>>>> Fix for update itinerary
         except:
             print("Update Flight Failed")
             db.rollback()
