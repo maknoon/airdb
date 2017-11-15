@@ -641,7 +641,7 @@ class AirplaneDb(object):
 
              for airport in airports:
                  ap_object = {
-                    'Id': airport[0],
+                    'ID': airport[0],
                     'City': airport[1],
                     'Country': airport[2]
                  }
@@ -670,7 +670,7 @@ class AirplaneDb(object):
                                  ap_city, ap_country)
          cursor = db.cursor()
          airport = {
-            'Id': ap_id,
+            'ID': ap_id,
             'City': ap_city,
             'Country': ap_country
          }
@@ -698,19 +698,21 @@ class AirplaneDb(object):
 
          delete_airport_query = """DELETE FROM AIRPORT WHERE AP_ID = '%s'""" % (ap_id)
          cursor = db.cursor()
-         message = ""
+         deleted_airport_id = {
+            'ID': ap_id
+         }
          try:
              cursor.execute(delete_airport_query)
              db.commit()
-             message = ("DELETED AIRPORT {0}").format(ap_id)
+             data = jsonify(deleted_airport_id)
          except Exception as e:
-             message = ("Delete Airport Failed with error: {0}").format(e)
-             print(message)
+             data = ("Delete Airport Failed with error: {0}").format(e)
+             print(data)
              db.rollback()
 
          cursor.close()
          db.close()
-         return message
+         return data
 
  #==============================================================================
  #   function: update_airport
@@ -740,7 +742,7 @@ class AirplaneDb(object):
         update_string = "SET " + cityString + ", " + countryString
         update_airport_query = """UPDATE AIRPORT %s WHERE AP_ID = '%s'""" % (update_string, ap_id)
         airport = {
-            'Id': ap_id,
+            'ID': ap_id,
             'City': ap_city,
             'Country': ap_country
         }
