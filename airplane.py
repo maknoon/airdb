@@ -57,17 +57,17 @@ def reset():
     return 'DB HAS BEEN RESET AND POPULATED'
 
 # test create new customer
-@app.route('/customer')
+@app.route('/customer/new')
 def add_customer():
     cust_name = request.args.get('name')
-    added = airdb.add_customer(cust_name,
+    data = airdb.add_customer(cust_name,
         request.args.get('age'), request.args.get('email'),
         request.args.get('phone'))
 
-    return 'ADDED NEW CUSTOMER %s WITH ID %d' % (cust_name, added)
+    return data
 
 # test update customer
-# @app.route('/customerupdate')
+# @app.route('/customer/update')
 # def update_customer():
 #     req_body = request.get_json()
 #     cust_id = request.args.get('id')
@@ -92,19 +92,19 @@ def add_customer():
 
 
 # test add new frequent flier
-@app.route('/ff')
+@app.route('/ff/new')
 def add_frequent_flier():
-    airdb.add_frequent_flier(request.args.get('id'))
+    data = airdb.add_frequent_flier(request.args.get('id'))
 
-    return 'WELCOME TO THE FREQUENT FLIER CLUB'
+    return data
 
 # test add baggage
-@app.route('/baggage')
+@app.route('/baggage/new')
 def add_baggage():
-    airdb.add_baggage(request.args.get('id'),
+    data = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
-    return 'ADDED BAGGAGE'
+    return data
 
 # @app.route('/ffupdate')
 # def update_frequent_flier():
@@ -115,12 +115,12 @@ def add_baggage():
 #     return 'ADDED %s MILES TO ACCOUNT' % miles
 
 # Add airport route
-@app.route('/airport/newairport')
+@app.route('/airport/new')
 def add_airport():
-    msg = airdb.add_airport(request.args.get('id'),
+    data = airdb.add_airport(request.args.get('id'),
         request.args.get('city'), request.args.get('country'))
 
-    return msg
+    return data
 
 # Add airport route
 @app.route('/airport/getairport')
