@@ -3,6 +3,7 @@ from flask import Flask, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
+import json
 
 app = Flask(__name__)
 app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
@@ -19,9 +20,15 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        return 'Logged in as user!'
+        return render_template('db.html', type='user')
+
     elif session.get('type') == 'admin':
-        return 'Logged in as admin!'
+        # get all airports
+        get_airports = json.loads(airdb.get_airport(None).get_data())
+        print(get_airports['airport'])
+        data_to_display = get_airports['airport']
+        return render_template('db.html', type='admin', data=data_to_display)
+
     else:
         return render_template('index.html')
 

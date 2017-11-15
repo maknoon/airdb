@@ -34,3 +34,13 @@ input {
     padding: 4pt 4pt;
     margin: 2px;
 }
+
+table {
+    width: 75%;
+}
+
+table,th,td {
+    border: 2px solid #2874A6;
+    padding: 2px;
+    margin: 5px;
+}
