@@ -475,7 +475,6 @@ class AirplaneDb(object):
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
 #==============================================================================
-
     def add_baggage(self, cust_id, bag_weight):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -527,7 +526,6 @@ class AirplaneDb(object):
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
 #==============================================================================
-
     def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
@@ -557,7 +555,6 @@ class AirplaneDb(object):
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
 #==============================================================================
-
     def add_frequent_flier(self, cust_id):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -582,7 +579,6 @@ class AirplaneDb(object):
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
 #==============================================================================
-
     # def update_frequent_flier(self, cust_id, miles):
     #     db = MySQLdb.connect(host=self.host,
     #                          user=self.user,
