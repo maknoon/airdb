@@ -127,6 +127,23 @@ def update_airport():
          request.args.get('newcountry'))
 
     return data
+
+# Get gates of airport route
+@app.route('/gate/getOfAirport')
+def get_gates_of_airport():
+    apid = request.args.get('id')
+    data = airdb.get_gates_of_airport(apid)
+
+    return data
+
+# Delete a gate
+@app.route('/gate/delete')
+def delete_gate():
+    apid = request.args.get('apid')
+    gid = request.args.get('gid')
+    data = airdb.delete_gate(apid, gid)
+
+    return data
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
