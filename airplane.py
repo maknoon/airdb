@@ -1,14 +1,16 @@
 #!~/usr/bin/python
-from flask import Flask, request
+from flask import Flask, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
-import os
+import hashlib
 
 app = Flask(__name__)
+app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
 airdb = AirplaneDb(host=config.host,
                    user=config.dbusr,
                    pw=config.dbpwd,
                    db=config.dbname)
+
 
 # ---------------------------------------------------------
 # HOME
@@ -16,9 +18,27 @@ airdb = AirplaneDb(host=config.host,
 
 @app.route('/')
 def index():
+    if session.get('type') == 'user':
+        return 'Logged in as user!'
+    elif session.get('type') == 'admin':
+        return 'Logged in as admin!'
+    else:
+        return render_template('index.html')
 
-    return 'airdb'
+@app.route('/login', methods=['POST'])
+def login():
+    if request.form['password'] == config.adminpwd and request.form['username'] == 'admin':
+        session['type'] = 'admin'
+    elif request.form['password'] == config.userpwd and request.form['username'] == 'user':
+        session['type'] = 'user'
+    else:
+        flash('wrong password!')
+    return index()
 
+@app.route('/logout')
+def logout():
+    session['type'] = 'none'
+    return index()
 
 @app.route('/test/<name>')
 def test_name(name):
@@ -37,7 +57,6 @@ def reset():
     airdb.populate_db()
 
     return 'DB HAS BEEN RESET AND POPULATED'
-
 
 # test create new customer
 @app.route('/customer')
@@ -82,14 +101,12 @@ def add_frequent_flier():
 
     return 'WELCOME TO THE FREQUENT FLIER CLUB'
 
-
 # test add baggage
 @app.route('/baggage')
 def add_baggage():
     airdb.add_baggage(request.args.get('id'), request.args.get('weight'))
 
     return 'ADDED BAGGAGE'
-
 
 @app.route('/ffupdate')
 def update_frequent_flier():
@@ -98,7 +115,6 @@ def update_frequent_flier():
     airdb.update_frequent_flier(cust_id, miles)  
 
     return 'ADDED %s MILES TO ACCOUNT' %(str(miles))
-
 
 # test add itinerary
 @app.route('/itinerary')
@@ -110,7 +126,6 @@ def add_itinerary():
 
     return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_id))
 
-
 # test delete itinerary
 @app.route('/itinerarydelete')
 def delete_itinerary():
@@ -118,7 +133,6 @@ def delete_itinerary():
     airdb.delete_itinerary(id)
 
     return 'DELETED ITINERARY %s' % (id)
-
 
 # test update itinerary
 @app.route('/itineraryupdate')
@@ -129,7 +143,6 @@ def update_itinerary():
     airdb.update_itinerary(i_id, itinerary_field, new_value)
 
     return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, i_id, new_value)
-
 
 # test add flight
 @app.route('/flight')
@@ -146,7 +159,6 @@ def add_flight():
 
     return 'ADDED NEW FLIGHT {0}'.format(added)
 
-
 # test update flight
 @app.route('/flightupdate')
 def update_flight():
@@ -157,6 +169,40 @@ def update_flight():
 
     return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, f_id, new_value)
 
+# Add airport route
+@app.route('/airport/newairport')
+def add_airport():
+    msg = airdb.add_airport(request.args.get('id'),
+        request.args.get('city'), request.args.get('country'))
+
+    return msg
+
+# Add airport route
+@app.route('/airport/getairport')
+def get_airport():
+    apid = request.args.get('id')
+    data = airdb.get_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/delete')
+def delete_airport():
+    apid = request.args.get('id')
+    data = airdb.delete_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/update')
+def update_airport():
+    apid = request.args.get('id')
+    data = airdb.update_airport(apid, request.args.get('city'),
+         request.args.get('country'), request.args.get('newcity'),
+         request.args.get('newcountry'))
+
+    return data
+
 
 # ---------------------------------------------------------
 # SERVE THE APP
@@ -164,7 +210,6 @@ def update_flight():
 
 if __name__ == '__main__':
     print('Connecting to db...{}'.format(config.dbname))
-    app.secret_key = os.urandom(12)
-    
+
     app.run()
 
