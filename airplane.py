@@ -123,12 +123,12 @@ def delete_itinerary():
 # test update itinerary
 @app.route('/itineraryupdate')
 def update_itinerary():
-    id = request.args.get('i_id')
+    i_id = request.args.get('id')
     new_value = request.args.get('new')
     itinerary_field = request.args.get('field')
-    airdb.update_itinerary(id, itinerary_field, new_value)
+    airdb.update_itinerary(i_id, itinerary_field, new_value)
 
-    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, id, new_value)
+    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, i_id, new_value)
 
 
 # test add flight
