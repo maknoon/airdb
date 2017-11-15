@@ -1,14 +1,16 @@
 #!~/usr/bin/python
-from flask import Flask, request
+from flask import Flask, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
-import os
+import hashlib
 
 app = Flask(__name__)
+app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
 airdb = AirplaneDb(host=config.host,
                    user=config.dbusr,
                    pw=config.dbpwd,
                    db=config.dbname)
+
 
 # ---------------------------------------------------------
 # HOME
@@ -16,7 +18,27 @@ airdb = AirplaneDb(host=config.host,
 
 @app.route('/')
 def index():
-    return 'airdb'
+    if session.get('type') == 'user':
+        return 'Logged in as user!'
+    elif session.get('type') == 'admin':
+        return 'Logged in as admin!'
+    else:
+        return render_template('index.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.form['password'] == config.adminpwd and request.form['username'] == 'admin':
+        session['type'] = 'admin'
+    elif request.form['password'] == config.userpwd and request.form['username'] == 'user':
+        session['type'] = 'user'
+    else:
+        flash('wrong password!')
+    return index()
+
+@app.route('/logout')
+def logout():
+    session['type'] = 'none'
+    return index()
 
 @app.route('/test/<name>')
 def test_name(name):
@@ -33,7 +55,6 @@ def reset():
     airdb.reset_db()
     airdb.populate_db()
     return 'DB HAS BEEN RESET AND POPULATED'
-
 
 # test create new customer
 @app.route('/customer')
@@ -76,7 +97,6 @@ def add_frequent_flier():
     airdb.add_frequent_flier(request.args.get('id'))
 
     return 'WELCOME TO THE FREQUENT FLIER CLUB'
-
 
 # test add baggage
 @app.route('/baggage')
@@ -150,6 +170,5 @@ def delete_gate():
 
 if __name__ == '__main__':
     print('Connecting to db...{}'.format(config.dbname))
-    app.secret_key = os.urandom(12)
 
     app.run()
