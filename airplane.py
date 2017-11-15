@@ -2,13 +2,15 @@
 from flask import Flask, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
-import os
+import hashlib
 
 app = Flask(__name__)
+app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
 airdb = AirplaneDb(host=config.host,
                    user=config.dbusr,
                    pw=config.dbpwd,
                    db=config.dbname)
+
 
 # ---------------------------------------------------------
 # HOME
@@ -53,7 +55,6 @@ def reset():
     airdb.reset_db()
     airdb.populate_db()
     return 'DB HAS BEEN RESET AND POPULATED'
-
 
 # test create new customer
 @app.route('/customer')
@@ -146,12 +147,14 @@ def update_airport():
          request.args.get('newcountry'))
 
     return data
+
+
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
 
 if __name__ == '__main__':
     print('Connecting to db...{}'.format(config.dbname))
-    app.secret_key = os.urandom(12)
 
     app.run()
+
