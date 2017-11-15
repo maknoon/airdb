@@ -748,7 +748,6 @@ class AirplaneDb(object):
         db.close()
         return data
 
-<<<<<<< HEAD
 #==============================================================================
 #   function: get_gates_of_airport
 #   description: get all the gates from an airport
@@ -813,5 +812,3 @@ class AirplaneDb(object):
          cursor.close()
          db.close()
          return data
-=======
->>>>>>> dev
