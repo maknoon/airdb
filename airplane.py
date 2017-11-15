@@ -156,12 +156,38 @@ def get_gates_of_airport():
 
     return data
 
-# Delete a gate
+# Delete a gate route
 @app.route('/gate/delete')
 def delete_gate():
-    apid = request.args.get('apid')
-    gid = request.args.get('gid')
+    apid = request.args.get('ap_id')
+    gid = request.args.get('g_id')
     data = airdb.delete_gate(apid, gid)
+
+    return data
+
+# Get schedule of ITINERARY
+@app.route('/schedule/getForItinerary')
+def get_schedule_for_itinerary():
+    iid = request.args.get('id')
+    data = airdb.get_schedule_for_itinerary(iid)
+
+    return data
+
+# Add a schedule route
+@app.route('/schedule/add')
+def add_schedule():
+    iid = request.args.get('i_id')
+    fid = request.args.get('f_id')
+    data = airdb.add_schedule(iid, fid)
+
+    return data
+
+# Delete a schedule route
+@app.route('/schedule/delete')
+def delete_schedule():
+    iid = request.args.get('i_id')
+    fid = request.args.get('f_id')
+    data = airdb.delete_schedule(iid, fid)
 
     return data
 # ---------------------------------------------------------
