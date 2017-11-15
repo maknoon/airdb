@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 import MySQLdb
 from datetime import datetime
+from flask import jsonify
 
 
 class AirplaneDb(object):
@@ -470,19 +471,20 @@ class AirplaneDb(object):
             db.commit()
         except Exception as e:
             print(e)
+            db.rollback()
         print(('{0} POPULATE COMPLETE').format(self.db))
 
         cursor.close()
-
+        db.close()
 #==============================================================================
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
 #==============================================================================
 
     def add_baggage(self, cust_id, bag_weight):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
         add_baggage_query = """INSERT INTO BAGGAGE(C_ID, B_WEIGHT)
                                 VALUES(%s, %.2f)""" % (cust_id, float(bag_weight))
@@ -495,7 +497,7 @@ class AirplaneDb(object):
         except:
             print("Add Baggage Failed")
             db.rollback()
-        
+
         db.close()
 
 
@@ -504,9 +506,9 @@ class AirplaneDb(object):
 #   description: returns an instance of customer based on cust_id
 #==============================================================================
     def get_customer(self, cust_id):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
         get_customer_query = """SELECT * FROM CUSTOMER
                                 WHERE C_ID = %d""" % int(cust_id)
@@ -534,9 +536,9 @@ class AirplaneDb(object):
 #==============================================================================
 
     def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
-         db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
          add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
@@ -552,7 +554,7 @@ class AirplaneDb(object):
          except:
              print("Add Customer Failed")
              db.rollback()
-        
+
          db.close()
 
          # return the customer ID that was inserted
@@ -562,12 +564,12 @@ class AirplaneDb(object):
 #==============================================================================
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
-#==============================================================================    
+#==============================================================================
 
     def add_frequent_flier(self, cust_id):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
                              db=self.db)
 
         add_ff_query = """ INSERT INTO FREQUENTFLIER (C_ID, FF_MILES)
@@ -581,19 +583,19 @@ class AirplaneDb(object):
         except:
             print("Add Frequent Flier Failed")
             db.rollback()
-        
+
         db.close()
 
 
 #==============================================================================
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
-#==============================================================================         
+#==============================================================================
 
     # def update_frequent_flier(self, cust_id, miles):
-    #     db = MySQLdb.connect(host=self.host, 
-    #                          user=self.user, 
-    #                          passwd=self.pw, 
+    #     db = MySQLdb.connect(host=self.host,
+    #                          user=self.user,
+    #                          passwd=self.pw,
     #                          db=self.db)
 
     #     add_ff_query = """UPDATE FREQUENT_FLIER
@@ -608,5 +610,125 @@ class AirplaneDb(object):
     #     except:
     #         print("Update Frequent Flier Failed")
     #         db.rollback()
-        
+
     #     db.close()
+
+#==============================================================================
+#   function: get_airports
+#   description: get all the airports
+#==============================================================================
+    def get_airport(self, ap_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         get_airport_query = ""
+         if ap_id is None:
+             get_airport_query = """SELECT * FROM AIRPORT"""
+         else:
+             get_airport_query = """SELECT * FROM AIRPORT WHERE AP_ID = '%s'""" % (ap_id)
+         cursor = db.cursor()
+         try:
+             cursor.execute(get_airport_query)
+             data = jsonify(data=cursor.fetchall())
+         except Exception as e:
+             data = ("Get Airport Failed with error: {0}").format(e)
+             db.rollback()
+             print(data)
+
+         cursor.close()
+         db.close()
+         return data
+#==============================================================================
+#   function: add_airport
+#   description: add an airport instance to the AIRPORT table
+#==============================================================================
+    def add_airport(self, ap_id, ap_city, ap_country):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         add_airport_query = """INSERT INTO AIRPORT(AP_ID, AP_CITY, AP_COUNTRY)
+                                 VALUES('%s', '%s', '%s')""" % (ap_id,
+                                 ap_city, ap_country)
+         cursor = db.cursor()
+         message = ""
+         try:
+             cursor.execute(add_airport_query)
+             db.commit()
+             message = ("ADDED NEW AIRPORT {0} IN {1}").format(ap_id, ap_country)
+         except Exception as e:
+             message = ("Add Airport Failed with error: {0}").format(e)
+             print(message)
+             db.rollback()
+
+         cursor.close()
+         db.close()
+         return message
+
+#==============================================================================
+#   function: delete_airport
+#   description: delete an airport from the airport table
+#==============================================================================
+    def delete_airport(self, ap_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         delete_airport_query = """DELETE FROM AIRPORT WHERE AP_ID = '%s'""" % (ap_id)
+         cursor = db.cursor()
+         message = ""
+         try:
+             cursor.execute(delete_airport_query)
+             db.commit()
+             message = ("DELETED AIRPORT {0}").format(ap_id)
+         except Exception as e:
+             message = ("Delete Airport Failed with error: {0}").format(e)
+             print(message)
+             db.rollback()
+
+         cursor.close()
+         db.close()
+         return message
+
+ #==============================================================================
+ #   function: update_airport
+ #   description: update an airport instance to the AIRPORT table
+ #==============================================================================
+    def update_airport(self, ap_id, city, country, new_city, new_country):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+        if new_city is None:
+            cityString = ("AP_CITY = '{0}'").format(city)
+        else:
+            cityString = ("AP_CITY = '{0}'").format(new_city)
+
+        if new_country is None:
+            countryString = ("AP_COUNTRY = '{0}'").format(country)
+        else:
+            countryString = ("AP_COUNTRY = '{0}'").format(new_country)
+
+        update_string = "SET " + cityString + ", " + countryString
+
+        update_airport_query = """UPDATE AIRPORT %s WHERE AP_ID = '%s'""" % (update_string, ap_id)
+        print(update_airport_query)
+        cursor = db.cursor()
+        message = ""
+        try:
+            cursor.execute(update_airport_query)
+            db.commit()
+            message = ("UPDATED AIRPORT {0}").format(ap_id)
+        except Exception as e:
+            message = ("Update Airport Failed with error: {0}").format(e)
+            print(message)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return message
