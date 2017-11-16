@@ -2,7 +2,10 @@
 import MySQLdb
 from datetime import datetime
 from flask import jsonify
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> Fixed requested changes
 
 
 class AirplaneDb(object):
@@ -499,11 +502,16 @@ class AirplaneDb(object):
         except Exception as e:
             data = ("Add Baggage Failed with error: {0}").format(e)
             db.rollback()
+<<<<<<< HEAD
             print(data)
 
         cursor.close()
         db.close()
         return data
+=======
+
+        db.close()
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: get_customer
@@ -535,10 +543,13 @@ class AirplaneDb(object):
             db.rollback()
             print(data)
 
+<<<<<<< HEAD
         cursor.close()
         db.close()
         return data
 
+=======
+>>>>>>> Fixed requested changes
 #==============================================================================
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
@@ -549,6 +560,7 @@ class AirplaneDb(object):
                             user=self.user,
                             passwd=self.pw,
                             db=self.db)
+<<<<<<< HEAD
 
         add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
                                 VALUES('%s',%d,'%s','%s')""" % (cust_name, int(cust_age),
@@ -573,11 +585,35 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+=======
+
+        add_customer_query = """INSERT INTO CUSTOMER(C_NAME, C_AGE, C_EMAIL, C_PHONE)
+                                VALUES('%s',%d,'%s','%s')""" % (cust_name, int(cust_age),
+                                cust_email, cust_phone)
+        cursor = db.cursor()
+        inserted = 0
+        try:
+            cursor.execute(add_customer_query)
+            db.commit()
+            print("Add Customer Success")
+            inserted = cursor.lastrowid
+        except:
+            print("Add Customer Failed")
+            db.rollback()
+
+        db.close()
+
+        # return the customer ID that was inserted
+        return inserted
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
+<<<<<<< HEAD
 #   return: added frequent flier json object
+=======
+>>>>>>> Fixed requested changes
 #==============================================================================
     def add_frequent_flier(self, cust_id):
         db = MySQLdb.connect(host=self.host,
@@ -600,27 +636,38 @@ class AirplaneDb(object):
         except Exception as e:
             data = ("Add Frequent Flier Failed with error: {0}").format(e)
             db.rollback()
+<<<<<<< HEAD
             print(data)
 
         cursor.close()
         db.close()
         return data
+=======
+
+        db.close()
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
+<<<<<<< HEAD
 #==============================================================================
 
+=======
+#==============================================================================         
+>>>>>>> Fixed requested changes
     def update_frequent_flier(self, cust_id, miles):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        update_ff_query = """UPDATE FREQUENT_FLIER
-                           SET FF_MILES = FF_MILES + %.2f
-                           WHERE C_ID = %s """ % (float(miles), int(cust_id))
-
         cursor = db.cursor()
+        cursor.execute("""SELECT FF_MILES FROM FREQUENTFLIER WHERE C_ID = %s """ % (int(cust_id)))
+        old_miles = cursor.fetchone()
+        new_miles = old_miles[0] + float(miles)
+        update_ff_query = """UPDATE FREQUENT_FLIER
+                           SET FF_MILES = %.2f
+                           WHERE C_ID = %s """ % (float(new_miles), int(cust_id))
         try:
             cursor.execute(update_ff_query)
             db.commit()
@@ -630,12 +677,20 @@ class AirplaneDb(object):
             db.rollback()
 
         db.close()
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: add_itinerary
 #   description: add a new row to ITINERARY table
+<<<<<<< HEAD
 #==============================================================================
+=======
+#==============================================================================         
+>>>>>>> Fixed requested changes
     def add_itinerary(self, seat_type, seat_cost, itinerary_status, cust_id):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
@@ -656,12 +711,20 @@ class AirplaneDb(object):
 
         db.close()
         return inserted
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
+<<<<<<< HEAD
 #==============================================================================
+=======
+#==============================================================================  
+>>>>>>> Fixed requested changes
     def delete_itinerary(self, itinerary_id):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
@@ -677,11 +740,16 @@ class AirplaneDb(object):
             db.rollback()
 
         db.close()
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> Fixed requested changes
 
 #==============================================================================
 #   function: update_itinerary
 #   description: update itinerary fields given itinerary ID
+<<<<<<< HEAD
 #==============================================================================
     def update_itinerary(self, itinerary_id, itinerary_field, new_value):
         db = MySQLdb.connect(host=self.host,
@@ -692,11 +760,32 @@ class AirplaneDb(object):
                            SET %s = '%s'
                            WHERE I_ID = %s """ % (itinerary_field, new_value, itinerary_id)
 
+=======
+#==============================================================================         
+    def update_itinerary(self, itinerary_id, itinerary_field, new_value):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        if (itinerary_field == 'I_SEATTYPE' or itinerary_field == 'I_STATUS'):
+			update_itinerary_query = """UPDATE ITINERARY
+                           SET %s = '%s'
+                           WHERE I_ID = %s """ % (itinerary_field, new_value, itinerary_id)
+        elif (itinerary_field == 'I_SEATCOST'):
+            update_itinerary_query = """UPDATE ITINERARY
+                           SET %s = %.2f
+                           WHERE I_ID = %s """ % (itinerary_field, float(new_value), itinerary_id)
+        else: return;
+>>>>>>> Fixed requested changes
         cursor = db.cursor()
         try:
             cursor.execute(update_itinerary_query)
             db.commit()
+<<<<<<< HEAD
             print 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, itinerary_id, new_value)
+=======
+            print 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, itinerary_id, new_value)   
+>>>>>>> Fixed requested changes
         except:
             print("Update Itinerary Failed")
             db.rollback()
@@ -707,15 +796,25 @@ class AirplaneDb(object):
 #==============================================================================
 #   function: add_flight
 #   description: add new flight to FLIGHT table
+<<<<<<< HEAD
 #==============================================================================
+=======
+#==============================================================================         
+>>>>>>> Fixed requested changes
     def add_flight(self, aircraft_id, distance, departtime, arrivetime, departairport, arriveairport,
                    departgate, arrivegate, status):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
         add_flight_query = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE, F_DEPARTURETIME, F_ARRIVALTIME,
+<<<<<<< HEAD
                                F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID,
                                F_STATUS) VALUES (%d, %.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_id),
                                 float(distance), departtime, arrivetime, departairport, arriveairport, departgate,
+=======
+                               F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID, F_DEPARTUREGATEID, F_ARRIVALGATEID, 
+                               F_STATUS) VALUES (%d, %.2f, '%s', '%s', '%s','%s','%s','%s','%s')""" % (int(aircraft_id), 
+                                float(distance), departtime, arrivetime, departairport, arriveairport, departgate, 
+>>>>>>> Fixed requested changes
                                 arrivegate, status)
 
         cursor = db.cursor()
@@ -736,6 +835,7 @@ class AirplaneDb(object):
 #==============================================================================
 #   function: update_flight
 #   description: update fields in FLIGHT given flight ID
+<<<<<<< HEAD
 #==============================================================================
     def update_flight(self, flight_id, flight_field, new_value):
         db = MySQLdb.connect(host=self.host,
@@ -746,16 +846,46 @@ class AirplaneDb(object):
                                  SET %s = '%s'
                                  WHERE F_ID = %s """ % (flight_field, new_value, flight_id)
 
+=======
+#==============================================================================     
+    def update_flight(self, flight_id, flight_field, new_value):
+        db = MySQLdb.connect(host=self.host, 
+                             user=self.user, 
+                             passwd=self.pw, 
+                             db=self.db)
+        if (flight_field == 'AC_ID' or flight_field == 'F_DISTANCE'):
+			update_flight_query = """UPDATE FLIGHT
+                           SET %s = %.2f
+                           WHERE F_ID = %s """ % (flight_field, float(new_value), flight_id)
+        elif (flight_field == 'AC_ID'):
+            update_flight_query = """UPDATE FLIGHT
+                           SET %s = %d
+                           WHERE F_ID = %s """ % (flight_field, int(new_value), flight_id)
+        else:
+            update_flight_query = """UPDATE FLIGHT
+                           SET %s = '%s'
+                           WHERE F_ID = %s """ % (flight_field, new_value, flight_id)
+>>>>>>> Fixed requested changes
         cursor = db.cursor()
         try:
             cursor.execute(update_flight_query)
             db.commit()
+<<<<<<< HEAD
             print 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, itinerary_id, new_value)
         except:
             print("Update Flight Failed")
             db.rollback()
 
         db.close()
+=======
+            print 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, itinerary_id, new_value)   
+        except:
+            print("Update Flight Failed")
+            db.rollback()
+        
+        db.close()
+
+>>>>>>> Fixed requested changes
 #==============================================================================
 #   function: get_airport
 #   description: get all the airports
@@ -789,7 +919,11 @@ class AirplaneDb(object):
                     'Country': airport[2]
                 }
                 dataList.append(ap_object)
+<<<<<<< HEAD
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+=======
+            data = jsonify(airport=dataList)
+>>>>>>> Fixed requested changes
         except Exception as e:
             data = ("Get Airport Failed with error: {0}").format(e)
             db.rollback()
@@ -821,7 +955,11 @@ class AirplaneDb(object):
         try:
             cursor.execute(add_airport_query)
             db.commit()
+<<<<<<< HEAD
             data = json.dumps(airport, sort_keys=True, indent=4, separators=(',', ': '))
+=======
+            data = jsonify(airport=airport)
+>>>>>>> Fixed requested changes
         except Exception as e:
             data = ("Add Airport Failed with error: {0}").format(e)
             db.rollback()
@@ -848,7 +986,11 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_airport_query)
             db.commit()
+<<<<<<< HEAD
             data = json.dumps(deleted_airport_id, sort_keys=True, indent=4, separators=(',', ': '))
+=======
+            data = jsonify(deleted_airport_id)
+>>>>>>> Fixed requested changes
         except Exception as e:
             data = ("Delete Airport Failed with error: {0}").format(e)
             print(data)
@@ -894,7 +1036,11 @@ class AirplaneDb(object):
         try:
             cursor.execute(update_airport_query)
             db.commit()
+<<<<<<< HEAD
             data = json.dumps(airport, sort_keys=True, indent=4, separators=(',', ': '))
+=======
+            data = jsonify(airport=airport)
+>>>>>>> Fixed requested changes
         except Exception as e:
             data = ("Update Airport Failed with error: {0}").format(e)
             print(data)
@@ -902,6 +1048,7 @@ class AirplaneDb(object):
 
         cursor.close()
         db.close()
+<<<<<<< HEAD
         return data
 
 #==============================================================================
@@ -1064,3 +1211,6 @@ class AirplaneDb(object):
          cursor.close()
          db.close()
          return data
+=======
+        return data
+>>>>>>> Fixed requested changes
