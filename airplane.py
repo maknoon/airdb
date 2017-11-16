@@ -40,8 +40,11 @@ def logout():
     session['type'] = 'none'
     return index()
 
+    return 'airdb'
+
 @app.route('/test/<name>')
 def test_name(name):
+
     return 'Welcome, {}!'.format(name)
 
 
@@ -54,7 +57,16 @@ def test_name(name):
 def reset():
     airdb.reset_db()
     airdb.populate_db()
+
     return 'DB HAS BEEN RESET AND POPULATED'
+
+# test get new customer
+@app.route('/customer')
+def get_customer():
+    cust_id = request.args.get('id')
+    data = airdb.get_customer(cust_id)
+
+    return data
 
 # test create new customer
 @app.route('/customer/new')
@@ -65,6 +77,7 @@ def add_customer():
         request.args.get('phone'))
 
     return data
+
 
 # test update customer
 # @app.route('/customer/update')
@@ -106,13 +119,67 @@ def add_baggage():
 
     return data
 
-# @app.route('/ffupdate')
-# def update_frequent_flier():
-#     cust_id = request.args.get('id')
-#     miles = request.args.get('miles')
-#     airdb.update_frequent_flier(cust_id, miles)
+# update frequent flier miles route
+@app.route('/ff/update')
+def update_frequent_flier():
+    cust_id = request.args.get('id')
+    miles = request.args.get('miles')
+    data = airdb.update_frequent_flier(cust_id, miles)
 
-#     return 'ADDED %s MILES TO ACCOUNT' % miles
+    return data
+
+# test add itinerary
+@app.route('/itinerary/new')
+def add_itinerary():
+    cust_id = request.args.get('id')
+    data = airdb.add_itinerary(request.args.get('seattype'),
+                                request.args.get('seatcost'),
+                                request.args.get('status'), cust_id)
+
+    return data
+
+# test delete itinerary
+@app.route('/itinerary/delete')
+def delete_itinerary():
+    id = request.args.get('i_id')
+    data = airdb.delete_itinerary(id)
+
+    return data
+
+# test update itinerary
+@app.route('/itinerary/update')
+def update_itinerary():
+    i_id = request.args.get('id')
+    new_value = request.args.get('new')
+    itinerary_field = request.args.get('field')
+    data = airdb.update_itinerary(i_id, itinerary_field, new_value)
+
+    return data
+
+# test add flight
+@app.route('/flight/new')
+def add_flight():
+    data = airdb.add_flight(request.args.get('aircraft'),
+                             request.args.get('distance'),
+                             request.args.get('dtime'),
+                             request.args.get('atime'),
+                             request.args.get('dairport'),
+                             request.args.get('aairport'),
+                             request.args.get('dgate'),
+                             request.args.get('agate'),
+                             request.args.get('status'))
+
+    return data
+
+# test update flight
+@app.route('/flight/update')
+def update_flight():
+    f_id = request.args.get('id')
+    new_value = request.args.get('new')
+    flight_field=request.args.get('field')
+    data = airdb.update_flight(f_id, flight_field, new_value)
+
+    return data
 
 # Add airport route
 @app.route('/airport/new')
@@ -148,13 +215,6 @@ def update_airport():
 
     return data
 
-# Get gates of airport route
-@app.route('/gate/getOfAirport')
-def get_gates_of_airport():
-    apid = request.args.get('id')
-    data = airdb.get_gates_of_airport(apid)
-
-    return data
 
 # Delete a gate route
 @app.route('/gate/delete')
