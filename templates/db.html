@@ -9,20 +9,40 @@
  	<h1>You are logged in as {{ type }}</h1>
  	{% if data %}
 	<h2>Showing {{ type }} view</h2>
-	<table>
-		<tr>
-			<td>Airport</td>
-			<td>City</td>
-			<td>Country</td>
-		</tr>
-	{% for row in data %}
-		<tr>
-			<td>{{ row['ID'] }}</td>
-			<td>{{ row['City'] }}</td>
-			<td>{{ row['Country'] }}</td>
-		</tr>
-	{% endfor %}
-	</table>
+		{% if type == 'admin' %}
+		<table>
+			<tr>
+				<th>Airport</th>
+				<th>City</th>
+				<th>Country</th>
+			</tr>
+		{% for row in data %}
+			<tr>
+				<td>{{ row['airport_id'] }}</td>
+				<td>{{ row['city'] }}</td>
+				<td>{{ row['country'] }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		{% endif %}
+		{% if type == 'user' %}
+		<table>
+			<tr>
+				<th>Itinerary #</th>
+				<th>Seat Type</th>
+				<th>Seat Cost</th>
+				<th>Status</th>
+			</tr>
+		{% for row in data %}
+			<tr>
+				<td>{{ row['itinerary_id'] }}</td>
+				<td>{{ row['seattype'] }}</td>
+				<td>{{ row['seatcost'] }}</td>
+				<td>{{ row['status'] }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		{% endif %}
  	{% endif %}
 {% else %}
 	<h1>403 FORBIDDEN</h1>
