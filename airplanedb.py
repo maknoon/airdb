@@ -668,6 +668,9 @@ class AirplaneDb(object):
                            SET %s = %.2f
                            WHERE I_ID = %s """ % (itinerary_field, float(new_value), itinerary_id)
         else: return;
+        update_itinerary_query = """UPDATE ITINERARY
+                           SET %s = '%s'
+                           WHERE I_ID = %s """ % (itinerary_field, new_value, itinerary_id)
         cursor = db.cursor()
         try:
             cursor.execute(update_itinerary_query)
@@ -718,6 +721,7 @@ class AirplaneDb(object):
                              user=self.user, 
                              passwd=self.pw, 
                              db=self.db)
+
         if (flight_field == 'AC_ID' or flight_field == 'F_DISTANCE'):
 			update_flight_query = """UPDATE FLIGHT
                            SET %s = %.2f
@@ -730,6 +734,9 @@ class AirplaneDb(object):
             update_flight_query = """UPDATE FLIGHT
                            SET %s = '%s'
                            WHERE F_ID = %s """ % (flight_field, new_value, flight_id)
+        update_flight_query = """UPDATE FLIGHT
+                                 SET %s = '%s'
+                                 WHERE F_ID = %s """ % (flight_field, new_value, flight_id)
         cursor = db.cursor()
         try:
             cursor.execute(update_flight_query)
