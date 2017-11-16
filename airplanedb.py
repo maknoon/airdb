@@ -911,13 +911,19 @@ class AirplaneDb(object):
             cursor.execute(get_airport_query)
             if ap_id is None:
                 airports = cursor.fetchall()
+                for airport in airports:
+                    ap_object = {
+                        'airport_id': airport[0],
+                        'city': airport[1],
+                        'country': airport[2]
+                    }
+                    dataList.append(ap_object)
             else:
                 airports = cursor.fetchone()
-            for airport in airports:
                 ap_object = {
-                    'airport_id': airport[0],
-                    'city': airport[1],
-                    'country': airport[2]
+                    'airport_id': airports[0],
+                    'city': airports[1],
+                    'country': airports[2]
                 }
                 dataList.append(ap_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -998,8 +1004,8 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        update_airport_query = """UPDATE AIRPORT 
-                                SET %s = %s 
+        update_airport_query = """UPDATE AIRPORT
+                                SET %s = '%s'
                                 WHERE AP_ID = '%s'""" % (field, new_value, ap_id)
         cursor = db.cursor()
         try:
