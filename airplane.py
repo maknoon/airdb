@@ -47,10 +47,6 @@ def logout():
     session['type'] = 'none'
     return index()
 
-@app.route('/test/<name>')
-def test_name(name):
-    return 'Welcome, {}!'.format(name)
-
 
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
@@ -114,19 +110,19 @@ def customer_route():
     return res_body
 
 # test add new frequent flier
-@app.route('/ff')
+@app.route('/ff/new')
 def add_frequent_flier():
-    airdb.add_frequent_flier(request.args.get('id'))
+    data = airdb.add_frequent_flier(request.args.get('id'))
 
-    return 'WELCOME TO THE FREQUENT FLIER CLUB'
+    return data
 
 # test add baggage
-@app.route('/baggage')
+@app.route('/baggage/new')
 def add_baggage():
-    airdb.add_baggage(request.args.get('id'),
+    data = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
-    return 'ADDED BAGGAGE'
+    return data
 
 # @app.route('/ffupdate')
 # def update_frequent_flier():

@@ -2,6 +2,7 @@
 import MySQLdb
 from datetime import datetime
 from flask import jsonify
+import json
 
 
 class AirplaneDb(object):
@@ -474,6 +475,7 @@ class AirplaneDb(object):
 #==============================================================================
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
+#   return: added baggage json object
 #==============================================================================
     def add_baggage(self, cust_id, bag_weight):
         db = MySQLdb.connect(host=self.host,
@@ -487,16 +489,25 @@ class AirplaneDb(object):
         try:
             cursor.execute(add_baggage_query)
             db.commit()
-            print("Add Baggage Success")
-        except:
-            print("Add Baggage Failed")
+            baggage = {
+                'B_ID': cursor.lastrowid,
+                'C_ID': cust_id,
+                'B_WEIGHT': float(bag_weight)
+            }
+            data = json.dumps(baggage, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Add Baggage Failed with error: {0}").format(e)
             db.rollback()
+            print(data)
 
+        cursor.close()
         db.close()
+        return data
 
 #==============================================================================
 #   function: get_customer
 #   description: returns an instance of customer based on cust_id
+#   return: customer json object
 #==============================================================================
     def get_customer(self, cust_id):
         db = MySQLdb.connect(host=self.host,
@@ -509,22 +520,28 @@ class AirplaneDb(object):
         cursor = db.cursor()
         try:
             cursor.execute(get_customer_query)
-            data = cursor.fetchone()
-            print('Get Customer Success')
-            print('C_ID: {0} | C_NAME: {1} | C_AGE: {2} | \
-                   C_EMAIL: {3} | U_PHONE: {4}'.format(data[0], data[1], data[2], data[3], data[4]))
-            db.close()
+            customer = cursor.fetchone()
+            c_object = {
+                'C_ID': customer[0],
+                'C_NAME': customer[1],
+                'C_AGE': customer[2],
+                'C_EMAIL': customer[3],
+                'C_PHONE': customer[4]
+            }
+            data = json.dumps(c_object, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Customer Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
 
-            return data
-        except:
-            print('Get Customer Failed')
-            db.close()
-
-            return 0
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
+#   return: added customer JSON object
 #==============================================================================
     def add_customer(self, cust_name, cust_age, cust_email, cust_phone):
         db = MySQLdb.connect(host=self.host,
@@ -536,20 +553,25 @@ class AirplaneDb(object):
                                 VALUES('%s',%d,'%s','%s')""" % (cust_name, int(cust_age),
                                 cust_email, cust_phone)
         cursor = db.cursor()
-        inserted = 0
         try:
             cursor.execute(add_customer_query)
             db.commit()
-            print("Add Customer Success")
-            inserted = cursor.lastrowid
-        except:
-            print("Add Customer Failed")
+            customer = {
+                'C_ID': cursor.lastrowid,
+                'C_NAME': cust_name,
+                'C_AGE': int(cust_age),
+                'C_EMAIL': cust_email,
+                'C_PHONE': cust_phone
+            }
+            data = json.dumps(customer, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Add Customer Failed with error: {0}").format(e)
             db.rollback()
+            print(data)
 
+        cursor.close()
         db.close()
-
-        # return the customer ID that was inserted
-        return inserted
+        return data
 
 #==============================================================================
 #   function: update_customer
@@ -583,6 +605,7 @@ class AirplaneDb(object):
 #==============================================================================
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
+#   return: added frequent flier json object
 #==============================================================================
     def add_frequent_flier(self, cust_id):
         db = MySQLdb.connect(host=self.host,
@@ -597,12 +620,19 @@ class AirplaneDb(object):
         try:
             cursor.execute(add_ff_query)
             db.commit()
-            print(('Created new {0}: {1}').format('FREQUENTFLIER', cust_id))
-        except:
-            print("Add Frequent Flier Failed")
+            newff = {
+                'C_ID': cust_id,
+                'FF_MILES': 0.0,
+            }
+            data = json.dumps(newff, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Add Frequent Flier Failed with error: {0}").format(e)
             db.rollback()
+            print(data)
 
+        cursor.close()
         db.close()
+        return data
 
 #==============================================================================
 #   function: update_frequent_flier
@@ -693,7 +723,7 @@ class AirplaneDb(object):
         try:
             cursor.execute(add_airport_query)
             db.commit()
-            data = jsonify(airport=airport)
+            data = json.dumps(airport, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Add Airport Failed with error: {0}").format(e)
             db.rollback()
@@ -720,7 +750,7 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_airport_query)
             db.commit()
-            data = jsonify(deleted_airport_id)
+            data = json.dumps(deleted_airport_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Airport Failed with error: {0}").format(e)
             print(data)
@@ -782,7 +812,7 @@ class AirplaneDb(object):
                     'AP_ID': g[1]
                  }
                  dataList.append(gate)
-             data = jsonify(gates=dataList)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Get Airport Failed with error: {0}").format(e)
              db.rollback()
@@ -811,7 +841,7 @@ class AirplaneDb(object):
          try:
              cursor.execute(delete_gate_query)
              db.commit()
-             data = jsonify(deleted_gate)
+             data = json.dumps(deleted_gate, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Delete Gate Failed with error: {0}").format(e)
              print(data)
@@ -847,7 +877,7 @@ class AirplaneDb(object):
                     'F_ID': s[1]
                  }
                  dataList.append(schedule)
-             data = jsonify(schedules=dataList)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Get Schedules Failed with error: {0}").format(e)
              db.rollback()
@@ -877,7 +907,7 @@ class AirplaneDb(object):
          try:
              cursor.execute(add_schedule_query)
              db.commit()
-             data = jsonify(added_schedule)
+             data = json.dumps(added_schedule, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Add Schedule Failed with error: {0}").format(e)
              print(data)
@@ -907,7 +937,7 @@ class AirplaneDb(object):
          try:
              cursor.execute(delete_schedule_query)
              db.commit()
-             data = jsonify(deleted_schedule)
+             data = json.dumps(deleted_schedule, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Delete Schedule Failed with error: {0}").format(e)
              print(data)
