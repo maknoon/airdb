@@ -1,52 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>welcome to AIRDB</title>
-	<link rel="stylesheet" type="text/css" href="../static/style.css" />
+    <title>welcome to AIRDB</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css" />
 </head>
 <body>
 {% if type %}
- 	<h1>You are logged in as {{ type }}</h1>
- 	{% if data %}
-	<h2>Showing {{ type }} view</h2>
-		{% if type == 'admin' %}
-		<table>
-			<tr>
-				<th>Airport</th>
-				<th>City</th>
-				<th>Country</th>
-			</tr>
-		{% for row in data %}
-			<tr>
-				<td>{{ row['airport_id'] }}</td>
-				<td>{{ row['city'] }}</td>
-				<td>{{ row['country'] }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-		{% endif %}
-		{% if type == 'user' %}
-		<table>
-			<tr>
-				<th>Itinerary #</th>
-				<th>Seat Type</th>
-				<th>Seat Cost</th>
-				<th>Status</th>
-			</tr>
-		{% for row in data %}
-			<tr>
-				<td>{{ row['itinerary_id'] }}</td>
-				<td>{{ row['seattype'] }}</td>
-				<td>{{ row['seatcost'] }}</td>
-				<td>{{ row['status'] }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-		{% endif %}
- 	{% endif %}
+    <h1>You are logged in as {{ type }}</h1>
+    {% if data %}
+    <h2>Showing {{ type }} view</h2>
+        {% if type == 'admin' %}
+        <table>
+            <tr>
+                <th>Airport</th>
+                <th>City</th>
+                <th>Country</th>
+            </tr>
+        {% for row in data %}
+            <tr>
+                <td>{{ row['airport_id'] }}</td>
+                <td>{{ row['city'] }}</td>
+                <td>{{ row['country'] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+        {% if type == 'user' %}
+        <table>
+            <tr>
+                <th>Itinerary #</th>
+                <th>Seat Type</th>
+                <th>Seat Cost</th>
+                <th>Status</th>
+            </tr>
+        {% for row in data %}
+            <tr>
+                <td>{{ row['itinerary_id'] }}</td>
+                <td>{{ row['seattype'] }}</td>
+                <td>{{ row['seatcost'] }}</td>
+                <td>{{ row['status'] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+    {% endif %}
 {% else %}
-	<h1>403 FORBIDDEN</h1>
-	<p>Please login!</p>
+    <h1>403 FORBIDDEN</h1>
+    <p>Please login!</p>
 {% endif %}
 </body>
 </html>

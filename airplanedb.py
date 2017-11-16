@@ -476,7 +476,6 @@ class AirplaneDb(object):
         db.close()
         return 0
 
-
 #==============================================================================
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
@@ -846,7 +845,6 @@ class AirplaneDb(object):
         db.close()
         return data
 
-
 #==============================================================================
 #   function: update_flight
 #   description: update fields in FLIGHT given flight ID
@@ -889,6 +887,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+
 #==============================================================================
 #   function: get_airport
 #   description: get all the airports

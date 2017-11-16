@@ -136,9 +136,10 @@ def ff_route():
 
     if (request.method == 'POST'):
         res_body = airdb.add_frequent_flier(ff_id)
-    # elif (request.method == 'PATCH'):
-    #     miles = request.get_json()['miles']
-    #     res_body = airdb.update_frequent_flier(ff_id, miles)
+    elif (request.method == 'PATCH'):
+        miles = request.get_json()['miles']
+        res_body = airdb.update_frequent_flier(ff_id, miles)
+
     return res_body
 
 # =========
