@@ -652,21 +652,20 @@ class AirplaneDb(object):
             cursor.execute(get_airport_query)
             if ap_id is None:
                 airports = cursor.fetchall()
+                for airport in airports:
+                    ap_object = {
+                        'ID': airport[0],
+                        'City': airport[1],
+                        'Country': airport[2]
+                    }
+                    dataList.append(ap_object)
+                data = jsonify(airport=dataList)
             else:
-                airports = cursor.fetchone()
-
-            for airport in airports:
-                ap_object = {
-                    'ID': airport[0],
-                    'City': airport[1],
-                    'Country': airport[2]
-                }
-                dataList.append(ap_object)
-            data = jsonify(airport=dataList)
+                data = cursor.fetchone()
         except Exception as e:
-            data = ("Get Airport Failed with error: {0}").format(e)
+            print("Get Airport Failed with error: {0}").format(e)
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -735,39 +734,19 @@ class AirplaneDb(object):
  #   function: update_airport
  #   description: update an airport instance to the AIRPORT table
  #==============================================================================
-    def update_airport(self, ap_id, city, country, new_city, new_country):
+    def update_airport(self, ap_id, field, new_value):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-
-
-        if new_city is None:
-            cityString = ("AP_CITY = '{0}'").format(city)
-            ap_city = city
-        else:
-            cityString = ("AP_CITY = '{0}'").format(new_city)
-            ap_city = new_city
-
-        if new_country is None:
-            countryString = ("AP_COUNTRY = '{0}'").format(country)
-            ap_country = country
-        else:
-            countryString = ("AP_COUNTRY = '{0}'").format(new_country)
-            ap_country = new_country
-
-        update_string = "SET " + cityString + ", " + countryString
-        update_airport_query = """UPDATE AIRPORT %s WHERE AP_ID = '%s'""" % (update_string, ap_id)
-        airport = {
-            'ID': ap_id,
-            'City': ap_city,
-            'Country': ap_country
-        }
+        update_airport_query = """UPDATE AIRPORT 
+                                SET %s = %s 
+                                WHERE AP_ID = '%s'""" % (field, new_value, ap_id)
         cursor = db.cursor()
         try:
             cursor.execute(update_airport_query)
             db.commit()
-            data = jsonify(airport=airport)
+            data = ("Update Airport succeeded")
         except Exception as e:
             data = ("Update Airport Failed with error: {0}").format(e)
             print(data)

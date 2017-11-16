@@ -63,7 +63,7 @@ def reset():
     airdb.populate_db()
     return 'DB HAS BEEN RESET AND POPULATED'
 
-# handle customer request
+# Handle customer endpoint
 @app.route('/customer', methods=['POST','PATCH','GET'])
 def customer_route():
     cust_id = request.args.get('id')
@@ -136,39 +136,50 @@ def add_baggage():
 
 #     return 'ADDED %s MILES TO ACCOUNT' % miles
 
-# Add airport route
-@app.route('/airport/newairport')
-def add_airport():
-    msg = airdb.add_airport(request.args.get('id'),
-        request.args.get('city'), request.args.get('country'))
-
-    return msg
-
-# Add airport route
-@app.route('/airport/getairport')
-def get_airport():
+# Handle airport endpoint
+@app.route('/airport', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+def airport_route():
     apid = request.args.get('id')
-    data = airdb.get_airport(apid)
 
-    return data
+    # fetch a airport by id
+    if request.method == 'GET':
+        airport = airdb.get_airport(apid)
+        if airport == 0: abort(404)
+        else:
+            airport_json = {'id':apid,'city':airport[1],
+                            'country':airport[2]}
+            res_body = json.dumps(airport_json, indent=4, separators=(',', ': '))
 
-# Add airport route
-@app.route('/airport/delete')
-def delete_airport():
-    apid = request.args.get('id')
-    data = airdb.delete_airport(apid)
+    # add a new airport
+    elif request.method == 'POST':
+        req_body = request.get_json()
+        apid = req_body['id']
+        res_body = airdb.add_airport(apid, req_body['city'], req_body['country'])
 
-    return data
+    # update an airport
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        airport = airdb.get_airport(apid)
+    
+        if airport == 0: abort(404)
+        else:
+            if 'country' in req_body:
+                newcountry = '"{}"'.format(req_body['country'])
+                airdb.update_airport(apid, 'AP_COUNTRY', newcountry)
+            if 'city' in req_body:
+                newcity = '"{}"'.format(req_body['city'])
+                airdb.update_airport(apid, 'AP_CITY', newcity)
+            airport = airdb.get_airport(apid)
+            airport_json = {'id':apid,'city':airport[1],
+                            'country':airport[2]}
+            res_body = json.dumps(airport_json, indent=4, separators=(',', ': '))
 
-# Add airport route
-@app.route('/airport/update')
-def update_airport():
-    apid = request.args.get('id')
-    data = airdb.update_airport(apid, request.args.get('city'),
-         request.args.get('country'), request.args.get('newcity'),
-         request.args.get('newcountry'))
+    # delete an airport
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_airport(apid)
 
-    return data
+    return res_body
+
 
 # Get gates of airport route
 @app.route('/gate/getOfAirport')
