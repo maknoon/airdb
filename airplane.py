@@ -78,27 +78,21 @@ def customer_route():
 
     # fetch a customer by id
     if request.method == 'GET':
-        customer = airdb.get_customer(cust_id)
-        if customer == 0: abort(404)
-        else:
-            customer_json = {'id':cust_id,'name':customer[1],'age':customer[2],
-                        'email':customer[3],'phone':customer[4]};
-            res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
+        res_body = airdb.get_customer(cust_id)
+        if res_body == 0: abort(404)
 
     # add a new customer
     elif request.method == 'POST':
         req_body = request.get_json()
         cust_name = req_body['name']
-        added = airdb.add_customer(cust_name, req_body['age'], req_body['email'],
+        res_body = airdb.add_customer(cust_name, req_body['age'], req_body['email'],
             req_body['phone'])
-
-        res_body = 'ADDED NEW CUSTOMER {0} WITH ID {1}'.format(cust_name, added)
 
     # update a customer
     elif request.method == 'PATCH':
         req_body = request.get_json()
         customer = airdb.get_customer(cust_id)
-    
+
         if customer == 0: abort(404)
         else:
             if 'phone' in req_body:
@@ -110,10 +104,7 @@ def customer_route():
             if 'name' in req_body:
                 airdb.update_customer(cust_id, 'C_NAME', wrapper(req_body['name']))
 
-            customer = airdb.get_customer(cust_id)
-            customer_json = {'id':cust_id,'name':customer[1],'age':customer[2],
-                        'email':customer[3],'phone':customer[4]};
-            res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
+            res_body = airdb.get_customer(cust_id)
 
     return res_body
 
@@ -122,10 +113,10 @@ def customer_route():
 # =========
 @app.route('/baggage')
 def baggage_route():
-    data = airdb.add_baggage(request.args.get('id'),
+    res_body = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
-    return data
+    return res_body
 
 # =========
 # /FF
@@ -154,7 +145,7 @@ def itinerary_route():
                                         req_body['seatcost'],
                                         req_body['status'],
                                         req_body['customer_id'])
-    
+
     elif request.method == 'GET':
         cust_id = request.args.get('id')
         res_body = airdb.get_itinerary(cust_id)
@@ -223,12 +214,8 @@ def airport_route():
 
     # fetch a airport by id
     if request.method == 'GET':
-        airport = airdb.get_airport(apid)
-        if airport == 0: abort(404)
-        else:
-            airport_json = {'airport_id':apid,'city':airport[1],
-                            'country':airport[2]}
-            res_body = json.dumps(airport_json, indent=4, separators=(',', ': '))
+        res_body = airdb.get_airport(apid)
+        if res_body == 0: abort(404)
 
     # add a new airport
     elif request.method == 'POST':
@@ -240,7 +227,7 @@ def airport_route():
     elif request.method == 'PATCH':
         req_body = request.get_json()
         airport = airdb.get_airport(apid)
-    
+
         if airport == 0: abort(404)
         else:
             if 'country' in req_body:
