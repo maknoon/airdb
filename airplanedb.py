@@ -1066,6 +1066,301 @@ class AirplaneDb(object):
          db.close()
          return data
 
+
+#==============================================================================
+#   function: add_aircraft
+#   description: add an aircraft instance to table AIRCRAFT
+#==============================================================================
+    def add_aircraft(self, status, make, mileage, datecreated, lastmaintained, economy,
+                    business, firstclass, airport):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        add_aircraft_query = """INSERT INTO AIRCRAFT(AC_STATUS, AC_MAKE, AC_MILEAGE,
+                                AC_DATE_CREATED, AC_LAST_MAINTAINED, AC_NUM_ECONOMY,
+                                AC_NUM_BUSINESS, AC_NUM_FIRSTCLASS, AP_ID)
+                                VALUES ('%s', '%s', %.2f, '%s', '%s', %d, %d, %d, '%s')""" % (
+                                status, make, float(mileage), datecreated, lastmaintained,
+                                int(economy), int(business), int(firstclass), airport)
+
+        cursor = db.cursor()
+        aircraft = {
+            'ID': str(cursor.lastrowid),
+            'Status': status,
+            'Make': make,
+            'Mileage': mileage,
+            'Date Created': datecreated,
+            'Last Maintained': lastmaintained,
+            'Number of Economy': economy,
+            'Number of Business': business,
+            'Number of First Class': firstclass,
+            'Airport ID': airport
+        }
+        try:
+            cursor.execute(add_aircraft_query)
+            db.commit()
+            data = json.dumps(aircraft, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Add Aircraft Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_aircraft
+#   description: get all the aircrafts with specificed aircraft_id in
+#       table AIRCRAFT
+#   returns: the list of all aircrafts if there are no specified aircraft_id
+#        or: the aircraft where aircraft_id matches the inputted aircraft_id
+#==============================================================================
+    def get_aircraft(self, ac_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if ac_id is None:
+            get_aircraft_query = """SELECT * FROM AIRCRAFT"""
+        else:
+            get_aircraft_query = """SELECT * FROM AIRCRAFT WHERE AC_ID = %d""" % (int(ac_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_query)
+            if ac_id is None:
+                aircrafts = cursor.fetchall()
+            else:
+                aircrafts = cursor.fetchone()
+
+            for aircraft in aircrafts:
+                ac_object = {
+                    'ID': aircraft[0],
+                    'Status': aircraft[1],
+                    'Make': aircraft[2],
+                    'Mileage': aircraft[3],
+                    'Date Created': aircraft[4],
+                    'Last Maintained': aircraft[5],
+                    'Number of Economy': aircraft[6],
+                    'Number of Business': aircraft[7],
+                    'Number of First Class': aircraft[8],
+                    'Airport ID': aircraft[9]
+                }
+                dataList.append(ac_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Aircraft Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: update_aircraft
+#   description: update an aircraft's status in table AIRCRAFT
+#==============================================================================
+    def update_aircraft(self, ac_id, status, new_status):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+        if new_status is None:
+            update_string = ("SET AC_STATUS = '{0}'").format(status)
+            ac_status = status
+        else:
+            update_string = ("SET AC_STATUS = '{0}'").format(new_status)
+            ac_status = new_status
+
+        update_aircraft_query = """UPDATE AIRCRAFT %s WHERE AC_ID = %d""" % (update_string,
+                                                                            ac_id)
+        cursor = db.cursor()
+        try:
+            cursor.execute(update_aircraft_query)
+            aircraft = cursor.fetchone()
+            db.commit()
+            ac_object = {
+                'ID': aircraft[0],
+                'Status': aircraft[1],
+                'Make': aircraft[2],
+                'Mileage': aircraft[3],
+                'Date Created': aircraft[4],
+                'Last Maintained': aircraft[5],
+                'Number of Economy': aircraft[6],
+                'Number of Business': aircraft[7],
+                'Number of First Class': aircraft[8],
+                'Airport ID': aircraft[9]
+            }
+            data = json.dumps(ac_object, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Update Aircraft Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+
+#==============================================================================
+#   function: delete_aircraft
+#   description: delete an aircraft from table AIRCRAFT
+#==============================================================================
+    def delete_aircraft(self, ac_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        delete_aircraft_query = """DELETE FROM AIRCRAFT WHERE AC_ID = %d""" % (int (ac_id))
+        cursor = db.cursor()
+        deleted_aircraft_id = {
+            'ID': ac_id
+        }
+        try:
+            cursor.execute(delete_aircraft_query)
+            db.commit()
+            data = json.dumps(deleted_aircraft_id, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Delete Aircraft Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: add_employee
+#   description: add an employee instance to table EMPLOYEE
+#==============================================================================
+    def add_employee(self, hours, emp_type, wage):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
+                                VALUES (%.2f, '%s', %.2f)""" % (float(hours),
+                                emp_type, float(wage))
+
+        cursor = db.cursor()
+        employee = {
+            'ID': str(cursor.lastrowid),
+            'Hours': hours,
+            'Type': emp_type,
+            'Wage': wage
+        }
+        try:
+            cursor.execute(add_employee_query)
+            db.commit()
+            data = json.dumps(employee, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Add Employee Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_employee_for_flight
+#   description: get all the employees on a certain flight ID in table WORKSON
+#   returns: the list of all the employees with a specified flight ID
+#==============================================================================
+    def get_employee_for_flight(self, f_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if f_id is None:
+            return "Flight ID is NULL"
+        else:
+            get_employee_query = """SELECT E.E_ID
+                                    FROM EMPLOYEE E, WORKSON W WHERE
+                                    E.E_ID = W.E_ID AND W.F_ID = %d""" % (int(f_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_employee_query)
+            employees = cursor.fetchall()
+            for e in employees:
+                employee = {
+                    'ID': e
+                }
+                dataList.append(employee)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Employees Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_employee_for_flight
+#   description: get all the employees on a certain flight ID in table WORKSON
+#   returns: the list of all the employees with a specified flight ID
+#==============================================================================
+    def get_flight_for_employee(self, e_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if e_id is None:
+            return "Employee ID is NULL"
+        else:
+            get_flight_query = """SELECT F.F_ID
+                                    FROM FLIGHT F, WORKSON W WHERE
+                                    F.F_ID = W.F_ID AND W.E_ID = %d""" % (int(e_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for f in flights:
+                flight = {
+                    'ID': f
+                }
+                dataList.append(flight)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: delete_employee
+#   description: delete an employee from table EMPLOYEE
+#==============================================================================
+    def delete_employee(self, e_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        delete_employee_query = """DELETE FROM EMPLOYEE WHERE E_ID = %d""" % (int (e_id))
+        cursor = db.cursor()
+        deleted_employee_id = {
+            'ID': e_id
+        }
+        try:
+            cursor.execute(delete_employee_query)
+            db.commit()
+            data = json.dumps(deleted_employee_id, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Delete Employee Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
 #==============================================================================
 #   function: get_schedule_for_itinerary
 #   description: get all the schedules with itinerary ID
@@ -1101,6 +1396,65 @@ class AirplaneDb(object):
          cursor.close()
          db.close()
          return data
+
+#==============================================================================
+#   function: add_workson
+#   description: add an employee/flight pair instance to table workson
+#==============================================================================
+    def add_workson(self, e_id, f_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        add_workson_query = """INSERT INTO WORKSON VALUES (%d, %d)""" % (int(e_id),
+                                int(f_id))
+
+        cursor = db.cursor()
+        workson = {
+            'E_ID': e_id,
+            'F_ID': f_id
+        }
+        try:
+            cursor.execute(add_workson_query)
+            db.commit()
+            data = json.dumps(workson, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Add Workson Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: delete_workson
+#   description: delete a workson relation instance from table WORKSON
+#==============================================================================
+    def delete_workson(self, e_id, f_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        delete_workson_query = """DELETE FROM WORKSON WHERE E_ID = %d and
+                                F_ID = %d""" % (int (e_id), int (f_id))
+        cursor = db.cursor()
+        deleted_workson = {
+            'E_ID': e_id,
+            'F_ID': f_id
+        }
+        try:
+            cursor.execute(delete_workson_query)
+            db.commit()
+            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Delete Workson Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: add_schedule
