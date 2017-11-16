@@ -165,6 +165,40 @@ def delete_gate():
 
     return data
 
+# Add new aircraft to table AIRCRAFT
+@app.route('/aircraft/new')
+def add_aircraft():
+	data = airdb.add_aircraft(request.args.get('status'), request.args.get('make'),
+		request.args.get('mileage'), request.args.get('datecreated'), 
+		request.args.get('lastmaintained'), request.args.get('economy'),
+	 	request.args.get('business'), request.args.get('firstclass'),
+	 	request.args.get('airportid'))
+
+	return data
+
+# Get aircrafts with specified aircraft_id in table AIRCRAFT
+@app.route('/aircraft/get') 
+def get_aircraft():
+	data = airdb.get_aircraft(request.args.get('id'). request.args.get('status'),
+		request.args.get('newstatus'))
+
+	return data
+
+# Update aircraft's status in table AIRCRAFT
+@app.route('/aircraft/update')
+def update_aircraft():
+	data = airdb.update_aircraft(request.args.get('id'),request.args.get('status'),
+		request.args.get('newstatus'))
+
+	return data
+
+# Delete aircraft in table AIRCRAFT
+@app.route('/aircraft/delete')
+def delete_aircraft():
+	data = airdb.delete_aircraft(request.args.get('id'))
+
+	return data
+
 # Get schedule of ITINERARY
 @app.route('/schedule/getForItinerary')
 def get_schedule_for_itinerary():
