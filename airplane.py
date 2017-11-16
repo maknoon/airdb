@@ -267,7 +267,7 @@ def add_employee():
     return data
 
 # Get employees with specified flight_ID in table WORKSON
-@app.route('/employee/getemployeeforflight')
+@app.route('/flight/getemployeeforflight')
 def get_employee_for_flight():
 	data = airdb.get_employee_for_flight(request.args.get('f_id'))
 
