@@ -216,7 +216,7 @@ def airport_route():
     # fetch a airport by id
     if request.method == 'GET':
         res_body = airdb.get_airport(apid)
-        if airport == 0: abort(404)
+        if res_body == 0: abort(404)
 
     # add a new airport
     elif request.method == 'POST':
