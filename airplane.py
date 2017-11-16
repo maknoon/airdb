@@ -1,5 +1,5 @@
 #!~/usr/bin/python
-from flask import Flask, flash, request, render_template, session
+from flask import Flask, abort, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
@@ -63,40 +63,55 @@ def reset():
     airdb.populate_db()
     return 'DB HAS BEEN RESET AND POPULATED'
 
-# test create new customer
-@app.route('/customer')
-def add_customer():
-    cust_name = request.args.get('name')
-    added = airdb.add_customer(cust_name,
-        request.args.get('age'), request.args.get('email'),
-        request.args.get('phone'))
+# handle customer request
+@app.route('/customer', methods=['POST','PATCH','GET'])
+def customer_route():
+    cust_id = request.args.get('id')
 
-    return 'ADDED NEW CUSTOMER %s WITH ID %d' % (cust_name, added)
+    # fetch a customer by id
+    if request.method == 'GET':
+        customer = airdb.get_customer(cust_id)
+        if customer == 0: abort(404)
+        else:
+            customer_json = {'id':cust_id,'name':customer[1],'age':customer[2],
+                        'email':customer[3],'phone':customer[4]};
+            res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
 
-# test update customer
-# @app.route('/customerupdate')
-# def update_customer():
-#     req_body = request.get_json()
-#     cust_id = request.args.get('id')
-#     customer = airdb.get_customer(cust_id)
-#     if (customer == 0): abort(404)
-#     else:
-#         if "phone" in req_body:
-#             newphone = req_body["phone"]
-#             airdb.update_customer(cust_id, 'C_PHONE', newphone)
-#         if "email" in req_body:
-#             newemail = req_body["email"]
-#             airdb.update_customer(cust_id, 'C_EMAIL', newemail)
-#         if "name" in req_body:
-#             newname = req_body["name"]
-#             airdb.update_customer(cust_id, 'C_NAME', newname)
-#     customer = airdb.update_customer(cust_id)
-#     customer_json = {"id":user[0],"name":user[1],"age":user[2],
-#                     "email":user[3],"phone_number":user[4]}
-#     res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
+    # add a new customer
+    elif request.method == 'POST':
+        req_body = request.get_json()
+        cust_name = req_body['name']
+        added = airdb.add_customer(cust_name, req_body['age'], req_body['email'],
+            req_body['phone'])
 
-#     return res_body
+        res_body = 'ADDED NEW CUSTOMER {0} WITH ID {1}'.format(cust_name, added)
 
+    # update a customer
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        customer = airdb.get_customer(cust_id)
+    
+        if customer == 0: abort(404)
+        else:
+            if 'phone' in req_body:
+                newphone = '"{}"'.format(req_body['phone'])
+                airdb.update_customer(cust_id, 'C_PHONE', newphone)
+            if 'email' in req_body:
+                newemail = '"{}"'.format(req_body['email'])
+                airdb.update_customer(cust_id, 'C_EMAIL', newemail)
+            if 'age' in req_body:
+                newage = req_body['age']
+                airdb.update_customer(cust_id, 'C_AGE', newage)
+            if 'name' in req_body:
+                newname = '"{}"'.format(req_body['name'])
+                airdb.update_customer(cust_id, 'C_NAME', newname)
+
+            customer = airdb.get_customer(cust_id)
+            customer_json = {'id':cust_id,'name':customer[1],'age':customer[2],
+                        'email':customer[3],'phone':customer[4]};
+            res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
+
+    return res_body
 
 # test add new frequent flier
 @app.route('/ff')

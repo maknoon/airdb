@@ -552,6 +552,35 @@ class AirplaneDb(object):
         return inserted
 
 #==============================================================================
+#   function: update_customer
+#   description: update the customer information
+#==============================================================================
+    def update_customer(self, cust_id, cust_field, new_value):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        update_customer_query = """UPDATE CUSTOMER
+                                   SET %s = %s
+                                   WHERE C_ID = %s""" % (cust_field, new_value, cust_id)
+
+        cursor = db.cursor()
+        try:
+            cursor.execute(update_customer_query)
+            db.commit()
+            print('Update Customer Success')
+            print('C_ID: {0} | C_NAME: {1} | C_AGE: {2} | \
+                   C_EMAIL: {3} | U_PHONE: {4}'.format(data[0], data[1], data[2], data[3], data[4]))
+            db.close()
+            return
+
+        except:
+            print('Update Customer Failed')
+            db.close()
+
+            return 0
+
+#==============================================================================
 #   function: add_frequent_flier
 #   description: adds a new frequent flier instance to FREQUENTFLIER table
 #==============================================================================
