@@ -169,7 +169,7 @@ def delete_gate():
 @app.route('/aircraft/new')
 def add_aircraft():
 	data = airdb.add_aircraft(request.args.get('status'), request.args.get('make'),
-		request.args.get('mileage'), request.args.get('datecreated'), 
+		request.args.get('mileage'), request.args.get('datecreated'),
 		request.args.get('lastmaintained'), request.args.get('economy'),
 	 	request.args.get('business'), request.args.get('firstclass'),
 	 	request.args.get('airportid'))
@@ -177,10 +177,9 @@ def add_aircraft():
 	return data
 
 # Get aircrafts with specified aircraft_id in table AIRCRAFT
-@app.route('/aircraft/get') 
+@app.route('/aircraft/get')
 def get_aircraft():
-	data = airdb.get_aircraft(request.args.get('id'). request.args.get('status'),
-		request.args.get('newstatus'))
+	data = airdb.get_aircraft(request.args.get('id'))
 
 	return data
 
@@ -199,11 +198,54 @@ def delete_aircraft():
 
 	return data
 
+# Add new employee to table EMPLOYEE
+@app.route('/employee/new')
+def add_employee():
+    data = airdb.add_employee(request.args.get('hours'), request.args.get('type'),
+        request.args.get('wage'))
+
+    return data
+
+# Get employees with specified flight_ID in table WORKSON
+@app.route('/employee/getemployeeforflight')
+def get_employee_for_flight():
+	data = airdb.get_employee_for_flight(request.args.get('f_id'))
+
+	return data
+
+# Get flights with specified employee_ID in table Workson
+@app.route('/employee/getflightforemployee')
+def get_flight_for_employee():
+	data = airdb.get_flight_for_employee(request.args.get('e_id'))
+
+	return data
+
+# Delete employee in table EMPLOYEE
+@app.route('/employee/delete')
+def delete_employee():
+	data = airdb.delete_employee(request.args.get('id'))
+
+	return data
+
 # Get schedule of ITINERARY
 @app.route('/schedule/getForItinerary')
 def get_schedule_for_itinerary():
     iid = request.args.get('id')
     data = airdb.get_schedule_for_itinerary(iid)
+
+    return data
+
+# Add a new workson relation to table WORKSON
+@app.route('/workson/new')
+def add_workson():
+    data = airdb.add_workson(request.args.get('e_id'), request.args.get('f_id'))
+
+    return data
+
+# Delete a workson relation in table Workson
+@app.route('/workson/delete')
+def delete_workson():
+    data = airdb.delete_workson(request.args.get('e_id'), request.args.get('f_id'))
 
     return data
 

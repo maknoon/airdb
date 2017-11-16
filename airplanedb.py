@@ -1008,6 +1008,135 @@ class AirplaneDb(object):
         db.close()
         return data
 
+#==============================================================================
+#   function: add_employee
+#   description: add an employee instance to table EMPLOYEE
+#==============================================================================
+    def add_employee(self, hours, emp_type, wage):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
+                                VALUES (%.2f, '%s', %.2f)""" % (float(hours),
+                                emp_type, float(wage))
+
+        cursor = db.cursor()
+        employee = {
+            'ID': str(cursor.lastrowid),
+            'Hours': hours,
+            'Type': emp_type,
+            'Wage': wage
+        }
+        try:
+            cursor.execute(add_employee_query)
+            db.commit()
+            data = json.dumps(employee, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Add Employee Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_employee_for_flight
+#   description: get all the employees on a certain flight ID in table WORKSON
+#   returns: the list of all the employees with a specified flight ID
+#==============================================================================
+    def get_employee_for_flight(self, f_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if f_id is None:
+            return "Flight ID is NULL"
+        else:
+            get_employee_query = """SELECT E.E_ID
+                                    FROM EMPLOYEE E, WORKSON W WHERE
+                                    E.E_ID = W.E_ID AND W.F_ID = %d""" % (int(f_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_employee_query)
+            employees = cursor.fetchall()
+            for e in employees:
+                employee = {
+                    'ID': e
+                }
+                dataList.append(employee)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Employees Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_employee_for_flight
+#   description: get all the employees on a certain flight ID in table WORKSON
+#   returns: the list of all the employees with a specified flight ID
+#==============================================================================
+    def get_flight_for_employee(self, e_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if e_id is None:
+            return "Employee ID is NULL"
+        else:
+            get_flight_query = """SELECT F.F_ID
+                                    FROM FLIGHT F, WORKSON W WHERE
+                                    F.F_ID = W.F_ID AND W.E_ID = %d""" % (int(e_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for f in flights:
+                flight = {
+                    'ID': f
+                }
+                dataList.append(flight)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: delete_employee
+#   description: delete an employee from table EMPLOYEE
+#==============================================================================
+    def delete_employee(self, e_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        delete_employee_query = """DELETE FROM EMPLOYEE WHERE E_ID = %d""" % (int (e_id))
+        cursor = db.cursor()
+        deleted_employee_id = {
+            'ID': e_id
+        }
+        try:
+            cursor.execute(delete_employee_query)
+            db.commit()
+            data = json.dumps(deleted_employee_id, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Delete Employee Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: get_schedule_for_itinerary
@@ -1044,6 +1173,65 @@ class AirplaneDb(object):
          cursor.close()
          db.close()
          return data
+
+#==============================================================================
+#   function: add_workson
+#   description: add an employee/flight pair instance to table workson
+#==============================================================================
+    def add_workson(self, e_id, f_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        add_workson_query = """INSERT INTO WORKSON VALUES (%d, %d)""" % (int(e_id),
+                                int(f_id))
+
+        cursor = db.cursor()
+        workson = {
+            'E_ID': e_id,
+            'F_ID': f_id
+        }
+        try:
+            cursor.execute(add_workson_query)
+            db.commit()
+            data = json.dumps(workson, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Add Workson Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: delete_workson
+#   description: delete a workson relation instance from table WORKSON
+#==============================================================================
+    def delete_workson(self, e_id, f_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        delete_workson_query = """DELETE FROM WORKSON WHERE E_ID = %d and
+                                F_ID = %d""" % (int (e_id), int (f_id))
+        cursor = db.cursor()
+        deleted_workson = {
+            'E_ID': e_id,
+            'F_ID': f_id
+        }
+        try:
+            cursor.execute(delete_workson_query)
+            db.commit()
+            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Delete Workson Failed with error: {0}'.format(err)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: add_schedule
