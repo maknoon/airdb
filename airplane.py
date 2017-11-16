@@ -1,14 +1,16 @@
 #!~/usr/bin/python
-from flask import Flask, request
+from flask import Flask, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
-import os
+import hashlib
 
 app = Flask(__name__)
+app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
 airdb = AirplaneDb(host=config.host,
                    user=config.dbusr,
                    pw=config.dbpwd,
                    db=config.dbname)
+
 
 # ---------------------------------------------------------
 # HOME
@@ -16,10 +18,31 @@ airdb = AirplaneDb(host=config.host,
 
 @app.route('/')
 def index():
-    return 'airdb'
+    if session.get('type') == 'user':
+        return 'Logged in as user!'
+    elif session.get('type') == 'admin':
+        return 'Logged in as admin!'
+    else:
+        return render_template('index.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.form['password'] == config.adminpwd and request.form['username'] == 'admin':
+        session['type'] = 'admin'
+    elif request.form['password'] == config.userpwd and request.form['username'] == 'user':
+        session['type'] = 'user'
+    else:
+        flash('wrong password!')
+    return index()
+
+@app.route('/logout')
+def logout():
+    session['type'] = 'none'
+    return index()
 
 @app.route('/test/<name>')
 def test_name(name):
+
     return 'Welcome, {}!'.format(name)
 
 
@@ -32,8 +55,8 @@ def test_name(name):
 def reset():
     airdb.reset_db()
     airdb.populate_db()
-    return 'DB HAS BEEN RESET AND POPULATED'
 
+    return 'DB HAS BEEN RESET AND POPULATED'
 
 # test create new customer
 @app.route('/customer')
@@ -44,6 +67,7 @@ def add_customer():
         request.args.get('phone'))
 
     return 'ADDED NEW CUSTOMER %s WITH ID %d' % (cust_name, added)
+
 
 # test update customer
 # @app.route('/customerupdate')
@@ -77,11 +101,11 @@ def add_frequent_flier():
 
     return 'WELCOME TO THE FREQUENT FLIER CLUB'
 
-
 # test add baggage
 @app.route('/baggage')
 def add_baggage():
     airdb.add_baggage(request.args.get('id'), request.args.get('weight'))
+
     return 'ADDED BAGGAGE'
 
 @app.route('/ffupdate')
@@ -89,62 +113,102 @@ def update_frequent_flier():
     cust_id = request.args.get('id')
     miles = request.args.get('miles')
     airdb.update_frequent_flier(cust_id, miles)  
+
     return 'ADDED %s MILES TO ACCOUNT' %(str(miles))
 
 # test add itinerary
 @app.route('/itinerary')
 def add_itinerary():
-    cust_ID = request.args.get('id')
+    cust_id = request.args.get('id')
     added = airdb.add_itinerary(request.args.get('seattype'),
                                 request.args.get('seatcost'),
-                                request.args.get('status'), cust_ID)
-    return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_ID))
+                                request.args.get('status'), cust_id)
+
+    return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_id))
 
 # test delete itinerary
 @app.route('/itinerarydelete')
 def delete_itinerary():
-	id = request.args.get('i_id')
-	airdb.delete_itinerary(id)
-	return 'DELETED ITINERARY %s' % (id)
+    id = request.args.get('i_id')
+    airdb.delete_itinerary(id)
+
+    return 'DELETED ITINERARY %s' % (id)
 
 # test update itinerary
 @app.route('/itineraryupdate')
 def update_itinerary():
-    id = request.args.get('i_id')
+    i_id = request.args.get('id')
     new_value = request.args.get('new')
     itinerary_field = request.args.get('field')
-    airdb.update_itinerary(id, itinerary_field, new_value)
-    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, id, new_value)
+    airdb.update_itinerary(i_id, itinerary_field, new_value)
+
+    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, i_id, new_value)
 
 # test add flight
 @app.route('/flight')
 def add_flight():
-	added = airdb.add_flight(request.args.get('aircraft'),
-	                         request.args.get('distance'),
-							 request.args.get('dtime'),
-							 request.args.get('atime'),
-							 request.args.get('dairport'),
-							 request.args.get('aairport'),
-							 request.args.get('dgate'),
-							 request.args.get('agate'),
-							 request.args.get('status'))
-	return 'ADDED NEW FLIGHT {0}'.format(added)
+    added = airdb.add_flight(request.args.get('aircraft'),
+                             request.args.get('distance'),
+                             request.args.get('dtime'),
+                             request.args.get('atime'),
+                             request.args.get('dairport'),
+                             request.args.get('aairport'),
+                             request.args.get('dgate'),
+                             request.args.get('agate'),
+                             request.args.get('status'))
+
+    return 'ADDED NEW FLIGHT {0}'.format(added)
 
 # test update flight
 @app.route('/flightupdate')
 def update_flight():
-    id = request.args.get('f_id')
+    f_id = request.args.get('id')
     new_value = request.args.get('new')
     flight_field=request.args.get('field')
-    airdb.update_flight(id, flight_field, new_value)
-    return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, id, new_value)
+    airdb.update_flight(f_id, flight_field, new_value)
+
+    return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, f_id, new_value)
+
+# Add airport route
+@app.route('/airport/newairport')
+def add_airport():
+    msg = airdb.add_airport(request.args.get('id'),
+        request.args.get('city'), request.args.get('country'))
+
+    return msg
+
+# Add airport route
+@app.route('/airport/getairport')
+def get_airport():
+    apid = request.args.get('id')
+    data = airdb.get_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/delete')
+def delete_airport():
+    apid = request.args.get('id')
+    data = airdb.delete_airport(apid)
+
+    return data
+
+# Add airport route
+@app.route('/airport/update')
+def update_airport():
+    apid = request.args.get('id')
+    data = airdb.update_airport(apid, request.args.get('city'),
+         request.args.get('country'), request.args.get('newcity'),
+         request.args.get('newcountry'))
+
+    return data
+
+
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
 
 if __name__ == '__main__':
     print('Connecting to db...{}'.format(config.dbname))
-    app.secret_key = os.urandom(12)
-    
-    app.run()
 
+    app.run()
