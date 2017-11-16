@@ -42,9 +42,6 @@ def logout():
 
     return 'airdb'
 
-=======
->>>>>>> Fixed requested changes
-
 @app.route('/test/<name>')
 def test_name(name):
 
@@ -63,6 +60,14 @@ def reset():
 
     return 'DB HAS BEEN RESET AND POPULATED'
 
+# test get new customer
+@app.route('/customer')
+def get_customer():
+    cust_id = request.args.get('id')
+    data = airdb.get_customer(cust_id)
+
+    return data
+
 # test create new customer
 @app.route('/customer/new')
 def add_customer():
@@ -72,8 +77,6 @@ def add_customer():
         request.args.get('phone'))
 
     return data
-
-
 
 # test update customer
 # @app.route('/customer/update')
@@ -115,49 +118,47 @@ def add_baggage():
 
     return data
 
-# @app.route('/ffupdate')
-# def update_frequent_flier():
-#     cust_id = request.args.get('id')
-#     miles = request.args.get('miles')
-#     airdb.update_frequent_flier(cust_id, miles)
+# update frequent flier miles route
+@app.route('/ff/update')
+def update_frequent_flier():
+    cust_id = request.args.get('id')
+    miles = request.args.get('miles')
+    data = airdb.update_frequent_flier(cust_id, miles)
 
-#     return 'ADDED %s MILES TO ACCOUNT' % miles
-
-    return 'ADDED %s MILES TO ACCOUNT' %(str(miles))
-
+    return data
 
 # test add itinerary
-@app.route('/itinerary')
+@app.route('/itinerary/new')
 def add_itinerary():
     cust_id = request.args.get('id')
-    added = airdb.add_itinerary(request.args.get('seattype'),
+    data = airdb.add_itinerary(request.args.get('seattype'),
                                 request.args.get('seatcost'),
                                 request.args.get('status'), cust_id)
 
-    return 'ADDED NEW ITINERARY %s FOR CUSTOMER %s' % (added, str(cust_id))
+    return data
 
 # test delete itinerary
-@app.route('/itinerarydelete')
+@app.route('/itinerary/delete')
 def delete_itinerary():
     id = request.args.get('i_id')
-    airdb.delete_itinerary(id)
+    data = airdb.delete_itinerary(id)
 
-    return 'DELETED ITINERARY %s' % (id)
+    return data
 
 # test update itinerary
-@app.route('/itineraryupdate')
+@app.route('/itinerary/update')
 def update_itinerary():
     i_id = request.args.get('id')
     new_value = request.args.get('new')
     itinerary_field = request.args.get('field')
-    airdb.update_itinerary(i_id, itinerary_field, new_value)
+    data = airdb.update_itinerary(i_id, itinerary_field, new_value)
 
-    return 'Updated {0} in ITINERARY {1} to {2}'.format(itinerary_field, i_id, new_value)
+    return data
 
 # test add flight
-@app.route('/flight')
+@app.route('/flight/new')
 def add_flight():
-    added = airdb.add_flight(request.args.get('aircraft'),
+    data = airdb.add_flight(request.args.get('aircraft'),
                              request.args.get('distance'),
                              request.args.get('dtime'),
                              request.args.get('atime'),
@@ -167,17 +168,17 @@ def add_flight():
                              request.args.get('agate'),
                              request.args.get('status'))
 
-    return 'ADDED NEW FLIGHT {0}'.format(added)
+    return data
 
 # test update flight
-@app.route('/flightupdate')
+@app.route('/flight/update')
 def update_flight():
     f_id = request.args.get('id')
     new_value = request.args.get('new')
     flight_field=request.args.get('field')
-    airdb.update_flight(f_id, flight_field, new_value)
+    data = airdb.update_flight(f_id, flight_field, new_value)
 
-    return 'Updated {0} in FLIGHT {1} to {2}'.format(flight_field, f_id, new_value)
+    return data
 
 # Add airport route
 @app.route('/airport/new')
