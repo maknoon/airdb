@@ -476,6 +476,7 @@ class AirplaneDb(object):
         db.close()
         return 0
 
+
 #==============================================================================
 #   function: add_baggage
 #   description: adds an instance of baggage to BAGGAGE table
