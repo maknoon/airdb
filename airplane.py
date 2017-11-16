@@ -24,10 +24,8 @@ def index():
 
     elif session.get('type') == 'admin':
         # get all airports
-        get_airports = json.loads(airdb.get_airport(None).get_data())
-        print(get_airports['airport'])
-        data_to_display = get_airports['airport']
-        return render_template('db.html', type='admin', data=data_to_display)
+        get_airports = json.loads(airdb.get_airport(None))
+        return render_template('db.html', type='admin', data=get_airports)
 
     else:
         return render_template('index.html')
@@ -111,7 +109,7 @@ def customer_route():
 
 # Test add baggage
 @app.route('/baggage')
-def add_baggage():
+def baggage_route():
     data = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
@@ -174,48 +172,43 @@ def airport_route():
 
     return res_body
 
-# Get gates of airport route
-@app.route('/gate/getOfAirport')
-def get_gates_of_airport():
-    apid = request.args.get('id')
-    data = airdb.get_gates_of_airport(apid)
-
-    return data
-
-# Delete a gate route
-@app.route('/gate/delete')
-def delete_gate():
+# Handle gate endpoint
+@app.route('/gate', methods=['GET', 'DELETE'])
+def gate_route():
     apid = request.args.get('ap_id')
-    gid = request.args.get('g_id')
-    data = airdb.delete_gate(apid, gid)
+    gid = request.arg.get('g_id')
 
-    return data
+    # Get gates of airport by airport id
+    if request.method == 'GET':
+        res_body = airdb.get_gates_of_airport(apid)
 
-# Get schedule of ITINERARY
-@app.route('/schedule/getForItinerary')
-def get_schedule_for_itinerary():
-    iid = request.args.get('id')
-    data = airdb.get_schedule_for_itinerary(iid)
+    # Delete gate from airport
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_gate(apid, gid)
 
-    return data
+    return res_body
 
-# Add a schedule route
-@app.route('/schedule/add')
-def add_schedule():
+# Handle schedule endpoint
+@app.route('/schedule', methods=['GET', 'POST', 'DELETE'])
+def schedule_route():
     iid = request.args.get('i_id')
     fid = request.args.get('f_id')
-    data = airdb.add_schedule(iid, fid)
 
-    return data
+    # Get schedule of itinerary
+    if request.method == 'GET':
+        res_body = airdb.get_schedule_for_itinerary(iid)
 
-# Delete a schedule route
-@app.route('/schedule/delete')
-def delete_schedule():
-    iid = request.args.get('i_id')
-    fid = request.args.get('f_id')
-    data = airdb.delete_schedule(iid, fid)
+    # Add schedule for itinerary
+    elif request.method == 'POST':
+        res_body.add_schedule(iid, fid)
 
-    return data
+    # Delete schedule by itinerary
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_schedule(iid, fid)
+
+    return res_body
+
+
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------

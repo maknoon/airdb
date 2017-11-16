@@ -682,16 +682,16 @@ class AirplaneDb(object):
             cursor.execute(get_airport_query)
             if ap_id is None:
                 airports = cursor.fetchall()
-                for airport in airports:
-                    ap_object = {
-                        'ID': airport[0],
-                        'City': airport[1],
-                        'Country': airport[2]
-                    }
-                    dataList.append(ap_object)
-                data = jsonify(airport=dataList)
             else:
-                data = cursor.fetchone()
+                airports = cursor.fetchone()
+            for airport in airports:
+                ap_object = {
+                    'ID': airport[0],
+                    'City': airport[1],
+                    'Country': airport[2]
+                }
+                dataList.append(ap_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             print("Get Airport Failed with error: {0}").format(e)
             db.rollback()
