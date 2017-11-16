@@ -1005,7 +1005,7 @@ class AirplaneDb(object):
                              passwd=self.pw,
                              db=self.db)
         update_airport_query = """UPDATE AIRPORT
-                                SET %s = '%s'
+                                SET %s = %s
                                 WHERE AP_ID = '%s'""" % (field, new_value, ap_id)
         cursor = db.cursor()
         try:
