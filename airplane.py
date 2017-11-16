@@ -212,3 +212,4 @@ if __name__ == '__main__':
     print('Connecting to db...{}'.format(config.dbname))
 
     app.run()
+
