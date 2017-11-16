@@ -109,28 +109,26 @@ def customer_route():
 
     return res_body
 
-# test add new frequent flier
-@app.route('/ff/new')
-def add_frequent_flier():
-    data = airdb.add_frequent_flier(request.args.get('id'))
-
-    return data
-
-# test add baggage
-@app.route('/baggage/new')
+# Test add baggage
+@app.route('/baggage')
 def add_baggage():
     data = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
     return data
 
-# @app.route('/ffupdate')
-# def update_frequent_flier():
-#     cust_id = request.args.get('id')
-#     miles = request.args.get('miles')
-#     airdb.update_frequent_flier(cust_id, miles)
+# Handle frequent fliers
+@app.route('/ff', methods=['POST']) #, 'PATCH'])
+def ff_route():
+    ff_id = request.args.get('id')
 
-#     return 'ADDED %s MILES TO ACCOUNT' % miles
+    if (request.method == 'POST'):
+        res_body = airdb.add_frequent_flier(ff_id)
+    # elif (request.method == 'PATCH'):
+    #     miles = request.get_json()['miles']
+    #     res_body = airdb.update_frequent_flier(ff_id, miles)
+
+    return res_body
 
 # Handle airport endpoint
 @app.route('/airport', methods=['POST', 'GET', 'PATCH', 'DELETE'])
@@ -175,7 +173,6 @@ def airport_route():
         res_body = airdb.delete_airport(apid)
 
     return res_body
-
 
 # Get gates of airport route
 @app.route('/gate/getOfAirport')
