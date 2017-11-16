@@ -130,16 +130,15 @@ def baggage_route():
 # =========
 # /FF
 # =========
-@app.route('/ff', methods=['POST']) #, 'PATCH'])
+@app.route('/ff', methods=['POST', 'PATCH'])
 def ff_route():
     ff_id = request.args.get('id')
 
     if (request.method == 'POST'):
         res_body = airdb.add_frequent_flier(ff_id)
     elif (request.method == 'PATCH'):
-        miles = request.get_json()['miles']
-        res_body = airdb.update_frequent_flier(ff_id, miles)
-
+        m = request.args.get('miles')
+        res_body = airdb.update_frequent_flier(ff_id, m)
     return res_body
 
 # =========
