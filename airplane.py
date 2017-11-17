@@ -216,16 +216,6 @@ def update_airport():
 
     return data
 
-
-# Delete a gate route
-@app.route('/gate/delete')
-def delete_gate():
-    apid = request.args.get('ap_id')
-    gid = request.args.get('g_id')
-    data = airdb.delete_gate(apid, gid)
-
-    return data
-
 # =========
 # /AIRCRAFT
 # =========
@@ -281,14 +271,6 @@ def employee_route():
 
     return res_body
 
-# Get schedule of ITINERARY
-@app.route('/schedule/getForItinerary')
-def get_schedule_for_itinerary():
-    iid = request.args.get('id')
-    data = airdb.get_schedule_for_itinerary(iid)
-
-    return data
-
 # =========
 # /WORKSON
 # =========
@@ -309,6 +291,7 @@ def workson_route():
             res_body = airdb.get_employee_for_flight(req_body['f_id'])
         elif 'e_id' in req_body:
             res_body = airdb.get_flight_for_employee(req_body['e_id'])
+        else res_body = airdb.get_workson()
         if res_body == 0: abort(404)
 
     # delete a workson relations
@@ -317,23 +300,6 @@ def workson_route():
 
     return res_body
 
-# Add a schedule route
-@app.route('/schedule/add')
-def add_schedule():
-    iid = request.args.get('i_id')
-    fid = request.args.get('f_id')
-    data = airdb.add_schedule(iid, fid)
-
-    return data
-
-# Delete a schedule route
-@app.route('/schedule/delete')
-def delete_schedule():
-    iid = request.args.get('i_id')
-    fid = request.args.get('f_id')
-    data = airdb.delete_schedule(iid, fid)
-
-    return data
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------

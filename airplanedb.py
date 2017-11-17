@@ -1091,16 +1091,16 @@ class AirplaneDb(object):
             cursor.execute(add_aircraft_query)
             db.commit()
             aircraft = {
-                'ID': cursor.lastrowid,
-                'Status': status,
-                'Make': make,
-                'Mileage': float(mileage),
-                'Date Created': datecreated,
-                'Last Maintained': lastmaintained,
-                'Number of Economy': economy,
-                'Number of Business': business,
-                'Number of First Class': firstclass,
-                'Airport ID': airport
+                'id': cursor.lastrowid,
+                'status': status,
+                'make': make,
+                'mileage': float(mileage),
+                'date_created': datecreated,
+                'last_maintained': lastmaintained,
+                'num_economy': economy,
+                'num_business': business,
+                'num_firstclass': firstclass,
+                'airport_id': airport
             }
             data = json.dumps(aircraft, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
@@ -1135,31 +1135,31 @@ class AirplaneDb(object):
                 aircrafts = cursor.fetchall()
                 for aircraft in aircrafts:
                     ac_object = {
-                        'ID': aircraft[0],
-                        'Status': aircraft[1],
-                        'Make': aircraft[2],
-                        'Mileage': float(aircraft[3]),
-                        'Date Created': aircraft[4],
-                        'Last Maintained': aircraft[5],
-                        'Number of Economy': aircraft[6],
-                        'Number of Business': aircraft[7],
-                        'Number of First Class': aircraft[8],
-                        'Airport ID': aircraft[9]
+                        'id': aircraft[0],
+                        'status': aircraft[1],
+                        'make': aircraft[2],
+                        'mileage': float(aircraft[3]),
+                        'date_created': aircraft[4],
+                        'last_maintained': aircraft[5],
+                        'num_economy': aircraft[6],
+                        'num_business': aircraft[7],
+                        'number_firstclass': aircraft[8],
+                        'airport_id': aircraft[9]
                     }
                     dataList.append(ac_object)
             else:
                 aircrafts = cursor.fetchone()
                 ac_object = {
-                    'ID': aircrafts[0],
-                    'Status': aircrafts[1],
-                    'Make': aircrafts[2],
-                    'Mileage': float(aircrafts[3]),
-                    'Date Created': aircrafts[4],
-                    'Last Maintained': aircrafts[5],
-                    'Number of Economy': aircrafts[6],
-                    'Number of Business': aircrafts[7],
-                    'Number of First Class': aircrafts[8],
-                    'Airport ID': aircrafts[9]
+                    'id': aircrafts[0],
+                    'status': aircrafts[1],
+                    'make': aircrafts[2],
+                    'mileage': float(aircrafts[3]),
+                    'date_created': aircrafts[4],
+                    'last_maintained': aircrafts[5],
+                    'num_economy': aircrafts[6],
+                    'num_business': aircrafts[7],
+                    'number_firstclass': aircrafts[8],
+                    'airport_id': aircrafts[9]
                 }
                 dataList.append(ac_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1200,16 +1200,16 @@ class AirplaneDb(object):
             cursor.execute(get_aircraft_query)
             aircraft = cursor.fetchone()
             ac_object = {
-                'ID': aircraft[0],
-                'Status': aircraft[1],
-                'Make': aircraft[2],
-                'Mileage': float(aircraft[3]),
-                'Date Created': aircraft[4],
-                'Last Maintained': aircraft[5],
-                'Number of Economy': aircraft[6],
-                'Number of Business': aircraft[7],
-                'Number of First Class': aircraft[8],
-                'Airport ID': aircraft[9]
+                'id': aircraft[0],
+                'status': aircraft[1],
+                'make': aircraft[2],
+                'mileage': float(aircraft[3]),
+                'date_created': aircraft[4],
+                'last_maintained': aircraft[5],
+                'num_economy': aircraft[6],
+                'num_business': aircraft[7],
+                'num_firstclass': aircraft[8],
+                'airport_id': aircraft[9]
             }
             data = json.dumps(ac_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
@@ -1268,10 +1268,10 @@ class AirplaneDb(object):
 
         cursor = db.cursor()
         employee = {
-            'ID': cursor.lastrowid,
-            'Hours': float(hours),
-            'Type': emp_type,
-            'Wage': float(wage)
+            'id': cursor.lastrowid,
+            'hours': float(hours),
+            'type': emp_type,
+            'wage': float(wage)
         }
         try:
             cursor.execute(add_employee_query)
@@ -1309,7 +1309,7 @@ class AirplaneDb(object):
             employees = cursor.fetchall()
             for e in employees:
                 employee = {
-                    'ID': e
+                    'id': e
                 }
                 dataList.append(employee)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1345,7 +1345,7 @@ class AirplaneDb(object):
             flights = cursor.fetchall()
             for f in flights:
                 flight = {
-                    'ID': f
+                    'id': f
                 }
                 dataList.append(flight)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1372,7 +1372,7 @@ class AirplaneDb(object):
         delete_employee_query = """DELETE FROM EMPLOYEE WHERE E_ID = %d""" % (int (e_id))
         cursor = db.cursor()
         deleted_employee_id = {
-            'ID': e_id
+            'id': e_id
         }
         try:
             cursor.execute(delete_employee_query)
@@ -1409,8 +1409,8 @@ class AirplaneDb(object):
              schedules = cursor.fetchall()
              for s in schedules:
                  schedule = {
-                    'I_ID': s[0],
-                    'F_ID': s[1]
+                    'i_id': s[0],
+                    'f_id': s[1]
                  }
                  dataList.append(schedule)
              data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1439,8 +1439,8 @@ class AirplaneDb(object):
 
         cursor = db.cursor()
         workson = {
-            'E_ID': e_id,
-            'F_ID': f_id
+            'employee_id': e_id,
+            'flight_id': f_id
         }
         try:
             cursor.execute(add_workson_query)
@@ -1454,6 +1454,39 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+
+#==============================================================================
+#   function: get_workson
+#   description: gets the entire workson table
+#   returns: the table WORKSON
+#==============================================================================
+    def get_workson(self):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         get_workson_query = """SELECT * FROM WORKSON"""
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_workson_query)
+             worksons = cursor.fetchall()
+             for w in worksons:
+                 workson = {
+                    'employee_id': w[0],
+                    'flight_id': w[1]
+                 }
+                 dataList.append(workson)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+         except Exception as err:
+             data = ("Get WorksOns Failed with error: {0}").format(err)
+             db.rollback()
+             print(data)
+
+         cursor.close()
+         db.close()
+         return data
 
 #==============================================================================
 #   function: delete_workson
@@ -1470,8 +1503,8 @@ class AirplaneDb(object):
                                 F_ID = %d""" % (int (e_id), int (f_id))
         cursor = db.cursor()
         deleted_workson = {
-            'E_ID': e_id,
-            'F_ID': f_id
+            'employee_id': e_id,
+            'flight_id': f_id
         }
         try:
             cursor.execute(delete_workson_query)
