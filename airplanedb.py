@@ -52,14 +52,6 @@ class AirplaneDb(object):
                                 PRIMARY KEY (C_ID)
                                 )"""
 
-        create_baggage_table = """CREATE TABLE BAGGAGE (
-                                B_ID INT AUTO_INCREMENT,
-                                C_ID INT NOT NULL,
-                                B_WEIGHT DECIMAL(5,2) NOT NULL,
-                                PRIMARY KEY (B_ID, C_ID),
-                                FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
-                                )"""
-
         create_airport_table = """CREATE TABLE AIRPORT (
                                 AP_ID VARCHAR(32),
                                 AP_CITY VARCHAR(32) NOT NULL,
@@ -125,6 +117,16 @@ class AirplaneDb(object):
                                 C_ID INT NOT NULL,
                                 PRIMARY KEY (I_ID),
                                 FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
+                                )"""
+
+
+
+        create_baggage_table = """CREATE TABLE BAGGAGE (
+                                B_ID INT AUTO_INCREMENT,
+                                I_ID INT NOT NULL,
+                                B_WEIGHT DECIMAL(5,2) NOT NULL,
+                                PRIMARY KEY (B_ID, I_ID),
+                                FOREIGN KEY (I_ID) REFERENCES ITINERARY(I_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
 
         create_frequentflier_table = """CREATE TABLE FREQUENTFLIER (
@@ -246,34 +248,6 @@ class AirplaneDb(object):
             db.commit()
         except Exception as e:
             print(e)
-
-        ''' insert test baggage '''
-        insert_baggage_1 = """ INSERT INTO BAGGAGE (C_ID, B_WEIGHT)
-                           VALUES (1, 89.78)
-                           """
-        insert_baggage_2 = """ INSERT INTO BAGGAGE (C_ID, B_WEIGHT)
-                           VALUES (1, 95.96)
-                           """
-        insert_baggage_3 = """ INSERT INTO BAGGAGE (C_ID, B_WEIGHT)
-                           VALUES (2, 84.67)
-                           """
-        insert_baggage_4 = """ INSERT INTO BAGGAGE (C_ID, B_WEIGHT)
-                           VALUES (3, 125.67)
-                           """
-
-        try:
-            cursor.execute(insert_baggage_1)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE1', 'CUSTOMER1'))
-            cursor.execute(insert_baggage_2)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE2', 'CUSTOMER1'))
-            cursor.execute(insert_baggage_3)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE3', 'CUSTOMER2'))
-            cursor.execute(insert_baggage_4)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE4', 'CUSTOMER3'))
-            db.commit()
-        except Exception as e:
-            print(e)
-
 
         ''' insert test airport '''
         insert_airport_1 = """ INSERT INTO AIRPORT (AP_ID, AP_CITY, AP_COUNTRY)
@@ -416,6 +390,33 @@ class AirplaneDb(object):
         except Exception as e:
             print(e)
 
+        ''' insert test baggage '''
+        insert_baggage_1 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (1, 89.78)
+                           """
+        insert_baggage_2 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (1, 95.96)
+                           """
+        insert_baggage_3 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (2, 84.67)
+                           """
+        insert_baggage_4 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (2, 125.67)
+                           """
+
+        try:
+            cursor.execute(insert_baggage_1)
+            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE1', 'CUSTOMER1'))
+            cursor.execute(insert_baggage_2)
+            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE2', 'CUSTOMER1'))
+            cursor.execute(insert_baggage_3)
+            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE3', 'CUSTOMER2'))
+            cursor.execute(insert_baggage_4)
+            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE4', 'CUSTOMER3'))
+            db.commit()
+        except Exception as e:
+            print(e)
+
         ''' insert test workon '''
         insert_workon_1 = """ INSERT INTO WORKSON(E_ID, F_ID)
                              VALUES (1, 1)
@@ -481,13 +482,13 @@ class AirplaneDb(object):
 #   description: adds an instance of baggage to BAGGAGE table
 #   return: added baggage json object
 #==============================================================================
-    def add_baggage(self, customer_id, bag_weight):
+    def add_baggage(self, itinerary_id, bag_weight):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        add_baggage_query = """INSERT INTO BAGGAGE(C_ID, B_WEIGHT)
-                                VALUES(%s, %.2f)""" % (customer_id, float(bag_weight))
+        add_baggage_query = """INSERT INTO BAGGAGE(I_ID, B_WEIGHT)
+                                VALUES(%s, %.2f)""" % (itinerary_id, float(bag_weight))
 
         cursor = db.cursor()
         try:
@@ -495,7 +496,7 @@ class AirplaneDb(object):
             db.commit()
             baggage = {
                 'baggage_id': cursor.lastrowid,
-                'customer_id': customer_id,
+                'itinerary_id': itinerary_id,
                 'baggage_weight': float(bag_weight)
             }
             data = json.dumps(baggage, sort_keys=True, indent=4, separators=(',', ': '))
