@@ -10,28 +10,14 @@ d8P' ?88    88P  88P'  `d8P' ?88    88P `?8b
 an airline simulation for CPSC 304
 ```
 
-### prerequisites
+### prerequisites  
 - python2.7  
 - pip  
 - flask  
 
-### setup
+### setup  
 - Clone this repo however you like: `$ git clone https://github.com/maknoon/airdb.git`  
 - Install everything by executing `$ pip install -r requirements.txt`  
 
-### developing on the server
-- Add our private SSH key `cpsc304.pem` to your `~/.ssh` directory  
-- Change permissions on key to read-only: `$ chmod 400 ~/.ssh/cpsc304.pem`
-- Add the following to your `~/.ssh/config` file (create one if it does not exist):  
-  ```.ssh/config
-  Host air
-  	Hostname [ipv4 addr]
-  	User ubuntu
-  	IdentityFile ~/.ssh/cpsc304.pem
-  ```  
-- You can now access the server by simply invoking `$ ssh air`
-- To test & update code:  
-  - rsync your (**tested!**) changes to EC2 instance:
-    - in parent directory of repo, execute: `$ rsync -av --exclude-from 'airdb/excl.txt' airdb/ air:airdb/`  
-  - SSH into instance and type: `$ sudo apachectl restart`  
-  - Restart the server and exit to see your changes live  
+### developing  
+This section has been moved to our [wiki](https://github.com/maknoon/airdb/wiki/Project-Dev-Onboarding).  
