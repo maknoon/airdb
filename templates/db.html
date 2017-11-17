@@ -121,7 +121,7 @@ div.tab button.active {
         {% endif %}
         </div>
         
-        <!-- <div id="Baggage" class="tabcontent">
+        <div id="Baggage" class="tabcontent">
             <h4>Baggage</h4>
             {% if data4 %}
             <p>
@@ -133,15 +133,15 @@ div.tab button.active {
                 </tr>
                 {% for row in data4 %}
                 </tr>
-                    <td>{{ row['itinerary_ID'] }}</td>
-                    <td>{{ row['bag_ID'] }}</td>
+                    <td>{{ row['itinerary_id'] }}</td>
+                    <td>{{ row['bag_id'] }}</td>
                     <td>{{ row['weight'] }}</td>
                 </tr>
                 {% endfor %} 
             </table>
             </p>
             {% endif %}
-        </div> -->
+        </div>
         
         <div id="Aircraft" class="tabcontent">
          <h4>Aircraft</h4>

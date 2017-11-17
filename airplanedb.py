@@ -496,8 +496,8 @@ class AirplaneDb(object):
             cursor.execute(add_baggage_query)
             db.commit()
             bag_object = {
-                    'bag_ID': cursor.lastrowid(),
-                    'itinerary_ID': itinerary_id,
+                    'bag_id': cursor.lastrowid(),
+                    'itinerary_id': itinerary_id,
                     'weight': bag_weight
                 }
             data = json.dumps(bag_object, sort_keys=True, indent=4, separators=(',', ': '))
@@ -533,18 +533,18 @@ class AirplaneDb(object):
                 baggage = cursor.fetchall()
                 for bag in baggage:
                     bag_object = {
-                        'bag_ID': bag[0],
-                        'itinerary_ID': bag[1],
-                        'weight': bag[2]
+                        'bag_id': bag[0],
+                        'itinerary_id': bag[1],
+                        'weight': str(bag[2])
                     }
                     dataList.append(bag_object)
             else:
                 baggage = cursor.fetchone()
                 bag_object = {
-                        'bag_ID': bag[0],
-                        'itinerary_ID': bag[1],
+                        'bag_id': bag[0],
+                        'itinerary_id': bag[1],
                         'weight': bag[2]
-                }
+                    }
                 dataList.append(bag_object)
                 print(baggage)
 
