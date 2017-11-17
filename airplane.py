@@ -360,7 +360,7 @@ def workson_route():
             res_body = airdb.get_employee_for_flight(req_body['f_id'])
         elif 'e_id' in req_body:
             res_body = airdb.get_flight_for_employee(req_body['e_id'])
-        else res_body = airdb.get_workson()
+        else: res_body = airdb.get_workson()
         if res_body == 0: abort(404)
 
     # delete a workson relations
