@@ -111,13 +111,17 @@ def customer_route():
 # =========
 # /BAGGAGE
 # =========
-@app.route('/baggage')
+@app.route('/baggage', methods=['POST', 'GET'])
 def baggage_route():
-    res_body = airdb.add_baggage(request.args.get('id'),
-        request.args.get('weight'))
-
+    c_id = request.args.get('id')
+    # fetch bag by customer id
+    if request.method == 'GET':
+        res_body = airdb.get_baggage(c_id)
+        if res_body == 0: abort(404)
+	# add a new bag
+    elif request.method == 'POST':
+	    res_body = airdb.add_baggage(c_id, request.args.get('weight'))
     return res_body
-
 # =========
 # /FF
 # =========
@@ -168,7 +172,7 @@ def itinerary_route():
 # =========
 # /FLIGHT
 # =========
-@app.route('/flight', methods=['POST', 'PATCH'])
+@app.route('/flight', methods=['GET','POST', 'PATCH'])
 def flight_route():
     if request.method == 'POST':
         req_body = request.get_json()
@@ -202,7 +206,10 @@ def flight_route():
             res_body = airdb.update_flight(f_id, 'F_ARRIVALGATEID', wrapper(req_body['arrivegate']))
         if 'status' in req_body:
             res_body = airdb.update_flight(f_id, 'F_STATUS', wrapper(req_body['status']))
-
+    elif request.method == 'GET':
+        f_id = request.args.get('id')
+        res_body = airdb.get_flight(f_id)
+        if res_body == 0: abort(404)
     return res_body
 
 # =========
