@@ -27,8 +27,12 @@ def index():
     elif session.get('type') == 'admin':
         # get all airports
         get_airports = json.loads(airdb.get_airport(None))
-
-        return render_template('db.html', type='admin', data=get_airports)
+        get_flights = json.loads(airdb.get_flight(None))
+        get_bags = json.loads(airdb.get_baggage(None))
+        get_work_schedule = json.loads(airdb.get_workson())
+        get_airplanes = json.loads(airdb.get_aircraft(None))
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+        return render_template('db.html', type='admin', data1=get_flights, data2=get_work_schedule, data3=get_airports, data4 = get_bags, data5 = get_airplanes, data6 = get_schedule)
     else:
 
         return render_template('index.html')
@@ -111,13 +115,17 @@ def customer_route():
 # =========
 # /BAGGAGE
 # =========
-@app.route('/baggage')
+@app.route('/baggage', methods=['POST', 'GET'])
 def baggage_route():
-    res_body = airdb.add_baggage(request.args.get('id'),
-        request.args.get('weight'))
-
-    return res_body
-
+    i_id = request.args.get('id')
+    # fetch bag by itinerary id
+    if request.method == 'GET':
+        res_body = airdb.get_baggage(i_id)
+        if res_body == 0: abort(404)
+	# add a new bag
+    elif request.method == 'POST':
+	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
+        
 # =========
 # /FF
 # =========
@@ -168,7 +176,7 @@ def itinerary_route():
 # =========
 # /FLIGHT
 # =========
-@app.route('/flight', methods=['POST', 'PATCH'])
+@app.route('/flight', methods=['GET','POST', 'PATCH'])
 def flight_route():
     if request.method == 'POST':
         req_body = request.get_json()
@@ -202,7 +210,10 @@ def flight_route():
             res_body = airdb.update_flight(f_id, 'F_ARRIVALGATEID', wrapper(req_body['arrivegate']))
         if 'status' in req_body:
             res_body = airdb.update_flight(f_id, 'F_STATUS', wrapper(req_body['status']))
-
+    elif request.method == 'GET':
+        f_id = request.args.get('id')
+        res_body = airdb.get_flight(f_id)
+        if res_body == 0: abort(404)
     return res_body
 
 # =========
@@ -285,6 +296,88 @@ def schedule_route():
 
     return res_body
 
+# =========
+# /AIRCRAFT
+# =========
+@app.route('/aircraft', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+def aircraft_route():
+    ac_id = request.args.get('id')
+
+    # add a new aircraft
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_aircraft(req_body['status'],  req_body['make'],
+                 req_body['mileage'], req_body['datecreated'],
+                 req_body['lastmaintained'], req_body['economy'],
+                 req_body['business'], req_body['firstclass'],
+                 req_body['airportid'])
+
+    # fetch an aircraft by aircraft id
+    elif request.method == 'GET':
+        res_body = airdb.get_aircraft(ac_id)
+        if res_body == 0: abort(404)
+
+    # update an aircraft's status
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        aircraft = airdb.get_aircraft(ac_id)
+
+        if aircraft == 0: abort(404)
+        elif 'status' in req_body:
+            res_body = airdb.update_aircraft(ac_id, 'AC_STATUS', wrapper(req_body['status']))
+
+    # delete an aircraft
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_aircraft(ac_id)
+
+    return res_body
+
+# =========
+# /EMPLOYEE
+# =========
+@app.route('/employee', methods=['POST', 'DELETE'])
+def employee_route():
+    e_id = request.args.get('id')
+
+    # add a new employee
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_employee(req_body['hours'],  req_body['type'],
+                 req_body['wage'])
+
+    # delete an employee
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_employee(e_id)
+
+    return res_body
+
+# =========
+# /WORKSON
+# =========
+@app.route('/workson', methods=['POST', 'GET', 'DELETE'])
+def workson_route():
+    e_id = request.args.get('e_id')
+    f_id = request.args.get('f_id')
+
+    # add a new workson relation
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_workson(req_body['e_id'], req_body['f_id'])
+
+    # get employees with flight_id or flights with employee_id
+    elif request.method == 'GET':
+        if f_id and e_id is None:
+            res_body = airdb.get_employee_for_flight(f_id)
+        elif e_id and f_id is None:
+            res_body = airdb.get_flight_for_employee(e_id)
+        elif e_id is None and f_id is None: res_body = airdb.get_workson()
+        if res_body == 0: abort(404)
+
+    # delete a workson relations
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_workson(e_id, f_id)
+
+    return res_body
 
 # ---------------------------------------------------------
 # SERVE THE APP
