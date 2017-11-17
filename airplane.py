@@ -1,8 +1,9 @@
 #!~/usr/bin/python
-from flask import Flask, flash, request, render_template, session
+from flask import Flask, abort, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
+import json
 
 app = Flask(__name__)
 app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
@@ -19,30 +20,37 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        return 'Logged in as user!'
+        # get all itineraries
+        get_itineraries = json.loads(airdb.get_itinerary(1))
+
+        return render_template('db.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
-        return 'Logged in as admin!'
+        # get all airports
+        get_airports = json.loads(airdb.get_airport(None))
+
+        return render_template('db.html', type='admin', data=get_airports)
     else:
+
         return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-    if request.form['password'] == config.adminpwd and request.form['username'] == 'admin':
+    if (request.form['password'] == config.adminpwd
+        and request.form['username'] == 'admin'):
         session['type'] = 'admin'
-    elif request.form['password'] == config.userpwd and request.form['username'] == 'user':
+    elif (request.form['password'] == config.userpwd
+        and request.form['username'] == 'user'):
         session['type'] = 'user'
     else:
         flash('wrong password!')
+
     return index()
 
 @app.route('/logout')
 def logout():
     session['type'] = 'none'
-    return index()
 
-@app.route('/test/<name>')
-def test_name(name):
-    return 'Welcome, {}!'.format(name)
+    return index()
 
 
 # ---------------------------------------------------------
@@ -54,142 +62,230 @@ def test_name(name):
 def reset():
     airdb.reset_db()
     airdb.populate_db()
+
     return 'DB HAS BEEN RESET AND POPULATED'
 
-# test create new customer
-@app.route('/customer')
-def add_customer():
-    cust_name = request.args.get('name')
-    added = airdb.add_customer(cust_name,
-        request.args.get('age'), request.args.get('email'),
-        request.args.get('phone'))
+# Helper
+def wrapper(str_db_value):
+    return '"{}"'.format(str_db_value)
 
-    return 'ADDED NEW CUSTOMER %s WITH ID %d' % (cust_name, added)
+# =========
+# /CUSTOMER
+# =========
+@app.route('/customer', methods=['POST','PATCH','GET'])
+def customer_route():
+    cust_id = request.args.get('id')
 
-# test update customer
-# @app.route('/customerupdate')
-# def update_customer():
-#     req_body = request.get_json()
-#     cust_id = request.args.get('id')
-#     customer = airdb.get_customer(cust_id)
-#     if (customer == 0): abort(404)
-#     else:
-#         if "phone" in req_body:
-#             newphone = req_body["phone"]
-#             airdb.update_customer(cust_id, 'C_PHONE', newphone)
-#         if "email" in req_body:
-#             newemail = req_body["email"]
-#             airdb.update_customer(cust_id, 'C_EMAIL', newemail)
-#         if "name" in req_body:
-#             newname = req_body["name"]
-#             airdb.update_customer(cust_id, 'C_NAME', newname)
-#     customer = airdb.update_customer(cust_id)
-#     customer_json = {"id":user[0],"name":user[1],"age":user[2],
-#                     "email":user[3],"phone_number":user[4]}
-#     res_body = json.dumps(customer_json, indent=4, separators=(',', ': '))
+    # fetch a customer by id
+    if request.method == 'GET':
+        res_body = airdb.get_customer(cust_id)
+        if res_body == 0: abort(404)
 
-#     return res_body
+    # add a new customer
+    elif request.method == 'POST':
+        req_body = request.get_json()
+        cust_name = req_body['name']
+        res_body = airdb.add_customer(cust_name, req_body['age'], req_body['email'],
+            req_body['phone'])
 
+    # update a customer
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        customer = airdb.get_customer(cust_id)
 
-# test add new frequent flier
-@app.route('/ff')
-def add_frequent_flier():
-    airdb.add_frequent_flier(request.args.get('id'))
+        if customer == 0: abort(404)
+        else:
+            if 'phone' in req_body:
+                airdb.update_customer(cust_id, 'C_PHONE', wrapper(req_body['phone']))
+            if 'email' in req_body:
+                airdb.update_customer(cust_id, 'C_EMAIL', wrapper(req_body['email']))
+            if 'age' in req_body:
+                airdb.update_customer(cust_id, 'C_AGE', req_body['age'])
+            if 'name' in req_body:
+                airdb.update_customer(cust_id, 'C_NAME', wrapper(req_body['name']))
 
-    return 'WELCOME TO THE FREQUENT FLIER CLUB'
+            res_body = airdb.get_customer(cust_id)
 
-# test add baggage
+    return res_body
+
+# =========
+# /BAGGAGE
+# =========
 @app.route('/baggage')
-def add_baggage():
-    airdb.add_baggage(request.args.get('id'),
+def baggage_route():
+    res_body = airdb.add_baggage(request.args.get('id'),
         request.args.get('weight'))
 
-    return 'ADDED BAGGAGE'
+    return res_body
 
-# @app.route('/ffupdate')
-# def update_frequent_flier():
-#     cust_id = request.args.get('id')
-#     miles = request.args.get('miles')
-#     airdb.update_frequent_flier(cust_id, miles)
+# =========
+# /FF
+# =========
+@app.route('/ff', methods=['POST', 'PATCH'])
+def ff_route():
+    ff_id = request.args.get('id')
 
-#     return 'ADDED %s MILES TO ACCOUNT' % miles
+    if (request.method == 'POST'):
+        res_body = airdb.add_frequent_flier(ff_id)
+    elif (request.method == 'PATCH'):
+        m = request.args.get('miles')
+        res_body = airdb.update_frequent_flier(ff_id, m)
+    return res_body
 
-# Add airport route
-@app.route('/airport/newairport')
-def add_airport():
-    msg = airdb.add_airport(request.args.get('id'),
-        request.args.get('city'), request.args.get('country'))
+# =========
+# /ITINERARY
+# =========
+@app.route('/itinerary', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+def itinerary_route():
+    i_id = request.args.get('id')
 
-    return msg
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_itinerary(req_body['seattype'],
+                                        req_body['seatcost'],
+                                        req_body['status'],
+                                        req_body['customer_id'])
 
-# Add airport route
-@app.route('/airport/getairport')
-def get_airport():
+    elif request.method == 'GET':
+        cust_id = request.args.get('id')
+        res_body = airdb.get_itinerary(cust_id)
+        if res_body == 0: abort(404)
+
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        if 'seatcost' in req_body:
+            res_body = airdb.update_itinerary(i_id, 'I_SEATCOST', float(req_body['seatcost']))
+        if 'seattype' in req_body:
+            res_body = airdb.update_itinerary(i_id, 'I_SEATTYPE', wrapper(req_body['seattype']))
+        if 'status' in req_body:
+            res_body = airdb.update_itinerary(i_id, 'I_STATUS', wrapper(req_body['status']))
+
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_itinerary(i_id)
+
+    return res_body
+
+# =========
+# /FLIGHT
+# =========
+@app.route('/flight', methods=['POST', 'PATCH'])
+def flight_route():
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_flight(req_body['aircraft'],
+                                    req_body['distance'],
+                                    req_body['departtime'],
+                                    req_body['atime'],
+                                    req_body['dairport'],
+                                    req_body['aairport'],
+                                    req_body['dgate'],
+                                    req_body['agate'],
+                                    req_body['status'])
+    elif request.method == 'PATCH':
+        f_id = request.args.get('id')
+        req_body = request.get_json()
+        if 'aircraft' in req_body:
+            res_body = airdb.update_flight(f_id, 'AC_ID', req_body['aircraft'])
+        if 'distance' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_DISTANCE', float(req_body['distance']))
+        if 'departtime' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_DEPARTURETIME', wrapper(req_body['departtime']))
+        if 'arrivetime' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_ARRIVALTIME', wrapper(req_body['arrivetime']))
+        if 'departairport' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_DEPARTUREAIRPORTID', wrapper(req_body['departairport']))
+        if 'arriveairport' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_ARRIVALAIRPORTID', wrapper(req_body['arriveairport']))
+        if 'departgate' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_DEPARTUREGATEID', wrapper(req_body['departgate']))
+        if 'arrivegate' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_ARRIVALGATEID', wrapper(req_body['arrivegate']))
+        if 'status' in req_body:
+            res_body = airdb.update_flight(f_id, 'F_STATUS', wrapper(req_body['status']))
+
+    return res_body
+
+# =========
+# /AIRPORT
+# =========
+@app.route('/airport', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+def airport_route():
     apid = request.args.get('id')
-    data = airdb.get_airport(apid)
 
-    return data
+    # fetch a airport by id
+    if request.method == 'GET':
+        res_body = airdb.get_airport(apid)
+        if res_body == 0: abort(404)
 
-# Add airport route
-@app.route('/airport/delete')
-def delete_airport():
-    apid = request.args.get('id')
-    data = airdb.delete_airport(apid)
+    # add a new airport
+    elif request.method == 'POST':
+        req_body = request.get_json()
+        apid = req_body['id']
+        res_body = airdb.add_airport(apid, req_body['city'], req_body['country'])
 
-    return data
+    # update an airport
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        airport = airdb.get_airport(apid)
 
-# Add airport route
-@app.route('/airport/update')
-def update_airport():
-    apid = request.args.get('id')
-    data = airdb.update_airport(apid, request.args.get('city'),
-         request.args.get('country'), request.args.get('newcity'),
-         request.args.get('newcountry'))
+        if airport == 0: abort(404)
+        else:
+            if 'country' in req_body:
+                airdb.update_airport(apid, 'AP_COUNTRY', wrapper(req_body['country']))
+            if 'city' in req_body:
+                airdb.update_airport(apid, 'AP_CITY', wrapper(req_body['city']))
+            airport = airdb.get_airport(apid)
+            airport_json = {'airport_id':apid,'city':airport[1],
+                            'country':airport[2]}
+            res_body = json.dumps(airport_json, indent=4, separators=(',', ': '))
 
-    return data
+    # delete an airport
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_airport(apid)
 
-# Get gates of airport route
-@app.route('/gate/getOfAirport')
-def get_gates_of_airport():
-    apid = request.args.get('id')
-    data = airdb.get_gates_of_airport(apid)
+    return res_body
 
-    return data
-
-# Delete a gate route
-@app.route('/gate/delete')
-def delete_gate():
+# =========
+# /GATE
+# =========
+@app.route('/gate', methods=['GET', 'DELETE'])
+def gate_route():
     apid = request.args.get('ap_id')
-    gid = request.args.get('g_id')
-    data = airdb.delete_gate(apid, gid)
+    gid = request.arg.get('g_id')
 
-    return data
+    # Get gates of airport by airport id
+    if request.method == 'GET':
+        res_body = airdb.get_gates_of_airport(apid)
 
-# Get schedule of ITINERARY
-@app.route('/schedule/getForItinerary')
-def get_schedule_for_itinerary():
-    iid = request.args.get('id')
-    data = airdb.get_schedule_for_itinerary(iid)
+    # Delete gate from airport
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_gate(apid, gid)
 
-    return data
+    return res_body
 
-# Add a schedule route
-@app.route('/schedule/add')
-def add_schedule():
+# =========
+# /SCHEDULE
+# =========
+@app.route('/schedule', methods=['GET', 'POST', 'DELETE'])
+def schedule_route():
     iid = request.args.get('i_id')
     fid = request.args.get('f_id')
-    data = airdb.add_schedule(iid, fid)
 
-    return data
+    # Get schedule of itinerary
+    if request.method == 'GET':
+        res_body = airdb.get_schedule_for_itinerary(iid)
 
-# Delete a schedule route
-@app.route('/schedule/delete')
-def delete_schedule():
-    iid = request.args.get('i_id')
-    fid = request.args.get('f_id')
-    data = airdb.delete_schedule(iid, fid)
+    # Add schedule for itinerary
+    elif request.method == 'POST':
+        res_body.add_schedule(iid, fid)
 
-    return data
+    # Delete schedule by itinerary
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_schedule(iid, fid)
+
+    return res_body
+
+
 # ---------------------------------------------------------
 # SERVE THE APP
 # ---------------------------------------------------------
