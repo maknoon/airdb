@@ -28,8 +28,8 @@ def index():
         # get all airports
         get_airports = json.loads(airdb.get_airport(None))
         get_flights = json.loads(airdb.get_flight(None))
-        get_bags = json.loads(airdb.get_baggage(None))
-        return render_template('db.html', type='admin', data1=get_flights, data3=get_airports, data4 = get_bags)
+        # get_bags = json.loads(airdb.get_baggage(None))
+        return render_template('db.html', type='admin', data1=get_flights, data3=get_airports) #, data4 = get_bags)
     else:
 
         return render_template('index.html')
@@ -114,23 +114,15 @@ def customer_route():
 # =========
 @app.route('/baggage', methods=['POST', 'GET'])
 def baggage_route():
-    c_id = request.args.get('id')
-    # fetch bag by customer id
+    i_id = request.args.get('id')
+    # fetch bag by itinerary id
     if request.method == 'GET':
-        res_body = airdb.get_baggage(c_id)
+        res_body = airdb.get_baggage(i_id)
         if res_body == 0: abort(404)
 	# add a new bag
     elif request.method == 'POST':
-	    res_body = airdb.add_baggage(c_id, request.args.get('weight'))
-=======
-@app.route('/baggage', methods=['POST'])
-def baggage_route():
-    req_body = request.get_json()
-    i_id = req_body['i_id']
-    weight = req_body['weight']
-    res_body = airdb.add_baggage(i_id, weight)
-
-    return res_body
+	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
+        
 # =========
 # /FF
 # =========

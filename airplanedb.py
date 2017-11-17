@@ -482,15 +482,7 @@ class AirplaneDb(object):
 #   description: add baggage instance for cust_id
 #   return: baggage json object
 #==============================================================================
-<<<<<<< HEAD
-    def add_baggage(self, cust_id, bag_weight):
-        db = MySQLdb.connect(host=self.host, 
-                             user=self.user, 
-                             passwd=self.pw, 
-                             db=self.db)
-        add_baggage_query = """INSERT INTO BAGGAGE(C_ID, B_WEIGHT)
-                                VALUES(%s, %.2f)""" % (cust_id, float(bag_weight))
-=======
+
     def add_baggage(self, itinerary_id, bag_weight):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -498,26 +490,17 @@ class AirplaneDb(object):
                              db=self.db)
         add_baggage_query = """INSERT INTO BAGGAGE(I_ID, B_WEIGHT)
                                 VALUES(%s, %.2f)""" % (itinerary_id, float(bag_weight))
->>>>>>> 5f56507b1bae530d0ac2b7ded0802b535020ca13
 
         cursor = db.cursor()
         try:
             cursor.execute(add_baggage_query)
             db.commit()
-<<<<<<< HEAD
             bag_object = {
-                    'Customer_ID': cust_id,
-                    'Weight': bag_weight
+                    'bag_ID': cursor.lastrowid(),
+                    'itinerary_ID': itinerary_id,
+                    'weight': bag_weight
                 }
             data = json.dumps(bag_object, sort_keys=True, indent=4, separators=(',', ': '))
-=======
-            baggage = {
-                'baggage_id': cursor.lastrowid,
-                'itinerary_id': itinerary_id,
-                'baggage_weight': float(bag_weight)
-            }
-            data = json.dumps(baggage, sort_keys=True, indent=4, separators=(',', ': '))
->>>>>>> 5f56507b1bae530d0ac2b7ded0802b535020ca13
         except Exception as e:
             data = ("Add Baggage Failed with error: {0}").format(e)
             db.rollback()
@@ -529,35 +512,38 @@ class AirplaneDb(object):
     
 #==============================================================================
 #   function: get_baggage
-#   description: returns an instance of baggage based on cust_id
+#   description: returns an instance of baggage based on itinerary ID
 #   return: baggage json object
 #==============================================================================
-    def get_baggage(self, cust_id):
+    def get_baggage(self, i_id):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        if cust_id is None:
+        if i_id is None:
             get_baggage_query = """SELECT * FROM BAGGAGE"""
         else:
-            get_baggage_query = """SELECT * FROM BAGGAGE WHERE C_ID = %d""" % int(cust_id)
+            get_baggage_query = """SELECT * FROM BAGGAGE WHERE I_ID = %d""" % int(i_id)
         cursor = db.cursor()
         try:
             dataList = []
             cursor.execute(get_baggage_query)
-            if cust_id is None:
+            print("query executed")
+            if i_id is None:
                 baggage = cursor.fetchall()
                 for bag in baggage:
                     bag_object = {
-                        'Customer_ID': bag[0],
-                        'Weight': bag[1]
+                        'bag_ID': bag[0],
+                        'itinerary_ID': bag[1],
+                        'weight': bag[2]
                     }
                     dataList.append(bag_object)
             else:
                 baggage = cursor.fetchone()
                 bag_object = {
-                    'Customer_ID': baggage[0],
-                    'Weight': baggage[1]
+                        'bag_ID': bag[0],
+                        'itinerary_ID': bag[1],
+                        'weight': bag[2]
                 }
                 dataList.append(bag_object)
                 print(baggage)
