@@ -111,10 +111,12 @@ def customer_route():
 # =========
 # /BAGGAGE
 # =========
-@app.route('/baggage')
+@app.route('/baggage', methods=['POST'])
 def baggage_route():
-    res_body = airdb.add_baggage(request.args.get('id'),
-        request.args.get('weight'))
+    req_body = request.get_json()
+    i_id = req_body['i_id']
+    weight = req_body['weight']
+    res_body = airdb.add_baggage(i_id, weight)
 
     return res_body
 
