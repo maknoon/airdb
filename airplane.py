@@ -355,12 +355,11 @@ def workson_route():
 
     # get employees with flight_id or flights with employee_id
     elif request.method == 'GET':
-        req_body = request.get_json()
-        if 'f_id' in req_body:
-            res_body = airdb.get_employee_for_flight(req_body['f_id'])
-        elif 'e_id' in req_body:
-            res_body = airdb.get_flight_for_employee(req_body['e_id'])
-        else: res_body = airdb.get_workson()
+        if f_id and e_id is None:
+            res_body = airdb.get_employee_for_flight(f_id)
+        elif e_id and f_id is None:
+            res_body = airdb.get_flight_for_employee(e_id)
+        elif e_id is None and f_id is None: res_body = airdb.get_workson()
         if res_body == 0: abort(404)
 
     # delete a workson relations
