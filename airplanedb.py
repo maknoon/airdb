@@ -1473,20 +1473,28 @@ class AirplaneDb(object):
                              db=self.db)
 
          if i_id is None:
-             return "Itinerary ID is NULL"
+             get_schedule_query = """SELECT * FROM SCHEDULE"""
          else:
              get_schedule_query = """SELECT * FROM SCHEDULE WHERE I_ID = %d""" % (int(i_id))
          cursor = db.cursor()
          try:
              dataList = []
              cursor.execute(get_schedule_query)
-             schedules = cursor.fetchall()
-             for s in schedules:
-                 schedule = {
-                    'itinerary_id': s[0],
-                    'flight_id': s[1]
+             if i_id is None:
+                entireschedule = cursor.fetchall()
+                for schedule in entireschedule:
+                    s_object = {
+                        'itinerary_id': schedule[0],
+                        'flight_id': schedule[1]
+                    }
+                    dataList.append(s_object)
+             else: 
+                 schedule = cursor.fetchone()
+                 s_object = {
+                    'itinerary_id': schedule[0],
+                    'flight_id': schedule[1]
                  }
-                 dataList.append(schedule)
+                 dataList.append(s_object)
              data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Get Schedules Failed with error: {0}").format(e)

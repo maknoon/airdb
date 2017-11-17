@@ -29,7 +29,10 @@ def index():
         get_airports = json.loads(airdb.get_airport(None))
         get_flights = json.loads(airdb.get_flight(None))
         get_bags = json.loads(airdb.get_baggage(None))
-        return render_template('db.html', type='admin', data1=get_flights, data3=get_airports, data4 = get_bags)
+        get_work_schedule = json.loads(airdb.get_workson())
+        get_airplanes = json.loads(airdb.get_aircraft(None))
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+        return render_template('db.html', type='admin', data1=get_flights, data2=get_work_schedule, data3=get_airports, data4 = get_bags, data5 = get_airplanes, data6 = get_schedule)
     else:
 
         return render_template('index.html')
