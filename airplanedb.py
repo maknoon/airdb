@@ -34,13 +34,13 @@ class AirplaneDb(object):
         cursor.execute(drop.format('SCHEDULE'))
         cursor.execute(drop.format('WORKSON'))
         cursor.execute(drop.format('FREQUENTFLIER'))
+        cursor.execute(drop.format('BAGGAGE'))
         cursor.execute(drop.format('ITINERARY'))
         cursor.execute(drop.format('EMPLOYEE'))
         cursor.execute(drop.format('FLIGHT'))
         cursor.execute(drop.format('AIRCRAFT'))
         cursor.execute(drop.format('GATE'))
         cursor.execute(drop.format('AIRPORT'))
-        cursor.execute(drop.format('BAGGAGE'))
         cursor.execute(drop.format('CUSTOMER'))
 
         create_customer_table = """CREATE TABLE CUSTOMER (
@@ -155,9 +155,6 @@ class AirplaneDb(object):
         cursor.execute(create_customer_table)
         print(('Created new {0} table in {1}').format('CUSTOMER',self.db))
 
-        cursor.execute(create_baggage_table)
-        print(('Created new {0} table in {1}').format('BAGGAGE',self.db))
-
         cursor.execute(create_airport_table)
         print(('Created new {0} table in {1}').format('AIRPORT',self.db))
 
@@ -175,6 +172,9 @@ class AirplaneDb(object):
 
         cursor.execute(create_itinerary_table)
         print(('Created new {0} table in {1}').format('ITINERARY',self.db))
+
+        cursor.execute(create_baggage_table)
+        print(('Created new {0} table in {1}').format('BAGGAGE',self.db))
 
         cursor.execute(create_frequentflier_table)
         print(('Created new {0} table in {1}').format('FREQUENTFLIER',self.db))
