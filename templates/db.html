@@ -4,19 +4,108 @@
     <title>welcome to AIRDB</title>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
 </head>
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+</style>
 <body>
 {% if type %}
     <h1>You are logged in as {{ type }}</h1>
-    {% if data %}
     <h2>Showing {{ type }} view</h2>
         {% if type == 'admin' %}
+        <div class="tab">
+		<button class="tablinks" onclick="openTable(event, 'Flights')">Flights</button>
+		<button class="tablinks" onclick="openTable(event, 'Work Schedule')">Work Schedule</button>
+		<button class="tablinks" onclick="openTable(event, 'Airports')">Airports</button>
+		<button class="tablinks" onclick="openTable(event, 'Baggage')">Baggage</button>
+		<button class="tablinks" onclick="openTable(event, 'Aircraft')">Aircraft</button>
+		</div>
+        
+        <div id="Flights" class="tabcontent">
+            <h4>Flights</h4>
+
+            {% if data1 %}
+            <p>
+            <table>
+                <tr>
+                    <th>Flight ID</th>
+                    <th>Departure Airport</th>
+                    <th>Departure Gate</th>
+                    <th>Departure Time</th>
+                    <th>Arrival Airport</th>
+                    <th>Arrival Gate</th>
+                    <th>Arrival Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in data1 %}
+                </tr>
+                    <td>{{ row['flight_id'] }}</td>
+                    <td>{{ row['departairport'] }}</td>
+                    <td>{{ row['departgate'] }}</td>
+                    <td>{{ row['departtime'] }}</td>
+                    <td>{{ row['arriveairport'] }}</td>
+                    <td>{{ row['arrivegate'] }}</td>
+                    <td>{{ row['arrivetime'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                </tr>
+                {% endfor %} 
+            </table>
+            </p>
+          
+            {% endif %}
+        </div>
+    
+        <div id="Work Schedule" class="tabcontent">
+         <h4>Work Schedule</h4>
+        </div>
+        
+        <div id="Airports" class="tabcontent">
+         <h4>Airports</h4>
+        {% if data3 %}    
+           <p>
         <table>
             <tr>
                 <th>Airport</th>
                 <th>City</th>
                 <th>Country</th>
             </tr>
-        {% for row in data %}
+        {% for row in data3 %}
             <tr>
                 <td>{{ row['airport_id'] }}</td>
                 <td>{{ row['city'] }}</td>
@@ -24,7 +113,49 @@
             </tr>
         {% endfor %}
         </table>
+        </p>
         {% endif %}
+        </div>
+        
+        <div id="Baggage" class="tabcontent">
+            <h4>Baggage</h4>
+            {% if data4 %}
+            <p>
+            <table>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Weight</th>
+                </tr>
+                {% for row in data4 %}
+                </tr>
+                    <td>{{ row['Customer_ID'] }}</td>
+                    <td>{{ row['Weight'] }}</td>
+                </tr>
+                {% endfor %} 
+            </table>
+            </p>
+            {% endif %}
+        </div>
+        
+        <div id="Aircraft" class="tabcontent">
+         <h4>Aircraft</h4>
+        </div>
+       
+       <script>
+		function openTable(evt, tableName) {
+			var i, tabcontent, tablinks;
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+			document.getElementById(tableName).style.display = "block";
+			evt.currentTarget.className += " active";
+			}
+		</script>
         {% if type == 'user' %}
         <table>
             <tr>
