@@ -1,8 +1,9 @@
 #!~/usr/bin/python
-from flask import Flask, flash, request, render_template, session
+from flask import Flask, abort, flash, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
+import json
 
 app = Flask(__name__)
 app.secret_key = hashlib.sha224('oooh so secure').hexdigest()
@@ -225,67 +226,60 @@ def delete_gate():
 
     return data
 
-# Add new aircraft to table AIRCRAFT
-@app.route('/aircraft/new')
-def add_aircraft():
-	data = airdb.add_aircraft(request.args.get('status'), request.args.get('make'),
-		request.args.get('mileage'), request.args.get('datecreated'),
-		request.args.get('lastmaintained'), request.args.get('economy'),
-	 	request.args.get('business'), request.args.get('firstclass'),
-	 	request.args.get('airportid'))
+# =========
+# /AIRCRAFT
+# =========
+@app.route('/aircraft', methods=['POST', 'GET', 'PATCH', 'DELETE'])
+def aircraft_route():
+    ac_id = request.args.get('id')
 
-	return data
+    # add a new aircraft
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_aircraft(req_body['status'],  req_body['make'],
+                 req_body['mileage'], req_body['datecreated'],
+                 req_body['lastmaintained'], req_body['economy'],
+                 req_body['business'], req_body['firstclass'],
+                 req_body['airportid'])
 
-# Get aircrafts with specified aircraft_id in table AIRCRAFT
-@app.route('/aircraft/get')
-def get_aircraft():
-	data = airdb.get_aircraft(request.args.get('id'))
+    # fetch an aircraft by aircraft id
+    elif request.method == 'GET':
+        res_body = airdb.get_aircraft(ac_id)
+        if res_body == 0: abort(404)
 
-	return data
+    # update an aircraft's status
+    elif request.method == 'PATCH':
+        req_body = request.get_json()
+        aircraft = airdb.get_aircraft(ac_id)
 
-# Update aircraft's status in table AIRCRAFT
-@app.route('/aircraft/update')
-def update_aircraft():
-	data = airdb.update_aircraft(request.args.get('id'),request.args.get('status'),
-		request.args.get('newstatus'))
+        if aircraft == 0: abort(404)
+        elif 'status' in req_body:
+            res_body = airdb.update_aircraft(ac_id, 'AC_STATUS', wrapper(req_body['status']))
 
-	return data
+    # delete an aircraft
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_aircraft(ac_id)
 
-# Delete aircraft in table AIRCRAFT
-@app.route('/aircraft/delete')
-def delete_aircraft():
-	data = airdb.delete_aircraft(request.args.get('id'))
+    return res_body
 
-	return data
+# =========
+# /EMPLOYEE
+# =========
+@app.route('/employee', methods=['POST', 'DELETE'])
+def employee_route():
+    e_id = request.args.get('id')
 
-# Add new employee to table EMPLOYEE
-@app.route('/employee/new')
-def add_employee():
-    data = airdb.add_employee(request.args.get('hours'), request.args.get('type'),
-        request.args.get('wage'))
+    # add a new employee
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_employee(req_body['hours'],  req_body['type'],
+                 req_body['wage'])
 
-    return data
+    # delete an employee
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_employee(e_id)
 
-# Get employees with specified flight_ID in table WORKSON
-@app.route('/flight/getemployeeforflight')
-def get_employee_for_flight():
-	data = airdb.get_employee_for_flight(request.args.get('f_id'))
-
-	return data
-
-# Get flights with specified employee_ID in table Workson
-@app.route('/employee/getflightforemployee')
-def get_flight_for_employee():
-	data = airdb.get_flight_for_employee(request.args.get('e_id'))
-
-	return data
-
-# Delete employee in table EMPLOYEE
-@app.route('/employee/delete')
-def delete_employee():
-	data = airdb.delete_employee(request.args.get('id'))
-
-	return data
+    return res_body
 
 # Get schedule of ITINERARY
 @app.route('/schedule/getForItinerary')
@@ -295,19 +289,33 @@ def get_schedule_for_itinerary():
 
     return data
 
-# Add a new workson relation to table WORKSON
-@app.route('/workson/new')
-def add_workson():
-    data = airdb.add_workson(request.args.get('e_id'), request.args.get('f_id'))
+# =========
+# /WORKSON
+# =========
+@app.route('/workson', methods=['POST', 'GET', 'DELETE'])
+def workson_route():
+    e_id = request.args.get('e_id')
+    f_id = request.args.get('f_id')
 
-    return data
+    # add a new workson relation
+    if request.method == 'POST':
+        req_body = request.get_json()
+        res_body = airdb.add_workson(req_body['e_id'], req_body['f_id'])
 
-# Delete a workson relation in table Workson
-@app.route('/workson/delete')
-def delete_workson():
-    data = airdb.delete_workson(request.args.get('e_id'), request.args.get('f_id'))
+    # get employees with flight_id or flights with employee_id
+    elif request.method == 'GET':
+        req_body = request.get_json()
+        if 'f_id' in req_body:
+            res_body = airdb.get_employee_for_flight(req_body['f_id'])
+        elif 'e_id' in req_body:
+            res_body = airdb.get_flight_for_employee(req_body['e_id'])
+        if res_body == 0: abort(404)
 
-    return data
+    # delete a workson relations
+    elif request.method == 'DELETE':
+        res_body = airdb.delete_workson(e_id, f_id)
+
+    return res_body
 
 # Add a schedule route
 @app.route('/schedule/add')
