@@ -1,14 +1,80 @@
+:root {
+    --bg-color: #D6EAF8;
+    --accent-color: #2874A6;
+}
+
 body {
-    padding: 100px;
-    margin: 100px;
+    padding: 2%;
+    margin: 2%;
     font-size: 14px;
     font-family: 'Calibri', sans-serif;
-    /* text-transform: uppercase; */
-    background-color: #D6EAF8;
+    background-color: var(--bg-color);
+}
+
+a:visited {
+    color: var(--accent-color);
+}
+
+a:hover {
+    color: white;
 }
 
 img {
     margin: 25px;
+}
+
+h1,h2,label {
+    color: var(--accent-color);
+}
+
+h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+input {
+    padding: 4pt 4pt;
+    margin: 2px;
+}
+
+button, input[type=submit] {
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    margin: 10px 2px;
+    padding: 5px;
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    text-transform: uppercase;
+}
+
+button:hover, input[type=submit]:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+table {
+    border: 2px solid var(--accent-color);
+    width: 90%;
+    background-color: white;
+}
+
+th {
+    text-transform: uppercase;
+}
+
+th,td {
+    border: 2px solid var(--accent-color);
+    width: 20%;
+    padding: 0.40em;
+    background-color: #93c0f2;
+}
+
+.container {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
 }
 
 .wrapper {
@@ -26,21 +92,6 @@ img {
     flex-direction: column;
 }
 
-h1,h2,label {
-    color: #2874A6;
-}
-
-input {
-    padding: 4pt 4pt;
-    margin: 2px;
-}
-
-table {
-    width: 75%;
-}
-
-table,th,td {
-    border: 2px solid #2874A6;
-    padding: 2px;
-    margin: 5px;
+.menu-item {
+    margin: 0.75em;
 }

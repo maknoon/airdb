@@ -21,7 +21,7 @@ airdb = AirplaneDb(host=config.host,
 def index():
     if session.get('type') == 'user':
         get_itineraries = json.loads(airdb.get_itinerary(1))
-        return render_template('db.html', type='user', data=get_itineraries)
+        return render_template('main.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
     else:
