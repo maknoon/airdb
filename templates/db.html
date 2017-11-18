@@ -71,31 +71,31 @@
             </table>
             <div class="filter">
                 <form action="/workscheduleUI" method="GET">
-                    <button>Show All</button>
+                    <button>Remove Filter</button>
                 </form>
             
                 <form action="/workscheduleUI" method="GET" >
-                    <p>Filter by Employee ID
-                        <input type="text" name="e_id" />
+                    <p>Filter by
+                        <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type='submit' name="filteremp" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/workscheduleUI" method="GET" >
-                    <p>Filter by Flight ID
-                        <input type = "text" name = "f_id" />
+                    <p>Filter by
+                        <input type="text" name ="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/workscheduleUI" method="POST">
-                    <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" />
+                    <p>Add <input type="text" name="e_id" placeholder="Employee ID" /> to <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="add" value="Submit"/>
                     </p>
                 </form>
             
                  <form action="/workscheduleUI" method="GET">
-                    <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" />
+                    <p>Remove  <input type="text" name="e_id" placeholder="Employee ID" /> from <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="delete" value="Submit"/>
                     </p>
                 </form>
@@ -125,18 +125,18 @@
 
             <div class="filter">            
                 <form action="employeeUI" method="GET">
-                    <button>Show All</button>
+                    <button>Remove Filter</button>
                 </form>
             
                 <form action="/employeeUI" method="POST">
-                    <p>Add employee type <input type = "text" name = "type" />  
-                    with wage <input type = "text" name = "wage" /> 
+                    <p>Add <input type="text" name="type" placeholder="Employee Type" />  
+                    with <input type="text" name="wage" placeholder="Wage" /> 
                         <input type='submit' name="add" value="Submit"/>
                     </p>
                 </form>
             
                  <form action="/employeeUI" method="GET">
-                    <p>Delete employee  <input type = "text" name = "e_id" />
+                    <p>Delete <input type="text" name="e_id" placeholder="Employee ID" />
                     <input type='submit' name="delete" value="Submit"/>
                     </p>
                 </form>
@@ -187,19 +187,19 @@
 
             <div class="filter">
                 <form action="/aircraftUI" method="GET">
-                    <button>Show All</button>
+                    <button>Remove Filter</button>
                 </form>
             
                 <form action="/aircraftUI" method="GET" >
-                    <p>Filter by Airport
-                        <input type="text" name="airport_id" />
+                    <p>Filter by
+                        <input type="text" name="airport_id" placeholder="Airport ID" />
                         <input type='submit' name="filterairport" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/aircraftUI" method="GET" >
-                    <p>Filter by Status
-                        <input type = "text" name = "status" />
+                    <p>Filter by
+                        <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
