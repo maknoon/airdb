@@ -479,9 +479,10 @@ class AirplaneDb(object):
 
 #==============================================================================
 #   function: add_baggage
-#   description: adds an instance of baggage to BAGGAGE table
-#   return: added baggage json object
+#   description: add baggage instance for cust_id
+#   return: baggage json object
 #==============================================================================
+
     def add_baggage(self, itinerary_id, bag_weight):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -494,12 +495,12 @@ class AirplaneDb(object):
         try:
             cursor.execute(add_baggage_query)
             db.commit()
-            baggage = {
-                'baggage_id': cursor.lastrowid,
-                'itinerary_id': itinerary_id,
-                'baggage_weight': float(bag_weight)
-            }
-            data = json.dumps(baggage, sort_keys=True, indent=4, separators=(',', ': '))
+            bag_object = {
+                    'bag_id': cursor.lastrowid,
+                    'itinerary_id': itinerary_id,
+                    'weight': bag_weight
+                }
+            data = json.dumps(bag_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Add Baggage Failed with error: {0}").format(e)
             db.rollback()
@@ -508,6 +509,55 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+    
+#==============================================================================
+#   function: get_baggage
+#   description: returns an instance of baggage based on itinerary ID
+#   return: baggage json object
+#==============================================================================
+    def get_baggage(self, i_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        if i_id is None:
+            get_baggage_query = """SELECT * FROM BAGGAGE"""
+        else:
+            get_baggage_query = """SELECT * FROM BAGGAGE WHERE I_ID = %d""" % int(i_id)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_baggage_query)
+            print("query executed")
+            if i_id is None:
+                baggage = cursor.fetchall()
+                for bag in baggage:
+                    bag_object = {
+                        'bag_id': bag[0],
+                        'itinerary_id': bag[1],
+                        'weight': str(bag[2])
+                    }
+                    dataList.append(bag_object)
+            else:
+                baggage = cursor.fetchone()
+                bag_object = {
+                        'bag_id': bag[0],
+                        'itinerary_id': bag[1],
+                        'weight': bag[2]
+                    }
+                dataList.append(bag_object)
+                print(baggage)
+
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Baggage Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
 
 #==============================================================================
 #   function: get_customer
@@ -519,21 +569,37 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        get_customer_query = """SELECT * FROM CUSTOMER
+        if (customer_id==None):
+            get_customer_query = """SELECT * FROM CUSTOMER"""
+        else:
+            get_customer_query = """SELECT * FROM CUSTOMER
                                 WHERE C_ID = %d""" % int(customer_id)
-
         cursor = db.cursor()
         try:
+            dataList = []
             cursor.execute(get_customer_query)
-            customer = cursor.fetchone()
-            c_object = {
-                'customer_id': customer[0],
-                'customer_name': customer[1],
-                'customer_age': customer[2],
-                'customer_email': customer[3],
-                'customer_phone': customer[4]
-            }
-            data = json.dumps(c_object, sort_keys=True, indent=4, separators=(',', ': '))
+            if customer_id is None:
+                customers = cursor.fetchall()
+                for c in customers:
+                    c_object = {
+                        'customer_id': c[0],
+                        'customer_name': c[1],
+                        'customer_age': c[2],
+                        'customer_email': c[3],
+                        'customer_phone': c[4]
+                    }
+                    dataList.append(c_object)
+            else:
+                customers = cursor.fetchone()
+                c_object = {
+                    'customer_id': customers[0],
+                    'customer_name': customers[1],
+                    'customer_age': customers[2],
+                    'customer_email': customers[3],
+                    'customer_phone': customers[4]
+                }
+                dataList.append(c_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Get Customer failed with error: {0}").format(e)
             db.rollback()
@@ -889,6 +955,67 @@ class AirplaneDb(object):
         db.close()
         return data
 
+#==============================================================================
+#   function: get_flight
+#   description: get all flights or a given flight ID
+#   returns: the list of all flights if there are no specified Flight_id
+#        or: the flight corresponding to the given Flight_id
+#==============================================================================      
+    def get_flight(self, f_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        get_flight_query = ""
+        if f_id is None:
+            get_flight_query = """SELECT * FROM FLIGHT"""
+        else:
+            get_flight_query = """SELECT * FROM FLIGHT WHERE F_ID = '%s'""" % (f_id)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            if f_id is None:
+                flights = cursor.fetchall()
+                for flight in flights:
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'departtime': flight[3],
+                        'arrivetime': flight[4],
+                        'departairport': flight[5],
+                        'arriveairport': flight[6],
+                        'departgate': flight[7],
+                        'arrivegate': flight[8],
+                        'status': flight[9]
+                    }
+                    dataList.append(f_object)
+            else:
+                flights = cursor.fetchone()
+                f_object = {
+                    'flight_id': int(flights[0]),
+                        'aircraft_id': int(flights[1]),
+                        'distance': float(flights[2]),
+                        'departtime': flights[3],
+                        'arrivetime': flights[4],
+                        'departairport': flights[5],
+                        'arriveairport': flights[6],
+                        'departgate': flights[7],
+                        'arrivegate': flights[8],
+                        'status': flights[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
+        except Exception as e:
+            print("Get Flight Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+            
+        cursor.close()
+        db.close()
+        return data
 #==============================================================================
 #   function: get_airport
 #   description: get all the airports
@@ -1346,20 +1473,28 @@ class AirplaneDb(object):
                              db=self.db)
 
          if i_id is None:
-             return "Itinerary ID is NULL"
+             get_schedule_query = """SELECT * FROM SCHEDULE"""
          else:
              get_schedule_query = """SELECT * FROM SCHEDULE WHERE I_ID = %d""" % (int(i_id))
          cursor = db.cursor()
          try:
              dataList = []
              cursor.execute(get_schedule_query)
-             schedules = cursor.fetchall()
-             for s in schedules:
-                 schedule = {
-                    'itinerary_id': s[0],
-                    'flight_id': s[1]
+             if i_id is None:
+                entireschedule = cursor.fetchall()
+                for schedule in entireschedule:
+                    s_object = {
+                        'itinerary_id': schedule[0],
+                        'flight_id': schedule[1]
+                    }
+                    dataList.append(s_object)
+             else: 
+                 schedule = cursor.fetchone()
+                 s_object = {
+                    'itinerary_id': schedule[0],
+                    'flight_id': schedule[1]
                  }
-                 dataList.append(schedule)
+                 dataList.append(s_object)
              data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
          except Exception as e:
              data = ("Get Schedules Failed with error: {0}").format(e)
@@ -1416,7 +1551,7 @@ class AirplaneDb(object):
         if f_id is None:
             return "Flight ID is NULL"
         else:
-            get_employee_query = """SELECT E.E_ID
+            get_employee_query = """SELECT E.E_ID, W.F_ID
                                     FROM EMPLOYEE E, WORKSON W WHERE
                                     E.E_ID = W.E_ID AND W.F_ID = %d""" % (int(f_id))
         cursor = db.cursor()
@@ -1426,7 +1561,8 @@ class AirplaneDb(object):
             employees = cursor.fetchall()
             for e in employees:
                 employee = {
-                    'employee_id': e
+                    'employee_id': e[0],
+                    'flight_id' : e[1]
                 }
                 dataList.append(employee)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1452,7 +1588,7 @@ class AirplaneDb(object):
         if e_id is None:
             return "Employeesss ID is NULL"
         else:
-            get_flight_query = """SELECT F.F_ID
+            get_flight_query = """SELECT W.E_ID, F.F_ID
                                     FROM FLIGHT F, WORKSON W WHERE
                                     F.F_ID = W.F_ID AND W.E_ID = %d""" % (int(e_id))
         cursor = db.cursor()
@@ -1462,7 +1598,8 @@ class AirplaneDb(object):
             flights = cursor.fetchall()
             for f in flights:
                 flight = {
-                    'flight_id': f
+                    'employee_id': f[0],
+                    'flight_id': f[1]
                 }
                 dataList.append(flight)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))

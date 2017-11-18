@@ -20,17 +20,11 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        # get all itineraries
         get_itineraries = json.loads(airdb.get_itinerary(1))
-
         return render_template('db.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
-        # get all airports
-        get_airports = json.loads(airdb.get_airport(None))
-
-        return render_template('db.html', type='admin', data=get_airports)
+        return render_template('main.html', type='admin')
     else:
-
         return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
@@ -38,13 +32,15 @@ def login():
     if (request.form['password'] == config.adminpwd
         and request.form['username'] == 'admin'):
         session['type'] = 'admin'
+        return mainmenu()
     elif (request.form['password'] == config.userpwd
         and request.form['username'] == 'user'):
         session['type'] = 'user'
+        return index()
     else:
         flash('wrong password!')
 
-    return index()
+    
 
 @app.route('/logout')
 def logout():
@@ -52,6 +48,65 @@ def logout():
 
     return index()
 
+
+# ---------------------------------------------------------
+# UI ENDPOINTS
+# ---------------------------------------------------------    
+@app.route('/main', methods = ['POST'])
+def mainmenu():
+    return render_template('main.html', type='admin')
+
+    
+@app.route('/flightUI',methods = ['POST', 'GET'])
+def flight():
+   if request.method == 'POST':
+      get_flights = json.loads(airdb.get_flight(None))
+      return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+      
+@app.route('/airportUI',methods = ['POST', 'GET'])
+def airport():
+    if request.method == 'POST':
+      get_airports = json.loads(airdb.get_airport(None))
+      return render_template('db.html', type = 'admin', tab = 'airport', data = get_airports)
+    
+
+@app.route('/workscheduleUI',methods = ['POST', 'GET', 'DELETE'])
+def workschedule():
+    emp_id = request.args.get('e_id')
+    flight_id = request.args.get('f_id')
+    filter_emp = request.args.get('filteremp')
+    filter_flight = request.args.get('filterflight')
+    add = request.args.get('add')
+    delete = request.args.get('delete')
+    if filter_emp is not None:
+        get_work_schedule = json.loads(airdb.get_flight_for_employee(emp_id))
+    elif filter_flight is not None:
+        get_work_schedule = json.loads(airdb.get_employee_for_flight(flight_id))
+    elif add is not None:
+        get_work_schedule = json.loads(airdb.add_workson(emp_id, flight_id))
+    elif delete is not None:
+        get_work_schedule = json.loads(airdb.delete_workson(emp_id, flight_id))
+    else:
+        get_work_schedule = json.loads(airdb.get_workson())
+    return render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
+
+@app.route('/baggageUI',methods = ['POST', 'GET'])
+def baggage():
+    if request.method == 'POST':
+      get_bags = json.loads(airdb.get_baggage(None))
+      return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
+
+@app.route('/aircraftUI',methods = ['POST', 'GET'])
+def aircraft():
+    if request.method == 'POST':
+      get_airplanes = json.loads(airdb.get_aircraft(None))
+      return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
+
+@app.route('/customerUI',methods = ['POST', 'GET'])
+def customer():
+    if request.method == 'POST':
+      get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+      return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
@@ -111,15 +166,17 @@ def customer_route():
 # =========
 # /BAGGAGE
 # =========
-@app.route('/baggage', methods=['POST'])
+@app.route('/baggage', methods=['POST', 'GET'])
 def baggage_route():
-    req_body = request.get_json()
-    i_id = req_body['i_id']
-    weight = req_body['weight']
-    res_body = airdb.add_baggage(i_id, weight)
-
-    return res_body
-
+    i_id = request.args.get('id')
+    # fetch bag by itinerary id
+    if request.method == 'GET':
+        res_body = airdb.get_baggage(i_id)
+        if res_body == 0: abort(404)
+    # add a new bag
+    elif request.method == 'POST':
+	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
+        
 # =========
 # /FF
 # =========
@@ -170,7 +227,7 @@ def itinerary_route():
 # =========
 # /FLIGHT
 # =========
-@app.route('/flight', methods=['POST', 'PATCH'])
+@app.route('/flight', methods=['GET','POST', 'PATCH'])
 def flight_route():
     if request.method == 'POST':
         req_body = request.get_json()
@@ -204,7 +261,10 @@ def flight_route():
             res_body = airdb.update_flight(f_id, 'F_ARRIVALGATEID', wrapper(req_body['arrivegate']))
         if 'status' in req_body:
             res_body = airdb.update_flight(f_id, 'F_STATUS', wrapper(req_body['status']))
-
+    elif request.method == 'GET':
+        f_id = request.args.get('id')
+        res_body = airdb.get_flight(f_id)
+        if res_body == 0: abort(404)
     return res_body
 
 # =========
