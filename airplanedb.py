@@ -602,7 +602,7 @@ class AirplaneDb(object):
         insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
                            VALUES (5, 125.67)
                            """
-        insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+        insert_baggage_7 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
                            VALUES (7, 125.67)
                            """
         insert_baggage_8 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
