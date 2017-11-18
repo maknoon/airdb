@@ -878,7 +878,6 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        print(bag_weight)
         add_baggage_query = """INSERT INTO BAGGAGE(I_ID, B_WEIGHT)
                                 VALUES(%s, %.2f)""" % (itinerary_id, float(bag_weight))
 
