@@ -1551,7 +1551,7 @@ class AirplaneDb(object):
         if f_id is None:
             return "Flight ID is NULL"
         else:
-            get_employee_query = """SELECT E.E_ID
+            get_employee_query = """SELECT E.E_ID, W.F_ID
                                     FROM EMPLOYEE E, WORKSON W WHERE
                                     E.E_ID = W.E_ID AND W.F_ID = %d""" % (int(f_id))
         cursor = db.cursor()
@@ -1561,7 +1561,8 @@ class AirplaneDb(object):
             employees = cursor.fetchall()
             for e in employees:
                 employee = {
-                    'employee_id': e
+                    'employee_id': e[0],
+                    'flight_id' : e[1]
                 }
                 dataList.append(employee)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1587,7 +1588,7 @@ class AirplaneDb(object):
         if e_id is None:
             return "Employeesss ID is NULL"
         else:
-            get_flight_query = """SELECT F.F_ID
+            get_flight_query = """SELECT W.E_ID, F.F_ID
                                     FROM FLIGHT F, WORKSON W WHERE
                                     F.F_ID = W.F_ID AND W.E_ID = %d""" % (int(e_id))
         cursor = db.cursor()
@@ -1597,7 +1598,8 @@ class AirplaneDb(object):
             flights = cursor.fetchall()
             for f in flights:
                 flight = {
-                    'flight_id': f
+                    'employee_id': f[0],
+                    'flight_id': f[1]
                 }
                 dataList.append(flight)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))

@@ -96,6 +96,7 @@ div.tab button.active {
             
             {% endif %}
             {% if tab == 'workschedule' %}
+            <h1> Work Schedule </h1>
              <p>
              <table>
                 <tr>
@@ -110,6 +111,24 @@ div.tab button.active {
             {% endfor %}
             </table>
             </p>
+            
+            <form action="/workscheduleUI" method="get">
+                <p>Filter by Employee ID <input type = "text" name = "e_id" /> <button>Filter</button> </p>
+            </form>
+            
+            <form action="/workscheduleUI" method="get">
+                <p>Filter by Flight ID <input type = "text" name = "f_id" /> <button>Filter</button> </p>
+            </form>
+            
+            <form action="/workscheduleUI" method="post">
+                <p>Add employee to flight <input type = "text" name = "e_id" /> <input type = "text" name = "f_id" /> <button>Add</button> </p>
+            </form>
+            
+             <form action="/workscheduleUI" method="delete">
+                <p>Remove employee from flight <input type = "text" name = "e_id" /> <input type = "text" name = "f_id" /> <button>Remove</button> </p>
+            </form>
+            
+          
             {% endif %}
             
             {% if tab == 'baggage' %}
@@ -170,6 +189,8 @@ div.tab button.active {
                 {% endfor %} 
             </table>
             </p>
+            
+            
    
  	        {% endif %}
         {% endif %}

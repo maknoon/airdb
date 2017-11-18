@@ -72,9 +72,24 @@ def airport():
 
 @app.route('/workscheduleUI',methods = ['POST', 'GET'])
 def workschedule():
+    emp_id = request.args.get('e_id')
+    flight_id = request.args.get('f_id')
+
     if request.method == 'POST':
-      get_work_schedule = json.loads(airdb.get_workson())
-      return render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
+      if (emp_id is not None and flight_id is not None):
+          get_work_schedule = json.loads(airdb.add_workson(emp_id, flight_id))
+      else:
+          get_work_schedule = json.loads(airdb.get_workson())
+    elif request.method == 'GET':
+       emp_id = request.args.get('e_id')
+       flight_id = request.args.get('f_id')
+       if emp_id is not None:
+            get_work_schedule = json.loads(airdb.get_flight_for_employee(emp_id))
+       elif flight_id is not None:
+           get_work_schedule = json.loads(airdb.get_employee_for_flight(flight_id))
+    elif request.method == 'DELETE':
+           get_work_schedule = json.loads(airdb.delete_workson(emp_id, flight_id))
+    return get_work_schedule #render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
 
 @app.route('/baggageUI',methods = ['POST', 'GET'])
 def baggage():
