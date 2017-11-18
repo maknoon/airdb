@@ -185,6 +185,28 @@
                 {% endfor %} 
             </table>
             </div>
+            
+            <div class="container">
+            <form action="/aircraftUI" method="GET">
+                <button>Show All</button>
+            </form>
+            
+            <form action="/aircraftUI" method="GET" >
+                <p>Filter by Airport
+                    <input type="text" name="airport_id" />
+                    <input type='submit' name="filterairport" value="Submit"/>
+                </p>
+            </form>
+            
+            <form action="/aircraftUI" method="GET" >
+                <p>Filter by Status
+                    <input type = "text" name = "status" />
+                    <input type='submit' name="filterstatus" value="Submit"/>
+                </p>
+            </form>
+            </div>
+            
+            
             {% endif %}
             
             {% if tab == 'customer' %}

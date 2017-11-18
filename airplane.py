@@ -117,9 +117,17 @@ def baggage():
 
 @app.route('/aircraftUI',methods = ['POST', 'GET'])
 def aircraft():
-    if request.method == 'POST':
-      get_airplanes = json.loads(airdb.get_aircraft(None))
-      return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
+    get_airplanes = json.loads(airdb.get_aircraft(None))
+    if request.method =='GET':
+        airport_id = request.args.get('airport_id')
+        status = request.args.get('status')
+        should_delete = request.args.get('delete')
+        if status is not None:
+            get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
+        elif airport_id is not None:
+            get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
+    #elif request.method == 'POST':
+    return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
 
 @app.route('/customerUI',methods = ['POST', 'GET'])
 def customer():

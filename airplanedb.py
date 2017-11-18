@@ -1712,6 +1712,78 @@ class AirplaneDb(object):
         db.close()
         return data
 
+    def get_aircraft_by_airport(self, airport_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_query = """SELECT * FROM AIRCRAFT WHERE AP_ID = '%s' """ % (airport_id)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_query)
+            aircrafts = cursor.fetchall()
+            for aircraft in aircrafts:
+                ac_object = {
+                    'id': aircraft[0],
+                    'status': aircraft[1],
+                    'make': aircraft[2],
+                    'mileage': float(aircraft[3]),
+                    'date_created': aircraft[4],
+                    'last_maintained': aircraft[5],
+                    'num_economy': aircraft[6],
+                    'num_business': aircraft[7],
+                    'number_firstclass': aircraft[8],
+                    'airport_id': aircraft[9]
+                }
+                dataList.append(ac_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Aircraft by Airport ID Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+        
+        cursor.close()
+        db.close()
+        return data
+        
+        
+    def get_aircraft_by_status(self, status):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_query = """SELECT * FROM AIRCRAFT WHERE AC_STATUS = '%s' """ % (status)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_query)
+            aircrafts = cursor.fetchall()
+            for aircraft in aircrafts:
+                ac_object = {
+                    'id': aircraft[0],
+                    'status': aircraft[1],
+                    'make': aircraft[2],
+                    'mileage': float(aircraft[3]),
+                    'date_created': aircraft[4],
+                    'last_maintained': aircraft[5],
+                    'num_economy': aircraft[6],
+                    'num_business': aircraft[7],
+                    'number_firstclass': aircraft[8],
+                    'airport_id': aircraft[9]
+                }
+                dataList.append(ac_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Aircraft by Status Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+        
+        cursor.close()
+        db.close()
+        return data
+    
+        return data
 #==============================================================================
 #   function: update_aircraft
 #   description: update an aircraft's status in table AIRCRAFT
