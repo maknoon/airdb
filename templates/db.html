@@ -4,7 +4,6 @@
     <title>welcome to AIRDB</title>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
 </head>
-
 <body>
 {% if type %}
     <h1>You are logged in as {{ type }}</h1>
@@ -164,9 +163,9 @@
         </form>
     {% endif %}
     {% if type == 'user' %}
- 		<table>
- 			<tr>
- 				<th>Itinerary #</th>
+        <table>
+ 	        <tr>
+ 			    <th>Itinerary #</th>
  				<th>Seat Type</th>
  				<th>Seat Cost</th>
  				<th>Status</th>
