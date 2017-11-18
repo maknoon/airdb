@@ -93,6 +93,12 @@ def workschedule():
 
     return render_template('db.html', type ='admin', tab ='workschedule', data=get_work_schedule)
 
+@app.route('/employeeUI', methods=['POST', 'GET'])
+def employee():
+    if request.method == 'POST':
+        get_employees = json.loads(airdb.get_employee(None))
+        return render_template('db.html', type = 'admin',  tab = 'employee', data = get_employees)
+
 @app.route('/baggageUI',methods = ['POST', 'GET'])
 def baggage():
     if request.method == 'POST':

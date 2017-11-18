@@ -1822,7 +1822,55 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+        
+#==============================================================================
+#   function: get_employee
+#   description: get_employee by e_id or if e_id is None, return all employees
+#   returns: employee with specified e_id or all employees
+#==============================================================================
+    def get_employee(self, e_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+        if e_id is None:
+            get_employee_query = """ SELECT * FROM EMPLOYEE """
+        else:
+            get_employee_query = """ SELECT * FROM EMPLOYEE WHERE E_ID = '%s' """ % (e_id)
+  
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_employee_query)
+            if e_id is None:
+                emps = cursor.fetchall()
+                for emp in emps:
+                    emp_object = {
+                        'id': emp[0],
+                        'hours': emp[1],
+                        'type': emp[2],
+                        'wage': emp[3]
+                    }
+                    dataList.append(emp_object)
+            else:
+                emps= cursor.fetchone()
+                emp_object = {
+                    'id': emps[0],
+                    'hours': emps[1],
+                    'type': emps[2],
+                    'wage': emps[3]
+                }
+                dataList.append(emp_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Employee Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
 
+        cursor.close()
+        db.close()
+        return data
+        
 #==============================================================================
 #   function: delete_employee
 #   description: delete an employee from table EMPLOYEE

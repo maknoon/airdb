@@ -103,6 +103,28 @@
             </div>
             {% endif %}
             
+            {% if tab == 'employee' %}
+            <h2>Employees</h2>
+            <div class="container">
+            <table>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Hours</th>
+                    <th>Type</th>
+                    <th>Wage</th>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['id'] }}</td>
+                    <td>{{ row['hours'] }}</td>
+                    <td>{{ row['type'] }}</td>
+                    <td>{{ row['wage'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+            {% endif %}
+            
             {% if tab == 'baggage' %}
             <h2>Baggage Directory</h2>
             <div class="container">
