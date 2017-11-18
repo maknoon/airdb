@@ -69,37 +69,37 @@
                 </tr>
             {% endfor %}
             </table>
+            <div class="filter">
+                <form action="/workscheduleUI" method="GET">
+                    <button>Show All</button>
+                </form>
+            
+                <form action="/workscheduleUI" method="GET" >
+                    <p>Filter by Employee ID
+                        <input type="text" name="e_id" />
+                        <input type='submit' name="filteremp" value="Submit"/>
+                    </p>
+                </form>
+            
+                <form action="/workscheduleUI" method="GET" >
+                    <p>Filter by Flight ID
+                        <input type = "text" name = "f_id" />
+                        <input type='submit' name="filterflight" value="Submit"/>
+                    </p>
+                </form>
+            
+                <form action="/workscheduleUI" method="POST">
+                    <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" />
+                        <input type='submit' name="add" value="Submit"/>
+                    </p>
+                </form>
+            
+                 <form action="/workscheduleUI" method="GET">
+                    <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" />
+                        <input type='submit' name="delete" value="Submit"/>
+                    </p>
+                </form>
             </div>
-            <div class="container">
-            <form action="/workscheduleUI" method="GET">
-                <button>Show All</button>
-            </form>
-            
-            <form action="/workscheduleUI" method="GET" >
-                <p>Filter by Employee ID
-                    <input type="text" name="e_id" />
-                    <input type='submit' name="filteremp" value="Submit"/>
-                </p>
-            </form>
-            
-            <form action="/workscheduleUI" method="GET" >
-                <p>Filter by Flight ID
-                    <input type = "text" name = "f_id" />
-                    <input type='submit' name="filterflight" value="Submit"/>
-                </p>
-            </form>
-            
-            <form action="/workscheduleUI" method="POST">
-                <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" />
-                    <input type='submit' name="add" value="Submit"/>
-                </p>
-            </form>
-            
-             <form action="/workscheduleUI" method="GET">
-                <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" />
-                    <input type='submit' name="delete" value="Submit"/>
-                </p>
-            </form>
             </div>
             {% endif %}
             
@@ -122,29 +122,29 @@
                 </tr>
                 {% endfor %}
             </table>
+
+            <div class="filter">            
+                <form action="employeeUI" method="GET">
+                    <button>Show All</button>
+                </form>
+            
+                <form action="/employeeUI" method="POST">
+                    <p>Add employee type <input type = "text" name = "type" />  
+                    with wage <input type = "text" name = "wage" /> 
+                        <input type='submit' name="add" value="Submit"/>
+                    </p>
+                </form>
+            
+                 <form action="/employeeUI" method="GET">
+                    <p>Delete employee  <input type = "text" name = "e_id" />
+                    <input type='submit' name="delete" value="Submit"/>
+                    </p>
+                </form>
             </div>
-            
-            <div class="container">
-            
-            <form action="employeeUI" method="GET">
-                <button>Show All</button>
-            </form>
-            
-            <form action="/employeeUI" method="POST">
-                <p>Add employee type <input type = "text" name = "type" />  </br>
-                with wage <input type = "text" name = "wage" /> 
-                    <input type='submit' name="add" value="Submit"/>
-                </p>
-            </form>
-            
-             <form action="/employeeUI" method="GET">
-                <p>Delete employee  <input type = "text" name = "e_id" />
-                <input type='submit' name="delete" value="Submit"/>
-                </p>
-            </form>
+
             </div>
-            
             {% endif %}
+
             {% if tab == 'baggage' %}
             <h2>Baggage Directory</h2>
             <div class="container">
@@ -184,29 +184,28 @@
                 </tr>
                 {% endfor %} 
             </table>
+
+            <div class="filter">
+                <form action="/aircraftUI" method="GET">
+                    <button>Show All</button>
+                </form>
+            
+                <form action="/aircraftUI" method="GET" >
+                    <p>Filter by Airport
+                        <input type="text" name="airport_id" />
+                        <input type='submit' name="filterairport" value="Submit"/>
+                    </p>
+                </form>
+            
+                <form action="/aircraftUI" method="GET" >
+                    <p>Filter by Status
+                        <input type = "text" name = "status" />
+                        <input type='submit' name="filterstatus" value="Submit"/>
+                    </p>
+                </form>
             </div>
-            
-            <div class="container">
-            <form action="/aircraftUI" method="GET">
-                <button>Show All</button>
-            </form>
-            
-            <form action="/aircraftUI" method="GET" >
-                <p>Filter by Airport
-                    <input type="text" name="airport_id" />
-                    <input type='submit' name="filterairport" value="Submit"/>
-                </p>
-            </form>
-            
-            <form action="/aircraftUI" method="GET" >
-                <p>Filter by Status
-                    <input type = "text" name = "status" />
-                    <input type='submit' name="filterstatus" value="Submit"/>
-                </p>
-            </form>
-            </div>
-            
-            
+
+            </div>            
             {% endif %}
             
             {% if tab == 'customer' %}
