@@ -23,18 +23,10 @@ def index():
         # get all itineraries
         get_itineraries = json.loads(airdb.get_itinerary(1))
 
-        return render_template('db.html', type='user', data=get_itineraries)
+        return #render_template('db.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
-        # get all airports
-        get_airports = json.loads(airdb.get_airport(None))
-        get_flights = json.loads(airdb.get_flight(None))
-        get_bags = json.loads(airdb.get_baggage(None))
-        get_work_schedule = json.loads(airdb.get_workson())
-        get_airplanes = json.loads(airdb.get_aircraft(None))
-        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-        return render_template('db.html', type='admin', data1=get_flights, data2=get_work_schedule, data3=get_airports, data4 = get_bags, data5 = get_airplanes, data6 = get_schedule)
+        return render_template('main.html', type='admin')
     else:
-
         return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
@@ -48,7 +40,7 @@ def login():
     else:
         flash('wrong password!')
 
-    return index()
+    return mainmenu()
 
 @app.route('/logout')
 def logout():
@@ -56,6 +48,51 @@ def logout():
 
     return index()
 
+
+# ---------------------------------------------------------
+# UI ENDPOINTS
+# ---------------------------------------------------------    
+@app.route('/main', methods = ['POST'])
+def mainmenu():
+    return render_template('main.html', type='admin')
+
+    
+@app.route('/flightUI',methods = ['POST', 'GET'])
+def flight():
+   if request.method == 'POST':
+      get_flights = json.loads(airdb.get_flight(None))
+      return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+      
+@app.route('/airportUI',methods = ['POST', 'GET'])
+def airport():
+    if request.method == 'POST':
+      get_airports = json.loads(airdb.get_airport(None))
+      return render_template('db.html', type = 'admin', tab = 'airport', data = get_airports)
+    
+
+@app.route('/workscheduleUI',methods = ['POST', 'GET'])
+def workschedule():
+    if request.method == 'POST':
+      get_work_schedule = json.loads(airdb.get_workson())
+      return render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
+
+@app.route('/baggageUI',methods = ['POST', 'GET'])
+def baggage():
+    if request.method == 'POST':
+      get_bags = json.loads(airdb.get_baggage(None))
+      return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
+
+@app.route('/aircraftUI',methods = ['POST', 'GET'])
+def aircraft():
+    if request.method == 'POST':
+      get_airplanes = json.loads(airdb.get_aircraft(None))
+      return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
+
+@app.route('/customerUI',methods = ['POST', 'GET'])
+def customer():
+    if request.method == 'POST':
+      get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+      return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS

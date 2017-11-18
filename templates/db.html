@@ -47,25 +47,9 @@ div.tab button.active {
 <body>
 {% if type %}
     <h1>You are logged in as {{ type }}</h1>
-    <h2>Showing {{ type }} view</h2>
-        {% if type == 'admin' %}
-        <div class="tab">
-		<button class="tablinks" onclick="openTable(event, 'Flights')">Flights</button>
-		<button class="tablinks" onclick="openTable(event, 'Work Schedule')">Work Schedule</button>
-		<button class="tablinks" onclick="openTable(event, 'Airports')">Airports</button>
-		<button class="tablinks" onclick="openTable(event, 'Baggage')">Baggage</button>
-		<button class="tablinks" onclick="openTable(event, 'Aircraft Fleet')">Aircraft Fleet</button>
-        <button class="tablinks" onclick="openTable(event, 'Customer Flight Information')">Customer Flight Information</button>
-		</div>
-        
-        <div id="Flights" class="tabcontent">
-            <h4>Flights</h4>
-
-            <form>
-            <input type="text" id="projectFilepath" size="40" placeholder="Spot your project files">
-            <input type="button" id="spotButton" value="Spot">
-            </form>
-            {% if data1 %}
+    {% if type == 'admin' %}
+        {% if data %}
+            {% if tab == 'flight' %}
             <p>
             <table>
                 <tr>
@@ -78,7 +62,7 @@ div.tab button.active {
                     <th>Arrival Time</th>
                     <th>Status</th>
                 </tr>
-                {% for row in data1 %}
+                {% for row in data %}
                 </tr>
                     <td>{{ row['flight_id'] }}</td>
                     <td>{{ row['departairport'] }}</td>
@@ -92,55 +76,43 @@ div.tab button.active {
                 {% endfor %} 
             </table>
             </p>
-        </div>
-        
-        <div id="Work Schedule" class="tabcontent">
-         <h4>Work Schedule</h4>
-            {% if data2 %}    
-           <p>
-        <table>
-            <tr>
-                <th>Employee ID</th>
-                <th>Flight ID</th>
-            </tr>
-        {% for row in data2 %}
-            <tr>
-                <td>{{ row['employee_id'] }}</td>
-                <td>{{ row['flight_id'] }}</td>
-            </tr>
-        {% endfor %}
-        </table>
-        </p>
-        {% endif %}
             {% endif %}
-        </div>
-
-        
-        <div id="Airports" class="tabcontent">
-         <h4>Airports</h4>
-        {% if data3 %}    
-           <p>
-        <table>
-            <tr>
-                <th>Airport</th>
-                <th>City</th>
-                <th>Country</th>
-            </tr>
-        {% for row in data3 %}
-            <tr>
-                <td>{{ row['airport_id'] }}</td>
-                <td>{{ row['city'] }}</td>
-                <td>{{ row['country'] }}</td>
-            </tr>
-        {% endfor %}
-        </table>
-        </p>
-        {% endif %}
-        </div>
-        
-        <div id="Baggage" class="tabcontent">
-            <h4>Baggage</h4>
-            {% if data4 %}
+            
+            {% if tab == 'airport' %}
+            <table>
+                <tr>
+                    <td>Airport</td>
+                    <td>City</td>
+                    <td>Country</td>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['airport_id'] }}</td>
+                    <td>{{ row['city'] }}</td>
+                    <td>{{ row['country'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+            {% endif %}
+            {% if tab == 'workschedule' %}
+             <p>
+             <table>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Flight ID</th>
+                </tr>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row['employee_id'] }}</td>
+                    <td>{{ row['flight_id'] }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            </p>
+            {% endif %}
+            
+            {% if tab == 'baggage' %}
             <p>
             <table>
                 <tr>
@@ -148,7 +120,7 @@ div.tab button.active {
                     <th>Bag ID</th>
                     <th>Weight</th>
                 </tr>
-                {% for row in data4 %}
+                {% for row in data %}
                 </tr>
                     <td>{{ row['itinerary_id'] }}</td>
                     <td>{{ row['bag_id'] }}</td>
@@ -157,12 +129,9 @@ div.tab button.active {
                 {% endfor %} 
             </table>
             </p>
+       
             {% endif %}
-        </div>
-        
-        <div id="Aircraft Fleet" class="tabcontent">
-         <h4>Aircraft</h4>
-         {% if data5 %}
+            {% if tab == 'aircraft' %}
             <p>
             <table>
                 <tr>
@@ -171,7 +140,7 @@ div.tab button.active {
                     <th>Last Maintained</th>
                     <th>Airport</th>
                 </tr>
-                {% for row in data5 %}
+                {% for row in data %}
                 </tr>
                     <td>{{ row['id'] }}</td>
                     <td>{{ row['status'] }}</td>
@@ -181,12 +150,10 @@ div.tab button.active {
                 {% endfor %} 
             </table>
             </p>
+  
             {% endif %}
-        </div>
-        
-        <div id="Customer Flight Information" class="tabcontent">
-         <h4>Customer Flight Information</h4>
-         {% if data6 %}
+            
+            {% if tab == 'customer' %}
             <p>
             <table>
                 <tr>
@@ -194,7 +161,7 @@ div.tab button.active {
                     <th>Flight ID</th>
                     <th>Itinerary ID</th>
                 </tr>
-                {% for row in data6 %}
+                {% for row in data %}
                 </tr>
                     <td>{{ row[] }}</td>
                     <td>{{ row['flight_id'] }}</td>
@@ -203,46 +170,16 @@ div.tab button.active {
                 {% endfor %} 
             </table>
             </p>
-            {% endif %}
-        </div>
-       
-       <script>
-		function openTable(evt, tableName) {
-			var i, tabcontent, tablinks;
-			tabcontent = document.getElementsByClassName("tabcontent");
-			for (i = 0; i < tabcontent.length; i++) {
-				tabcontent[i].style.display = "none";
-			}
-			tablinks = document.getElementsByClassName("tablinks");
-			for (i = 0; i < tablinks.length; i++) {
-				tablinks[i].className = tablinks[i].className.replace(" active", "");
-			}
-			document.getElementById(tableName).style.display = "block";
-			evt.currentTarget.className += " active";
-			}
-		</script>
-        {% if type == 'user' %}
-        <table>
-            <tr>
-                <th>Itinerary #</th>
-                <th>Seat Type</th>
-                <th>Seat Cost</th>
-                <th>Status</th>
-            </tr>
-        {% for row in data %}
-            <tr>
-                <td>{{ row['itinerary_id'] }}</td>
-                <td>{{ row['seattype'] }}</td>
-                <td>{{ row['seatcost'] }}</td>
-                <td>{{ row['status'] }}</td>
-            </tr>
-        {% endfor %}
-        </table>
+   
+ 	        {% endif %}
         {% endif %}
     {% endif %}
-{% else %}
-    <h1>403 FORBIDDEN</h1>
-    <p>Please login!</p>
-{% endif %}
-</body>
-</html>
+ {% else %}
+ 	<h1>403 FORBIDDEN</h1>
+ {% endif %}
+ </body>
+ 
+ <form action="/main" method="post">
+            <button>Back to Main Menu</button>
+        </form>
+ </html>
