@@ -20,10 +20,8 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        # get all itineraries
         get_itineraries = json.loads(airdb.get_itinerary(1))
-
-        return #render_template('db.html', type='user', data=get_itineraries)
+        return render_template('db.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
     else:
@@ -34,13 +32,15 @@ def login():
     if (request.form['password'] == config.adminpwd
         and request.form['username'] == 'admin'):
         session['type'] = 'admin'
+        return mainmenu()
     elif (request.form['password'] == config.userpwd
         and request.form['username'] == 'user'):
         session['type'] = 'user'
+        return index()
     else:
         flash('wrong password!')
 
-    return mainmenu()
+    
 
 @app.route('/logout')
 def logout():
@@ -70,26 +70,25 @@ def airport():
       return render_template('db.html', type = 'admin', tab = 'airport', data = get_airports)
     
 
-@app.route('/workscheduleUI',methods = ['POST', 'GET'])
+@app.route('/workscheduleUI',methods = ['POST', 'GET', 'DELETE'])
 def workschedule():
     emp_id = request.args.get('e_id')
     flight_id = request.args.get('f_id')
-
-    if request.method == 'POST':
-      if (emp_id is not None and flight_id is not None):
-          get_work_schedule = json.loads(airdb.add_workson(emp_id, flight_id))
-      else:
-          get_work_schedule = json.loads(airdb.get_workson())
-    elif request.method == 'GET':
-       emp_id = request.args.get('e_id')
-       flight_id = request.args.get('f_id')
-       if emp_id is not None:
-            get_work_schedule = json.loads(airdb.get_flight_for_employee(emp_id))
-       elif flight_id is not None:
-           get_work_schedule = json.loads(airdb.get_employee_for_flight(flight_id))
-    elif request.method == 'DELETE':
-           get_work_schedule = json.loads(airdb.delete_workson(emp_id, flight_id))
-    return get_work_schedule #render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
+    filter_emp = request.args.get('filteremp')
+    filter_flight = request.args.get('filterflight')
+    add = request.args.get('add')
+    delete = request.args.get('delete')
+    if filter_emp is not None:
+        get_work_schedule = json.loads(airdb.get_flight_for_employee(emp_id))
+    elif filter_flight is not None:
+        get_work_schedule = json.loads(airdb.get_employee_for_flight(flight_id))
+    elif add is not None:
+        get_work_schedule = json.loads(airdb.add_workson(emp_id, flight_id))
+    elif delete is not None:
+        get_work_schedule = json.loads(airdb.delete_workson(emp_id, flight_id))
+    else:
+        get_work_schedule = json.loads(airdb.get_workson())
+    return render_template('db.html', type = 'admin', tab = 'workschedule', data = get_work_schedule)
 
 @app.route('/baggageUI',methods = ['POST', 'GET'])
 def baggage():
@@ -174,7 +173,7 @@ def baggage_route():
     if request.method == 'GET':
         res_body = airdb.get_baggage(i_id)
         if res_body == 0: abort(404)
-	# add a new bag
+    # add a new bag
     elif request.method == 'POST':
 	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
         

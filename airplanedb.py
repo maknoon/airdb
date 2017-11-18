@@ -496,7 +496,7 @@ class AirplaneDb(object):
             cursor.execute(add_baggage_query)
             db.commit()
             bag_object = {
-                    'bag_id': cursor.lastrowid(),
+                    'bag_id': cursor.lastrowid,
                     'itinerary_id': itinerary_id,
                     'weight': bag_weight
                 }

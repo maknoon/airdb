@@ -4,46 +4,7 @@
     <title>welcome to AIRDB</title>
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
 </head>
-<style>
-body {font-family: Arial;}
 
-/* Style the tab */
-div.tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-div.tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-div.tab button:hover {
-    background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-div.tab button.active {
-    background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-}
-</style>
 <body>
 {% if type %}
     <h1>You are logged in as {{ type }}</h1>
@@ -113,19 +74,23 @@ div.tab button.active {
             </p>
             
             <form action="/workscheduleUI" method="get">
-                <p>Filter by Employee ID <input type = "text" name = "e_id" /> <button>Filter</button> </p>
+                <button>Show All</button>
+            </form>
+            
+            <form action="/workscheduleUI" method="get" >
+                <p>Filter by Employee ID <input type = "text" name = "e_id" /> <input type='submit' name="filteremp" value="Submit"/> </p>
+            </form>
+            
+            <form action="/workscheduleUI" method="get" >
+                <p>Filter by Flight ID <input type = "text" name = "f_id" /> <input type='submit' name="filterflight" value="Submit"/> </p>
             </form>
             
             <form action="/workscheduleUI" method="get">
-                <p>Filter by Flight ID <input type = "text" name = "f_id" /> <button>Filter</button> </p>
+                <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" /> <input type='submit' name="add" value="Submit"/> </p>
             </form>
             
-            <form action="/workscheduleUI" method="post">
-                <p>Add employee to flight <input type = "text" name = "e_id" /> <input type = "text" name = "f_id" /> <button>Add</button> </p>
-            </form>
-            
-             <form action="/workscheduleUI" method="delete">
-                <p>Remove employee from flight <input type = "text" name = "e_id" /> <input type = "text" name = "f_id" /> <button>Remove</button> </p>
+             <form action="/workscheduleUI" method="get">
+                <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" /> <input type='submit' name="delete" value="Submit"/> </p>
             </form>
             
           
@@ -194,13 +159,33 @@ div.tab button.active {
    
  	        {% endif %}
         {% endif %}
+         <form action="/main" method="post">
+            <button>Back to Main Menu</button>
+        </form>
     {% endif %}
+    {% if type == 'user' %}
+ 		<table>
+ 			<tr>
+ 				<th>Itinerary #</th>
+ 				<th>Seat Type</th>
+ 				<th>Seat Cost</th>
+ 				<th>Status</th>
+ 			</tr>
+ 		{% for row in data %}
+ 			<tr>
+ 				<td>{{ row['itinerary_id'] }}</td>
+ 				<td>{{ row['seattype'] }}</td>
+ 				<td>{{ row['seatcost'] }}</td>
+ 				<td>{{ row['status'] }}</td>
+ 			</tr>
+ 		{% endfor %}
+ 		</table>
+ 		{% endif %}
+        
  {% else %}
  	<h1>403 FORBIDDEN</h1>
  {% endif %}
  </body>
  
- <form action="/main" method="post">
-            <button>Back to Main Menu</button>
-        </form>
+
  </html>
