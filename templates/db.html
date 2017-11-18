@@ -72,24 +72,34 @@
             </table>
             </p>
             
-            <form action="/workscheduleUI" method="get">
+            <form action="/workscheduleUI" method="GET">
                 <button>Show All</button>
             </form>
             
-            <form action="/workscheduleUI" method="get" >
-                <p>Filter by Employee ID <input type = "text" name = "e_id" /> <input type='submit' name="filteremp" value="Submit"/> </p>
+            <form action="/workscheduleUI" method="GET" >
+                <p>Filter by Employee ID
+                    <input type="text" name="e_id" />
+                    <input type='submit' name="filteremp" value="Submit"/>
+                </p>
             </form>
             
-            <form action="/workscheduleUI" method="get" >
-                <p>Filter by Flight ID <input type = "text" name = "f_id" /> <input type='submit' name="filterflight" value="Submit"/> </p>
+            <form action="/workscheduleUI" method="GET" >
+                <p>Filter by Flight ID
+                    <input type = "text" name = "f_id" />
+                    <input type='submit' name="filterflight" value="Submit"/>
+                </p>
             </form>
             
-            <form action="/workscheduleUI" method="get">
-                <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" /> <input type='submit' name="add" value="Submit"/> </p>
+            <form action="/workscheduleUI" method="POST">
+                <p>Add employee <input type = "text" name = "e_id" /> to flight  <input type = "text" name = "f_id" />
+                    <input type='submit' name="add" value="Submit"/>
+                </p>
             </form>
             
-             <form action="/workscheduleUI" method="get">
-                <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" /> <input type='submit' name="delete" value="Submit"/> </p>
+             <form action="/workscheduleUI" method="DELETE">
+                <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" />
+                    <input type='submit' name="delete" value="Submit"/>
+                </p>
             </form>
             
           
