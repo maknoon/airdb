@@ -423,27 +423,67 @@ class AirplaneDb(object):
         insert_flight_1 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (1, 5000, '01-10-2018:23:23', '01-12-2018:06:23', 'YVR', 'TPE', 'A1', 'E5', 'PENDING')
+                            VALUES (1, 5000, '01-10-2018:23:23', '01-12-2018:06:23', 'YVR', 'TPE', 'A1', 'E5', 'ONTIME')
                             """
         insert_flight_2 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (3, 250, '01-08-2018:05:23', '01-08-2018:06:23', 'LAX', 'YVR', 'C5', 'B3', 'PENDING')
+                            VALUES (3, 250, '01-08-2018:05:23', '01-08-2018:06:23', 'LAX', 'YVR', 'C5', 'B3', 'ONTIME')
                             """
 
         insert_flight_3 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (2, 4500, '01-13-2018:05:23', '01-13-2018:17:23', 'TPE', 'JFK', 'E2', 'A3', 'PENDING')
+                            VALUES (2, 4500, '01-13-2018:05:23', '01-13-2018:17:23', 'TPE', 'JFK', 'E2', 'A3', 'ONTIME')
                             """
+        insert_flight_4 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (4, 1423, '01-21-2018:05:23', '01-21-2018:17:23', 'BOS', 'IAH', 'C2', 'E3', 'ONTIME')
+                            """
+        insert_flight_5 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (5, 2345, '01-20-2018:05:23', '01-22-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
+                            """
+        insert_flight_6 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (6, 8102, '01-09-2018:05:23', '01-10-2018:17:23', 'SHA', 'BOS', 'B2', 'A5', 'DELAYED')
+                            """
+        insert_flight_7 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (7, 940, '01-01-2018:05:23', '01-02-2018:17:23', 'KIX', 'IAH', 'B4', 'D2', 'DELAYED')
+                            """
+        insert_flight_8 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (8, 9402, '01-06-2018:05:23', '01-07-2018:17:23', 'TPE', 'YYZ', 'E4', 'E3', 'DELAYED')
+                            """
+        insert_flight_9 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (9, 9302, '01-08-2018:05:23', '01-08-2018:17:23', 'YYZ', 'BOS', 'A2', 'A3', 'CANCELED')
+                            """
+        insert_flight_10 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
+                            F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
+                            F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
+                            VALUES (10, 7123, '01-13-2018:05:23', '01-13-2018:17:23', 'SHA', 'LAX', 'B2', 'C2', 'CANCELED')
+                            """
+
 
         try:
             cursor.execute(insert_flight_1)
-            print(('Created new {0} from {1} to {2}').format('FLIGHT', 'YVR', 'TPE'))
             cursor.execute(insert_flight_2)
-            print(('Created new {0} from {1} to {2}').format('FLIGHT', 'LAX', 'YVR'))
             cursor.execute(insert_flight_3)
-            print(('Created new {0} from {1} to {2}').format('FLIGHT', 'TPE', 'JFK'))
+            cursor.execute(insert_flight_4)
+            cursor.execute(insert_flight_5)
+            cursor.execute(insert_flight_6)
+            cursor.execute(insert_flight_7)
+            cursor.execute(insert_flight_8)
+            cursor.execute(insert_flight_9)
+            cursor.execute(insert_flight_10)
             db.commit()
         except Exception as e:
             print(e)
@@ -497,16 +537,48 @@ class AirplaneDb(object):
 
         ''' insert test itinerary '''
         insert_itinerary_1 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('FIRSTCLASS', 153.2, 'PENDING', 1)
+                             VALUES ('FIRSTCLASS', 53.5, 'PAID', 1)
                              """
         insert_itinerary_2 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('BUSINESS', 84.7, 'PENDING', 2)
+                             VALUES ('BUSINESS', 24.7, 'CHECKEDIN', 2)
                              """
+        insert_itinerary_3 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 3.5, 'DONE', 3)
+                             """
+        insert_itinerary_4 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 50.3, 'CANCELED', 4)
+                             """
+        insert_itinerary_5 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 54.2, 'PAID', 5)
+                             """
+        insert_itinerary_6 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 24.2, 'CHECKEDIN', 6)
+                             """
+        insert_itinerary_7 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.5, 'DONE', 7)
+                             """
+        insert_itinerary_8 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.3, 'CANCELED', 8)
+                             """
+        insert_itinerary_9 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 4.4, 'PAID', 9)
+                             """
+        insert_itinerary_10 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 7.3, 'DONE', 10)
+                             """
+
+
         try:
             cursor.execute(insert_itinerary_1)
-            print(('Created new {0}: FOR CID = {1}').format('ITINERARY', 1))
             cursor.execute(insert_itinerary_2)
-            print(('Created new {0}: FOR CID = {1}').format('ITINERARY', 2))
+            cursor.execute(insert_itinerary_3)
+            cursor.execute(insert_itinerary_4)
+            cursor.execute(insert_itinerary_5)
+            cursor.execute(insert_itinerary_6)
+            cursor.execute(insert_itinerary_7)
+            cursor.execute(insert_itinerary_8)
+            cursor.execute(insert_itinerary_9)
+            cursor.execute(insert_itinerary_10)
             db.commit()
         except Exception as e:
             print(e)
@@ -524,16 +596,36 @@ class AirplaneDb(object):
         insert_baggage_4 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
                            VALUES (2, 125.67)
                            """
+        insert_baggage_5 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (3, 125.67)
+                           """
+        insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (5, 125.67)
+                           """
+        insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (7, 125.67)
+                           """
+        insert_baggage_8 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (7, 125.67)
+                           """
+        insert_baggage_9 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (9, 125.67)
+                           """
+        insert_baggage_10 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
+                           VALUES (10, 125.67)
+                           """
 
         try:
             cursor.execute(insert_baggage_1)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE1', 'CUSTOMER1'))
             cursor.execute(insert_baggage_2)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE2', 'CUSTOMER1'))
             cursor.execute(insert_baggage_3)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE3', 'CUSTOMER2'))
             cursor.execute(insert_baggage_4)
-            print(('Created new {0}: {1} onto {2}').format('BAGGAGE', 'BAGGAGE4', 'CUSTOMER3'))
+            cursor.execute(insert_baggage_5)
+            cursor.execute(insert_baggage_6)
+            cursor.execute(insert_baggage_7)
+            cursor.execute(insert_baggage_8)
+            cursor.execute(insert_baggage_9)
+            cursor.execute(insert_baggage_10)
             db.commit()
         except Exception as e:
             print(e)
@@ -543,23 +635,138 @@ class AirplaneDb(object):
                              VALUES (1, 1)
                              """
         insert_workon_2 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (1, 2)
+                             VALUES (6, 1)
                              """
         insert_workon_3 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (1, 3)
+                             VALUES (7, 1)
                              """
         insert_workon_4 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (2, 1)
+                             VALUES (8, 1)
                              """
         insert_workon_5 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (2, 2)
+                             VALUES (9, 1)
                              """
         insert_workon_6 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (3, 2)
+                             VALUES (10, 1)
                              """
         insert_workon_7 = """ INSERT INTO WORKSON(E_ID, F_ID)
-                             VALUES (3, 3)
+                             VALUES (3, 2)
                              """
+        insert_workon_8 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (5, 2)
+                             """
+        insert_workon_9 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (6, 2)
+                             """
+        insert_workon_10 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 2)
+                             """
+        insert_workon_11 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (8, 2)
+                             """
+        insert_workon_12 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 2)
+                             """
+        insert_workon_13 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (2, 3)
+                             """
+        insert_workon_14 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (4, 3)
+                             """
+        insert_workon_15 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 3)
+                             """
+        insert_workon_16 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 3)
+                             """
+        insert_workon_17 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (10, 3)
+                             """
+        insert_workon_18 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (3, 4)
+                             """
+        insert_workon_19 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (5, 4)
+                             """
+        insert_workon_20 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (6, 4)
+                             """
+        insert_workon_21 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 4)
+                             """
+        insert_workon_22 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (8, 4)
+                             """
+        insert_workon_23 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 4)
+                             """
+        insert_workon_24 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (1, 5)
+                             """
+        insert_workon_25 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (5, 5)
+                             """
+        insert_workon_26 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 5)
+                             """
+        insert_workon_27 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 5)
+                             """
+        insert_workon_28 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (6, 5)
+                             """
+        insert_workon_29 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (10, 5)
+                             """
+        insert_workon_30 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (3, 6)
+                             """
+        insert_workon_31 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (1, 6)
+                             """
+        insert_workon_32 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (6, 6)
+                             """
+        insert_workon_33 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 6)
+                             """
+        insert_workon_34 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 6)
+                             """
+        insert_workon_35 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (10, 6)
+                             """
+        insert_workon_36 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (4, 7)
+                             """
+        insert_workon_37 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 7)
+                             """
+        insert_workon_38 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (8, 7)
+                             """
+        insert_workon_39 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (9, 7)
+                             """
+        insert_workon_40 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (10, 7)
+                             """
+        insert_workon_41 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (4, 8)
+                             """
+        insert_workon_42 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (7, 8)
+                             """
+        insert_workon_43 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (6, 8)
+                             """
+        insert_workon_44 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (8, 8)
+                             """
+        insert_workon_45 = """ INSERT INTO WORKSON(E_ID, F_ID)
+                             VALUES (10, 8)
+                             """
+
         try:
             cursor.execute(insert_workon_1)
             cursor.execute(insert_workon_2)
@@ -568,6 +775,44 @@ class AirplaneDb(object):
             cursor.execute(insert_workon_5)
             cursor.execute(insert_workon_6)
             cursor.execute(insert_workon_7)
+            cursor.execute(insert_workon_8)
+            cursor.execute(insert_workon_9)
+            cursor.execute(insert_workon_10)
+            cursor.execute(insert_workon_11)
+            cursor.execute(insert_workon_12)
+            cursor.execute(insert_workon_13)
+            cursor.execute(insert_workon_14)
+            cursor.execute(insert_workon_15)
+            cursor.execute(insert_workon_16)
+            cursor.execute(insert_workon_17)
+            cursor.execute(insert_workon_18)
+            cursor.execute(insert_workon_19)
+            cursor.execute(insert_workon_20)
+            cursor.execute(insert_workon_21)
+            cursor.execute(insert_workon_22)
+            cursor.execute(insert_workon_23)
+            cursor.execute(insert_workon_24)
+            cursor.execute(insert_workon_25)
+            cursor.execute(insert_workon_26)
+            cursor.execute(insert_workon_27)
+            cursor.execute(insert_workon_28)
+            cursor.execute(insert_workon_29)
+            cursor.execute(insert_workon_30)
+            cursor.execute(insert_workon_31)
+            cursor.execute(insert_workon_32)
+            cursor.execute(insert_workon_33)
+            cursor.execute(insert_workon_34)
+            cursor.execute(insert_workon_35)
+            cursor.execute(insert_workon_36)
+            cursor.execute(insert_workon_37)
+            cursor.execute(insert_workon_38)
+            cursor.execute(insert_workon_39)
+            cursor.execute(insert_workon_40)
+            cursor.execute(insert_workon_41)
+            cursor.execute(insert_workon_42)
+            cursor.execute(insert_workon_43)
+            cursor.execute(insert_workon_44)
+            cursor.execute(insert_workon_45)
             print(('populated WORKSON table'))
             db.commit()
         except Exception as e:
@@ -583,10 +828,35 @@ class AirplaneDb(object):
         insert_schedule_3 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
                             VALUES (2, 3)
                             """
+        insert_schedule_4 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (2, 4)
+                            """
+        insert_schedule_5 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (2, 5)
+                            """
+        insert_schedule_6 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (5, 3)
+                            """
+        insert_schedule_7 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (6, 8)
+                            """
+        insert_schedule_8 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (9, 6)
+                            """
+        insert_schedule_9 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (9, 7)
+                            """
+
         try:
             cursor.execute(insert_schedule_1)
             cursor.execute(insert_schedule_2)
             cursor.execute(insert_schedule_3)
+            cursor.execute(insert_schedule_4)
+            cursor.execute(insert_schedule_5)
+            cursor.execute(insert_schedule_6)
+            cursor.execute(insert_schedule_7)
+            cursor.execute(insert_schedule_8)
+            cursor.execute(insert_schedule_9)
             print(('populated schedule table'))
             db.commit()
         except Exception as e:
@@ -608,6 +878,7 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
+        print(bag_weight)
         add_baggage_query = """INSERT INTO BAGGAGE(I_ID, B_WEIGHT)
                                 VALUES(%s, %.2f)""" % (itinerary_id, float(bag_weight))
 
