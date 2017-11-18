@@ -1984,9 +1984,9 @@ class AirplaneDb(object):
                              db=self.db)
 
          if i_id is None:
-             get_schedule_query = """SELECT * FROM SCHEDULE"""
+             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
          else:
-             get_schedule_query = """SELECT * FROM SCHEDULE WHERE I_ID = %d""" % (int(i_id))
+             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND I_ID = %d""" % (int(i_id))
          cursor = db.cursor()
          try:
              dataList = []
@@ -1995,15 +1995,21 @@ class AirplaneDb(object):
                 entireschedule = cursor.fetchall()
                 for schedule in entireschedule:
                     s_object = {
-                        'itinerary_id': schedule[0],
-                        'flight_id': schedule[1]
+                        'flight_id': schedule[0],
+                        'itinerary_id': schedule[1],
+                        'customer_id': schedule[2],
+                        'seattype': schedule[3],
+                        'status': schedule[4]
                     }
                     dataList.append(s_object)
              else: 
                  schedule = cursor.fetchone()
                  s_object = {
-                    'itinerary_id': schedule[0],
-                    'flight_id': schedule[1]
+                    'flight_id': schedule[0],
+                     'itinerary_id': schedule[1],
+                     'customer_id': schedule[2],
+                     'seattype': schedule[3],
+                     'status': schedule[4]
                  }
                  dataList.append(s_object)
              data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
