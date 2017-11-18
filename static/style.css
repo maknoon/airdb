@@ -70,8 +70,19 @@ th,td {
     background-color: #93c0f2;
 }
 
+.menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.menu-item {
+    margin: 0.75em;
+    margin-left: 0em;
+}
+
 .container {
-    width: 85%;
+    width: 75%;
     display: flex;
     flex-direction: row;
     align-items: top;
@@ -99,8 +110,4 @@ th,td {
     margin: 10px 0px;
     display: flex;
     flex-direction: column;
-}
-
-.menu-item {
-    margin: 0.75em 0.75em 0.75em 0em;
 }

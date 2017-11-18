@@ -7,7 +7,7 @@
     <div class="container">
         <h3>You are logged in as {{ type }}, <a href="/logout">click here</a> to logout</h3>
     </div>
-    <div class="container">    
+    <div class="menu">    
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
             <form action="/flightUI" method="post">
@@ -66,5 +66,4 @@
     
     </div>
 {% endif %}
-
 {% block body %}{% endblock %}
