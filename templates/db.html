@@ -95,7 +95,7 @@
                 </p>
             </form>
             
-             <form action="/workscheduleUI" method="DELETE">
+             <form action="/workscheduleUI" method="GET">
                 <p>Remove employee  <input type = "text" name = "e_id" />  from flight <input type = "text" name = "f_id" />
                     <input type='submit' name="delete" value="Submit"/>
                 </p>
@@ -123,8 +123,28 @@
                 {% endfor %}
             </table>
             </div>
-            {% endif %}
             
+            <div class="container">
+            
+            <form action="employeeUI" method="GET">
+                <button>Show All</button>
+            </form>
+            
+            <form action="/employeeUI" method="POST">
+                <p>Add employee type <input type = "text" name = "type" />  </br>
+                with wage <input type = "text" name = "wage" /> 
+                    <input type='submit' name="add" value="Submit"/>
+                </p>
+            </form>
+            
+             <form action="/employeeUI" method="GET">
+                <p>Delete employee  <input type = "text" name = "e_id" />
+                <input type='submit' name="delete" value="Submit"/>
+                </p>
+            </form>
+            </div>
+            
+            {% endif %}
             {% if tab == 'baggage' %}
             <h2>Baggage Directory</h2>
             <div class="container">
