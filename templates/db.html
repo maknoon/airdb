@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>welcome to AIRDB</title>
-    <link rel="stylesheet" type="text/css" href="../static/style.css" />
-</head>
+    <head>
+        <title>welcome to AIRDB</title>
+        <link rel="stylesheet" type="text/css" href="../static/style.css" />
+    </head>
 <body>
-{% if type %}
-    <h1>You are logged in as {{ type }}</h1>
+    {% if type %}
+        <h1>You are logged in as {{ type }}</h1>
     {% if type == 'admin' %}
         {% if data %}
             {% if tab == 'flight' %}
@@ -176,10 +176,9 @@
         </tr>
         {% endfor %}
         </table>
-        {% endif %}
-        
-{% else %}
-    <h1>403 FORBIDDEN</h1>
-{% endif %}
+        {% endif %}        
+    {% else %}
+        <h1>403 FORBIDDEN</h1>
+    {% endif %}
 </body>
 </html>
