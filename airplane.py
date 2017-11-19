@@ -161,6 +161,11 @@ def customer():
         #todo
         # elif filter_flight is not None:
             # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
+    elif request.method =='POST':
+        customer_id = request.form['c_id']
+        status = '"{}"'.format('CHECKEDIN')
+        airdb.update_itinerary(customer_id, 'I_STATUS', status)
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
     return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
