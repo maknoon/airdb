@@ -1493,6 +1493,10 @@ class AirplaneDb(object):
             db.rollback()
             data = 0
 
+    cursor.close()
+    db.close()
+    return data
+
 #==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
@@ -1702,38 +1706,6 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
-#   function: get_flight_delayed
-#   description: get all flights that are delayed
-#   returns: the list of all flights from table FLIGHT where f_status = 'delayed'
-#==============================================================================
-    def get_flight_delayed(self):
-        db = MySQLdb.connect(host=self.host,
-                            user=self.user,
-                            passwd=self.pw,
-                            db=self.db)
-
-        get_flight_query = """SELECT F_ID FROM FLIGHT WHERE F_STATUS = 'DELAYED'"""
-        cursor = db.cursor()
-        try:
-            dataList = []
-            cursor.execute(get_flight_query)
-            flights = cursor.fetchall()
-            for flight in flights:
-                f_object = {
-                    'flight_id': int(flight[0]),
-                }
-                dataList.append(f_object)
-            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
-        except Exception as e:
-            data = 'Get Flights Delayed Failed with error: {0}'.format(e)
-            db.rollback()
-            print(data)
-
-        cursor.close()
-        db.close()
-        return data
-
-#==============================================================================
 #   function: get_flight_for_day
 #   description: get all the flights for a certain departure/arrival day in
 #               table FLIGHT
@@ -1788,7 +1760,7 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
-#   function: get_flight_for_aircraft_in_airport
+#   function: get_flight_for_airport
 #   description: get all departing/arriving flights for an aircraft in an airport
 #   returns: the list of all departing/arriving flights based on the inputted
 #        departing/arriving parameter, aircraft id, and airport id
