@@ -136,21 +136,32 @@ def aircraft():
     get_airplanes = json.loads(airdb.get_aircraft(None))
     if request.method =='GET':
         airport_id = request.args.get('airport_id')
+        aircraft_id = request.args.get('ac_id')
         status = request.args.get('status')
         should_delete = request.args.get('delete')
         if status is not None:
             get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
         elif airport_id is not None:
             get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
-    #elif request.method == 'POST':
+        if should_delete is not None:
+            airdb.delete_aircraft(aircraft_id)
+            get_airplanes = json.loads(airdb.get_aircraft(None))
     return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
 
 @app.route('/customerUI',methods = ['POST', 'GET'])
 def customer():
-    if request.method == 'POST':
-      get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-      return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
-
+    get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        customer_id = request.args.get('c_id')
+        filter_customer= request.args.get('filtercustomer')
+        filter_flight = request.args.get('filterflight')
+        #if filter_flight is not None:
+        #    get_schedule = json.loads(airdb.get_schedule_for_itinerary(itinerary_id))
+        #todo
+        # elif filter_flight is not None:
+            # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
+    return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------

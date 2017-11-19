@@ -236,6 +236,12 @@
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
+                
+                <form action="/aircraftUI" method="GET">
+                    <p>Delete <input type="text" name="ac_id" placeholder="Aircraft ID" />
+                    <input type='submit' name="delete" value="Submit"/>
+                    </p>
+                </form>
             </div>
 
             </div>            
@@ -262,6 +268,26 @@
                 </tr>
                 {% endfor %} 
             </table>
+            </div>
+            
+            <div class="filter">
+                <form action="/customerUI" method="GET">
+                    <button>Remove Filter</button>
+                </form>
+            
+                <form action="/customerUI" method="GET" >
+                    <p>Filter by
+                        <input type="text" name="f_id" placeholder="Flight ID" />
+                        <input type='submit' name="filterflight" value="Submit"/>
+                    </p>
+                </form>
+            
+                <form action="/customerUI" method="GET" >
+                    <p>Filter by
+                        <input type="text" name="c_id" placeholder="Customer ID" />
+                        <input type='submit' name="filtercustomer" value="Submit"/>
+                    </p>
+                </form>
             </div>
             {% endif %}
 
