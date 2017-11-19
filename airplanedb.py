@@ -1294,6 +1294,43 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+
+#==============================================================================
+#   function: get_schedule_for_employee
+#   description: query for flight schedule table in Employee UI
+#   return: list of flights
+#==============================================================================    
+    def get_schedule_for_employee(self, employee_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+        
+        get_emp_schedule_query = """ SELECT F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
+                                     FROM WORKSON W, FLIGHT F, AIRPORT A1, AIRPORT A2 
+                                     WHERE W.F_ID = F.F_ID and F.F_DEPARTUREAIRPORTID = A1.AP_ID and F.F_ARRIVALAIRPORTID = A2.AP_ID 
+                                     and W.E_ID = %d ORDER BY F.F_DEPARTURETIME """ % (int(employee_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_emp_schedule_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': flight[0],
+                    'departure_city': flight[1],
+                    'departure_time': flight[2],
+                    'arrival_city': flight[3],
+                    'arrival_time': flight[4],
+                    'status': flight[5]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Employee Schedule failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
     
 #==============================================================================
 #   function: delete_itinerary
@@ -2038,7 +2075,8 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-        
+
+      
 #==============================================================================
 #   function: delete_employee
 #   description: delete an employee from table EMPLOYEE

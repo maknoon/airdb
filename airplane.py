@@ -24,7 +24,7 @@ def index():
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
     elif session.get('type') == 'employee':
-        return render_template('main.html', type='employee')
+        return employeeUI(1)
     else:
         return render_template('index.html')
 
@@ -106,6 +106,14 @@ def userspecificUI():
         return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)    
     return render_template('db.html', type='user', tab='specific')
 
+# ---------------------------------------------------------
+# EMPLOYEE ENDPOINTS
+# --------------------------------------------------------- 
+@app.route('/employeeUI', methods=['POST', 'GET'])
+def employeeUI(id):
+    get_employee = json.loads(airdb.get_employee(id))
+    get_schedule = json.loads(airdb.get_schedule_for_employee(id))
+    return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule)
 # ---------------------------------------------------------
 # ADMIN ENDPOINTS
 # ---------------------------------------------------------    
