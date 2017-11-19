@@ -946,6 +946,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+
 #==============================================================================
 #   function: get_baggage for flight
 #   description: returns all baggage on flight id
@@ -980,6 +981,35 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+
+#==============================================================================
+#   function: delete_baggage
+#   description: deletes baggage
+#   return: nothing
+#==============================================================================
+    def delete_baggage(self, b_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        delete_baggage_query = """DELETE FROM BAGGAGE WHERE B_ID = %d""" % int(b_id)
+        cursor = db.cursor()
+        deleted_baggage = {
+            'baggage_id' : int(b_id)
+        }
+        try:
+            cursor.execute(delete_baggage_query)
+            db.commit()
+            data = json.dumps(deleted_baggage, sort_keys=True, indent=4, separators=(',', ': '))
+            print(data)
+        except Exception as e:
+            data = ("Delete Baggage Failed with error: {0}").format(e)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
 #==============================================================================
 #   function: get_customer
 #   description: returns an instance of customer based on customer_id
@@ -1312,7 +1342,6 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
-            data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()

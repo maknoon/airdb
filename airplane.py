@@ -96,14 +96,17 @@ def useritineraryUI():
 @app.route('/userspecificUI', methods=['POST', 'GET'])
 def userspecificUI():
     if request.method == 'POST':
-        if 'chooseitinerary' in request.form:
-            itinerary_id = request.form['i_id']
-            get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
-            get_bags = json.loads(airdb.get_baggage(itinerary_id))
-        #if 'addbaggage' in request.form:
-        #    airdb.add_baggage(itinerary_id, NULL)
-        #    get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        itinerary_id = request.form['i_id']
+        if 'addbaggage' in request.form:
+            airdb.add_baggage(itinerary_id, request.form['b_weight'])
+        elif 'removebaggage' in request.form:
+            airdb.delete_baggage(request.form['b_id'])
+        
+        get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
+        get_bags = json.loads(airdb.get_baggage(itinerary_id))
+
         return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)    
+
     return render_template('db.html', type='user', tab='specific')
 
 # ---------------------------------------------------------

@@ -41,7 +41,7 @@ h3 {
     text-transform: uppercase;
 }
 
-input,input:focus {
+input,input:focus,input[type=select] {
     padding: 4pt 4pt;
     margin: 0.25em 1em;
     background-color: var(--bg-color);
@@ -100,6 +100,11 @@ th,td {
     align-items: top;
 }
 
+.container-item {
+    align-items: center;
+    margin: 1em 0em;
+}
+
 .filter {
     width: 20%;
     margin-left: 1.75em;
@@ -123,4 +128,8 @@ th,td {
     margin: 0.25em 0.25em;
     display: flex;
     flex-direction: column;
+}
+
+.selector {
+    width: 15%;
 }
