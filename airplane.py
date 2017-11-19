@@ -21,9 +21,12 @@ airdb = AirplaneDb(host=config.host,
 def index():
     if session.get('type') == 'user':
         get_itineraries = json.loads(airdb.get_itinerary(1))
-        return render_template('main.html', type='user', data=get_itineraries)
+        get_ff = json.loads(airdb.get_frequent_flier(1))
+        return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
+    elif session.get('type') == 'employee':
+        return render_template('main.html', type='employee')
     else:
         return render_template('index.html')
 
@@ -36,9 +39,13 @@ def login():
     elif (request.form['password'] == config.userpwd
         and request.form['username'] == 'user'):
         session['type'] = 'user'
-        return index()
+    elif (request.form['password'] == config.employeepwd
+        and request.form['username'] == 'employee'):
+        session['type'] = 'employee'
     else:
-        flash('wrong password!')
+        session['type'] = 'none'
+
+    return index()
 
 @app.route('/logout')
 def logout():
@@ -46,9 +53,32 @@ def logout():
 
     return index()
 
+# ---------------------------------------------------------
+# USER ENDPOINTS
+# ---------------------------------------------------------    
+@app.route('/userUI', methods = ['POST', 'GET'])
+def user():
+    get_itineraries = json.loads(airdb.get_itinerary(1))
+    get_ff = json.loads(airdb.get_frequent_flier(1))
+    if request.method == 'POST':
+        itinerary_id = request.form['i_id']
+        if 'updatestatus' in request.form:
+            status = '"{}"'.format('CHECKEDIN')
+            airdb.update_itinerary(1, 'I_STATUS', status)
+        elif 'updateseat' in request.form:
+            seattype = '"{}"'.format(request.form['seat'])
+            airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
+        get_itineraries = json.loads(airdb.get_itinerary(1))    
+    elif request.method == 'GET':
+        should_delete = request.args.get('delete')
+        itinerary_id = request.args.get('i_id')
+        if should_delete is not None:
+            airdb.delete_itinerary(itinerary_id)
+            get_itineraries = json.loads(airdb.get_itinerary(1))
+    return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
 
 # ---------------------------------------------------------
-# UI ENDPOINTS
+# ADMIN ENDPOINTS
 # ---------------------------------------------------------    
 @app.route('/main', methods = ['POST'])
 def mainmenu():
