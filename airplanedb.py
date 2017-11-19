@@ -566,6 +566,33 @@ class AirplaneDb(object):
         insert_itinerary_10 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
                              VALUES ('ECONOMY', 7.3, 'DONE', 10)
                              """
+        insert_itinerary_11 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 24.7, 'CHECKEDIN', 1)
+                             """
+        insert_itinerary_12 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 3.5, 'DONE', 1)
+                             """
+        insert_itinerary_13 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 50.3, 'CANCELED', 1)
+                             """
+        insert_itinerary_14 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 54.2, 'PAID', 1)
+                             """
+        insert_itinerary_15 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 24.2, 'CHECKEDIN', 1)
+                             """
+        insert_itinerary_16 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.5, 'DONE', 1)
+                             """
+        insert_itinerary_17 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.3, 'CANCELED', 1)
+                             """
+        insert_itinerary_18 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 4.4, 'PAID', 1)
+                             """
+        insert_itinerary_19 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 7.3, 'DONE', 1)
+                             """
 
 
         try:
@@ -579,6 +606,15 @@ class AirplaneDb(object):
             cursor.execute(insert_itinerary_8)
             cursor.execute(insert_itinerary_9)
             cursor.execute(insert_itinerary_10)
+            cursor.execute(insert_itinerary_11)
+            cursor.execute(insert_itinerary_12)
+            cursor.execute(insert_itinerary_13)
+            cursor.execute(insert_itinerary_14)
+            cursor.execute(insert_itinerary_15)
+            cursor.execute(insert_itinerary_16)
+            cursor.execute(insert_itinerary_17)
+            cursor.execute(insert_itinerary_18)
+            cursor.execute(insert_itinerary_19)
             db.commit()
         except Exception as e:
             print(e)
@@ -846,6 +882,27 @@ class AirplaneDb(object):
         insert_schedule_9 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
                             VALUES (9, 7)
                             """
+        insert_schedule_10 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 3)
+                            """
+        insert_schedule_11 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 4)
+                            """
+        insert_schedule_12 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 5)
+                            """
+        insert_schedule_13 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (14, 3)
+                            """
+        insert_schedule_14 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (15, 8)
+                            """
+        insert_schedule_15 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (18, 6)
+                            """
+        insert_schedule_16 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (18, 7)
+                            """
 
         try:
             cursor.execute(insert_schedule_1)
@@ -857,6 +914,13 @@ class AirplaneDb(object):
             cursor.execute(insert_schedule_7)
             cursor.execute(insert_schedule_8)
             cursor.execute(insert_schedule_9)
+            cursor.execute(insert_schedule_10)
+            cursor.execute(insert_schedule_11)
+            cursor.execute(insert_schedule_12)
+            cursor.execute(insert_schedule_13)
+            cursor.execute(insert_schedule_14)
+            cursor.execute(insert_schedule_15)
+            cursor.execute(insert_schedule_16)
             print(('populated schedule table'))
             db.commit()
         except Exception as e:
@@ -900,7 +964,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-    
+
 #==============================================================================
 #   function: get_baggage
 #   description: returns an instance of baggage based on itinerary ID
@@ -1351,7 +1415,7 @@ class AirplaneDb(object):
 #   description: get all flights or a given flight ID
 #   returns: the list of all flights if there are no specified Flight_id
 #        or: the flight corresponding to the given Flight_id
-#==============================================================================      
+#==============================================================================
     def get_flight(self, f_id):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
@@ -1403,7 +1467,7 @@ class AirplaneDb(object):
             print("Get Flight Failed with error: {0}").format(e)
             db.rollback()
             data = 0
-            
+
         cursor.close()
         db.close()
         return data
@@ -1742,12 +1806,12 @@ class AirplaneDb(object):
             data = 'Get Aircraft by Airport ID Failed with error: {0}'.format(err)
             db.rollback()
             print(data)
-        
+
         cursor.close()
         db.close()
         return data
-        
-        
+
+
     def get_aircraft_by_status(self, status):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -1778,11 +1842,11 @@ class AirplaneDb(object):
             data = 'Get Aircraft by Status Failed with error: {0}'.format(err)
             db.rollback()
             print(data)
-        
+
         cursor.close()
         db.close()
         return data
-    
+
         return data
 #==============================================================================
 #   function: update_aircraft
@@ -1894,7 +1958,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-        
+
 #==============================================================================
 #   function: get_employee
 #   description: get_employee by e_id or if e_id is None, return all employees
@@ -1909,7 +1973,7 @@ class AirplaneDb(object):
             get_employee_query = """ SELECT * FROM EMPLOYEE """
         else:
             get_employee_query = """ SELECT * FROM EMPLOYEE WHERE E_ID = '%s' """ % (e_id)
-  
+
         cursor = db.cursor()
         try:
             dataList = []
@@ -1942,7 +2006,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-        
+
 #==============================================================================
 #   function: delete_employee
 #   description: delete an employee from table EMPLOYEE
@@ -2002,7 +2066,7 @@ class AirplaneDb(object):
                         'status': schedule[4]
                     }
                     dataList.append(s_object)
-             else: 
+             else:
                  schedule = cursor.fetchone()
                  s_object = {
                     'flight_id': schedule[0],
