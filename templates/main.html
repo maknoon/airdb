@@ -7,62 +7,62 @@
     <div class="menu" id="header">
         <h3>You are logged in as {{ type }}, <a href="/logout">click here</a> to logout</h3>
     </div>
-    <div class="menu">    
+    <div class="menu">
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
             <form action="/flightUI" method="GET">
                 <button class="menu-item">Flights</button>
             </form>
-        
+
             <form action="/workscheduleUI" method="GET">
                 <button class="menu-item">Work Schedule</button>
             </form>
-        
+
             <form action="/employeeUI" method="GET">
                 <button class="menu-item">Employees</button>
             </form>
-            
+
             <form action="/airportUI" method="post">
                 <button class="menu-item">Airports</button>
             </form>
-        
+
             <form action="/baggageUI" method="GET">
                 <button class="menu-item">Baggage</button>
             </form>
-        
+
             <form action="/aircraftUI" method="GET">
                 <button class="menu-item">Aircraft Fleet</button>
             </form>
-        
+
             <form action="/customerUI" method="GET">
                 <button class="menu-item">Customer Flight Information</button>
             </form>
-           
+
         {% endif %}
-        
+
         {% if type == 'user' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
             <form action="/useraccountUI" method="GET">
                 <button class="menu-item">Account Info</button>
             </form>
-        
+
             <form action="/useritineraryUI" method="GET">
                 <button class="menu-item">All Itineraries</button>
             </form>
-        
+
             <form action="/userspecificUI" method="GET">
                 <button class="menu-item">Specific Itinerary Detail</button>
             </form>
         {% endif %}
 
-        {% if type == 'employee' %}            
+        {% if type == 'employee' %}
         {% endif %}
 
         {% if type == 'none' %}
             <h1>403 FORBIDDEN</h1>
             <p>Please login!</p>
         {% endif %}
-    
+
     </div>
 {% endif %}
 {% block body %}{% endblock %}

@@ -445,7 +445,7 @@ class AirplaneDb(object):
         insert_flight_5 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (5, 2345, '01-20-2018:05:23', '01-22-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
+                            VALUES (5, 2345, '01-24-2018:05:23', '01-25-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
                             """
         insert_flight_6 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
@@ -634,22 +634,22 @@ class AirplaneDb(object):
                            VALUES (2, 125.67)
                            """
         insert_baggage_5 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (3, 125.67)
+                           VALUES (3, 70.44)
                            """
         insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (5, 125.67)
+                           VALUES (5, 88.75)
                            """
         insert_baggage_7 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (7, 125.67)
+                           VALUES (7, 55.85)
                            """
         insert_baggage_8 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (7, 125.67)
+                           VALUES (7, 122.94)
                            """
         insert_baggage_9 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (9, 125.67)
+                           VALUES (9, 25.23)
                            """
         insert_baggage_10 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (10, 125.67)
+                           VALUES (10, 93.47)
                            """
 
         try:
@@ -927,8 +927,25 @@ class AirplaneDb(object):
         except Exception as e:
             print(e)
             db.rollback()
-        print(('{0} POPULATE COMPLETE').format(self.db))
 
+        ''' CREATE VIEWS '''
+        create_vip_view = """ CREATE OR REPLACE VIEW VIP AS
+                          SELECT DISTINCT C.C_ID, C_NAME, C_AGE, C_EMAIL, C_PHONE
+                          FROM CUSTOMER C, ITINERARY I
+                          WHERE C.C_ID = I.C_ID AND I.I_SEATTYPE = 'FIRSTCLASS'"""
+
+        create_delayed_flight_view = """ CREATE OR REPLACE VIEW DELAYED_FLIGHT AS
+                                     SELECT * FROM FLIGHT
+                                     WHERE F_STATUS = 'DELAYED'"""
+        try:
+            cursor.execute(create_vip_view)
+            cursor.execute(create_delayed_flight_view)
+            db.commit()
+        except Exception as e:
+            print(e)
+            db.rollback()
+
+        print(('{0} POPULATE COMPLETE').format(self.db))
         cursor.close()
         db.close()
         return 0
@@ -2777,6 +2794,42 @@ class AirplaneDb(object):
              data = ("Delete Schedule Failed with error: {0}").format(e)
              print(data)
              db.rollback()
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: get_vip
+#   description: gets the view VIP
+#   returns: all the vip
+#==============================================================================
+    def get_vip(self):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         get_vip_query = """SELECT * FROM VIP"""
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_vip_query)
+             vips = cursor.fetchall()
+             for v in vips:
+                 vip = {
+                    'id': v[0],
+                    'name': v[1],
+                    'age': v[2],
+                    'email': v[3],
+                    'phone': v[4]
+                 }
+                 dataList.append(vip)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+         except Exception as err:
+             data = ("Get VIP Failed with error: {0}").format(err)
+             db.rollback()
+             print(data)
 
          cursor.close()
          db.close()
