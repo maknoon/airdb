@@ -296,30 +296,7 @@
             <button>Clear</button>
         </form>
 
-    {% endif %} <!-- end admin -->
-
-    {% if type == 'user' %}
-        {% if data %}
-        <div class="container">
-            <table>
-                <tr>
-                    <th>Itinerary #</th>
-                    <th>Seat Type</th>
-                    <th>Seat Cost</th>
-                    <th>Status</th>
-                </tr>
-            {% for row in data %}
-            <tr>
-                <td>{{ row['itinerary_id'] }}</td>
-                <td>{{ row['seattype'] }}</td>
-                <td>{{ row['seatcost'] }}</td>
-                <td>{{ row['status'] }}</td>
-            </tr>
-            {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-    {% endif %}        
+    {% endif %} <!-- end admin -->       
     
     {% if type == 'none' %}
         <h1>403 FORBIDDEN</h1>

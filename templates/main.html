@@ -41,29 +41,33 @@
         {% endif %}
         
         {% if type == 'user' %}
-            <table>
-                <tr>
-                    <th>Itinerary #</th>
-                    <th>Seat Type</th>
-                    <th>Seat Cost</th>
-                    <th>Status</th>
-                </tr>
-            {% for row in data %}
-                <tr>
-                    <td>{{ row['itinerary_id'] }}</td>
-                    <td>{{ row['seattype'] }}</td>
-                    <td>{{ row['seatcost'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-            {% endfor %}
-            </table>
-            
+            {% if data %}
+                <table>
+                    <tr>
+                        <th>Itinerary #</th>
+                        <th>Seat Type</th>
+                        <th>Seat Cost</th>
+                        <th>Status</th>
+                    </tr>
+                {% for row in data %}
+                    <tr>
+                        <td>{{ row['itinerary_id'] }}</td>
+                        <td>{{ row['seattype'] }}</td>
+                        <td>{{ row['seatcost'] }}</td>
+                        <td>{{ row['status'] }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            {% endif %}
         {% endif %}
 
-    {% if type == 'none' %}
-        <h1>403 FORBIDDEN</h1>
-        <p>Please login!</p>
-    {% endif %}
+        {% if type == 'employee' %}            
+        {% endif %}
+
+        {% if type == 'none' %}
+            <h1>403 FORBIDDEN</h1>
+            <p>Please login!</p>
+        {% endif %}
     
     </div>
 {% endif %}

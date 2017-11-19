@@ -24,6 +24,8 @@ def index():
         return render_template('main.html', type='user', data=get_itineraries)
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
+    elif session.get('type') == 'employee':
+        return render_template('main.html', type='employee')
     else:
         return render_template('index.html')
 
@@ -36,9 +38,13 @@ def login():
     elif (request.form['password'] == config.userpwd
         and request.form['username'] == 'user'):
         session['type'] = 'user'
-        return index()
+    elif (request.form['password'] == config.employeepwd
+        and request.form['username'] == 'employee'):
+        session['type'] = 'employee'
     else:
-        flash('wrong password!')
+        session['type'] = 'none'
+
+    return index()
 
 @app.route('/logout')
 def logout():
