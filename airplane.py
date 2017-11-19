@@ -61,7 +61,7 @@ def flight():
         flight_id = request.args.get('f_id')
         get_flights = json.loads(airdb.get_flight(None))
     elif request.method =='POST':
-        status = request.form['status']
+        status = '"{}"'.format(request.form['status'])
         flight_id = request.form['f_id']
         airdb.update_flight(flight_id, 'F_STATUS', status)
         get_flights = json.loads(airdb.get_flight(None))
@@ -229,7 +229,7 @@ def baggage_route():
         if res_body == 0: abort(404)
     # add a new bag
     elif request.method == 'POST':
-	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
+        res_body = airdb.add_baggage(i_id, request.args.get('weight'))
         
 # =========
 # /FF

@@ -31,18 +31,17 @@
                 </tr>
                 {% endfor %} 
             </table>
-            </div>
             
             <div class="filter">
-                <form action="/flightUI" method="GET" >
-                    <p>Update Status of Flight 
+                <form action="/flightUI" method="POST">
+                    <p>Update
                         <input type="text" name="f_id" placeholder="Flight ID" />
-                        To <input type="text" name="status" placeholder="Status"/>
-                        <input type='submit' name="updatestatus" value="Submit"/>
+                        To <input type="text" name="status" placeholder="Status" />
+                        <input type='submit' name="updatestatus" value="Submit" />
                     </p>
                 </form>
             </div>
-            
+            </div>
             
             {% endif %}
             
