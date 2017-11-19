@@ -2558,12 +2558,18 @@ class AirplaneDb(object):
 #   description: get all the schedules with itinerary ID
 #   returns: the list of all the schedules with a specified itinerary ID
 #==============================================================================
+<<<<<<< HEAD
     def get_schedule_for_itinerary(self, i_id):
         db = MySQLdb.connect(host=self.host,
+=======
+    def get_schedule_for_itinerary(self, i_id, c_id, f_id):
+         db = MySQLdb.connect(host=self.host,
+>>>>>>> finished filtering customer flight information with customer id and flight id
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
 
+<<<<<<< HEAD
         if i_id is None:
             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY
                                      WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
@@ -2576,6 +2582,24 @@ class AirplaneDb(object):
             cursor.execute(get_schedule_query)
             schedules = cursor.fetchall()
             for schedule in schedules:
+=======
+         if i_id is None:
+             if c_id is not None:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND C_ID = %d""" % (int(c_id))
+             elif f_id is not None:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND F_ID = %d""" % (int(f_id))
+             else:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
+         else:
+             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND I_ID = %d""" % (int(i_id))
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_schedule_query)
+             if i_id is None:
+                entireschedule = cursor.fetchall()
+                for schedule in entireschedule:
+>>>>>>> finished filtering customer flight information with customer id and flight id
                     s_object = {
                         'flight_id': schedule[0],
                         'itinerary_id': schedule[1],
