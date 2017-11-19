@@ -20,6 +20,14 @@ a:hover {
     background-color: var(--accent-color);
 }
 
+p {
+    display: flex;
+    flex-direction: column;
+    padding: 0.25em;
+    border-radius: 0.25em;
+    border: 2px dashed var(--accent-color);
+}
+
 img {
     margin: 25px;
 }
@@ -55,7 +63,7 @@ button:hover, input[type=submit]:hover {
 
 table {
     border: 2px solid var(--accent-color);
-    width: 70%;
+    width: 75%;
     background-color: white;
 }
 
@@ -77,7 +85,7 @@ th,td {
 }
 
 .menu-item {
-    margin: 0.75em;
+    margin: 1em;
     margin-left: 0em;
 }
 
@@ -107,7 +115,7 @@ th,td {
 }
 
 .form {
-    margin: 10px 0px;
+    margin: 0.25em 0em;
     display: flex;
     flex-direction: column;
 }

@@ -34,9 +34,9 @@
             
             <div class="filter">
                 <form action="/flightUI" method="POST">
-                    <p>Update
+                    <p> <label>Update</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
-                        To <input type="text" name="status" placeholder="Status" />
+                        <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="updatestatus" value="Submit" />
                     </p>
                 </form>
@@ -86,27 +86,32 @@
                 </form>
             
                 <form action="/workscheduleUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type='submit' name="filteremp" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/workscheduleUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name ="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/workscheduleUI" method="POST">
-                    <p>Add <input type="text" name="e_id" placeholder="Employee ID" /> to <input type="text" name="f_id" placeholder="Flight ID" />
+                    <p> <label>Add</label>
+                        <input type="text" name="e_id" placeholder="Employee ID" />
+                        <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="add" value="Submit"/>
                     </p>
                 </form>
             
                  <form action="/workscheduleUI" method="GET">
-                    <p>Remove  <input type="text" name="e_id" placeholder="Employee ID" /> from <input type="text" name="f_id" placeholder="Flight ID" />
+                    <p> <label>Remove</label> 
+                        <input type="text" name="e_id" placeholder="Employee ID" />
+                        <label>from</label>
+                        <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="delete" value="Submit"/>
                     </p>
                 </form>
@@ -140,19 +145,20 @@
                 </form>
             
                 <form action="/employeeUI" method="POST">
-                    <p>Add <input type="text" name="type" placeholder="Employee Type" />  
-                    with <input type="text" name="wage" placeholder="Wage" /> 
+                    <p> <label>Add</label>
+                        <input type="text" name="type" placeholder="Employee Type" />  
+                        <input type="text" name="wage" placeholder="Wage" /> 
                         <input type='submit' name="add" value="Submit"/>
                     </p>
                 </form>
             
                  <form action="/employeeUI" method="GET">
-                    <p>Delete <input type="text" name="e_id" placeholder="Employee ID" />
-                    <input type='submit' name="delete" value="Submit"/>
+                    <p> <label>Delete</label>
+                        <input type="text" name="e_id" placeholder="Employee ID" />
+                        <input type='submit' name="delete" value="Submit"/>
                     </p>
                 </form>
             </div>
-
             </div>
             {% endif %}
 
@@ -173,7 +179,6 @@
                 </tr>
                 {% endfor %} 
             </table>
-            </div>
             
             <div class="filter">
                 <form action="/baggageUI" method="GET">
@@ -181,20 +186,20 @@
                 </form>
             
                 <form action="/baggageUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/baggageUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name ="i_id" placeholder="Itinerary ID" />
                         <input type='submit' name="filteritinerary" value="Submit"/>
                     </p>
                 </form>
             </div>
-           
+            </div>       
             {% endif %}
 
             {% if tab == 'aircraft' %}
@@ -223,26 +228,26 @@
                 </form>
             
                 <form action="/aircraftUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="airport_id" placeholder="Airport ID" />
                         <input type='submit' name="filterairport" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/aircraftUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
                 
                 <form action="/aircraftUI" method="GET">
-                    <p>Delete <input type="text" name="ac_id" placeholder="Aircraft ID" />
-                    <input type='submit' name="delete" value="Submit"/>
+                    <p> <label>Delete</label>
+                        <input type="text" name="ac_id" placeholder="Aircraft ID" />
+                        <input type='submit' name="delete" value="Submit"/>
                     </p>
                 </form>
             </div>
-
             </div>            
             {% endif %}
             
@@ -267,7 +272,6 @@
                 </tr>
                 {% endfor %} 
             </table>
-            </div>
             
             <div class="filter">
                 <form action="/customerUI" method="GET">
@@ -275,18 +279,19 @@
                 </form>
             
                 <form action="/customerUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
             
                 <form action="/customerUI" method="GET" >
-                    <p>Filter by
+                    <p> <label>Filter</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="filtercustomer" value="Submit"/>
                     </p>
                 </form>
+            </div>
             </div>
             {% endif %}
 
