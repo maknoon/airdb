@@ -41,70 +41,20 @@
         {% endif %}
         
         {% if type == 'user' %}
-            <div>
-            <p>
-            <h2> All Itineraries for Customer </h2>
-                <table>
-                    <tr>
-                        <th>Itinerary #</th>
-                        <th>Seat Type</th>
-                        <th>Seat Cost</th>
-                        <th>Status</th>
-                    </tr>
-                {% for row in data %}
-                    <tr>
-                        <td>{{ row['itinerary_id'] }}</td>
-                        <td>{{ row['seattype'] }}</td>
-                        <td>{{ row['seatcost'] }}</td>
-                        <td>{{ row['status'] }}</td>
-                    </tr>
-                {% endfor %}
-                </table>
-            <p>
-            </div>
-            
-            <div>
-            <p>
-            <h2> Frequent Flier Information </h2>
-                <table>
-                    <tr>
-                        <th>Miles</th>
-                    </tr>
-                {% for row in data2 %}
-                    <tr>
-                        <td>{{ row['frequentflier_miles'] }}</td>
-                    </tr>
-                {% endfor %}
-                </table>
-            </p>
-            </div>
-            
-            
-            <div class="filter">
-            <form action="/userUI" method="POST">
-                    <p>Check in to trip
-                        <input type="text" name="i_id" placeholder="Itinerary ID" />
-                        <input type='submit' name="updatestatus" value="Submit" />
-                    </p>
+        
+            <h2 class="menu-item">Main Menu &#9992;</h2>
+            <form action="/useraccountUI" method="GET">
+                <button class="menu-item">Account Info</button>
             </form>
-            
-            <form action="/userUI" method="GET">
-                    <p>Cancel a trip  <input type="text" name="i_id" placeholder="Itinerary ID" />
-                        <input type='submit' name="delete" value="Submit"/>
-                    </p>
+        
+            <form action="/useritineraryUI" method="GET">
+                <button class="menu-item">All Itineraries</button>
             </form>
-            
-            <form action="/userUI" method="POST">
-                    <p>Upgrade seat type for trip 
-                        <input type="text" name="i_id" placeholder="Itinerary ID" />
-                        to  <select name="seat">
-                                <option value="FIRSTCLASS">First Class</option>
-                                <option value="BUSINESS">Business Class</option>
-                            </select>
-                        <input type='submit' name="updateseat" value="Submit" />
-                    </p>
+        
+            <form action="/userspecificUI" method="GET">
+                <button class="menu-item">Specific Itinerary Detail</button>
             </form>
-            </div>
+
         {% endif %}
 
         {% if type == 'employee' %}            
