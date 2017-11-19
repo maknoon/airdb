@@ -1,5 +1,5 @@
 #!~/usr/bin/python
-from flask import Flask, abort, flash, request, render_template, session
+from flask import Flask, flash, abort, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
@@ -42,6 +42,8 @@ def login():
         session['type'] = 'employee'
     else:
         session['type'] = 'none'
+        flash('Invalid input')
+        return render_template('index.html')
 
     return index()
 
