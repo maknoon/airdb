@@ -1125,6 +1125,35 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_frequent_flier
+#   description: get miles for customer
+#==============================================================================
+    def get_frequent_flier(self, customer_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_ff_query = """ SELECT FF_MILES FROM FREQUENTFLIER WHERE C_ID = %d """ % (int(customer_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_ff_query)
+            db.commit()
+            ff = cursor.fetchone()
+            ff_object = {'frequentflier_miles': ff[0]}
+            dataList.append(ff_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Frequent Flier Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+            
+            
+#==============================================================================
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
 #   return: returns updated ff object

@@ -21,7 +21,8 @@ airdb = AirplaneDb(host=config.host,
 def index():
     if session.get('type') == 'user':
         get_itineraries = json.loads(airdb.get_itinerary(1))
-        return render_template('main.html', type='user', data=get_itineraries)
+        get_ff = json.loads(airdb.get_frequent_flier(1))
+        return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
     elif session.get('type') == 'employee':
@@ -52,9 +53,32 @@ def logout():
 
     return index()
 
+# ---------------------------------------------------------
+# USER ENDPOINTS
+# ---------------------------------------------------------    
+@app.route('/userUI', methods = ['POST', 'GET'])
+def user():
+    get_itineraries = json.loads(airdb.get_itinerary(1))
+    get_ff = json.loads(airdb.get_frequent_flier(1))
+    if request.method == 'POST':
+        itinerary_id = request.form['i_id']
+        if 'updatestatus' in request.form:
+            status = '"{}"'.format('CHECKEDIN')
+            airdb.update_itinerary(1, 'I_STATUS', status)
+        elif 'updateseat' in request.form:
+            seattype = '"{}"'.format(request.form['seat'])
+            airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
+        get_itineraries = json.loads(airdb.get_itinerary(1))    
+    elif request.method == 'GET':
+        should_delete = request.args.get('delete')
+        itinerary_id = request.args.get('i_id')
+        if should_delete is not None:
+            airdb.delete_itinerary(itinerary_id)
+            get_itineraries = json.loads(airdb.get_itinerary(1))
+    return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
 
 # ---------------------------------------------------------
-# UI ENDPOINTS
+# ADMIN ENDPOINTS
 # ---------------------------------------------------------    
 @app.route('/main', methods = ['POST'])
 def mainmenu():
@@ -167,6 +191,11 @@ def customer():
         #todo
         # elif filter_flight is not None:
             # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
+    elif request.method =='POST':
+        customer_id = request.form['c_id']
+        status = '"{}"'.format('CHECKEDIN')
+        airdb.update_itinerary(customer_id, 'I_STATUS', status)
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
     return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
