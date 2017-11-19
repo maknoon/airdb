@@ -919,7 +919,6 @@ class AirplaneDb(object):
         try:
             dataList = []
             cursor.execute(get_baggage_query)
-            print("query executed")
             if i_id is None:
                 baggage = cursor.fetchall()
                 for bag in baggage:
@@ -930,15 +929,14 @@ class AirplaneDb(object):
                     }
                     dataList.append(bag_object)
             else:
-                baggage = cursor.fetchone()
-                bag_object = {
+                baggage = cursor.fetchall()
+                for bag in baggage:
+                    bag_object = {
                         'bag_id': bag[0],
                         'itinerary_id': bag[1],
-                        'weight': bag[2]
+                        'weight': str(bag[2])
                     }
-                dataList.append(bag_object)
-                print(baggage)
-
+                    dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Get Baggage Failed with error: {0}").format(e)
@@ -949,6 +947,68 @@ class AirplaneDb(object):
         db.close()
         return data
 
+#==============================================================================
+#   function: get_baggage for flight
+#   description: returns all baggage on flight id
+#   return: baggage json object
+#==============================================================================
+    def get_baggage_for_flight(self, flight_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_baggage_query = """ Select I.I_ID, B.B_ID, S.F_ID from ITINERARY I, SCHEDULE S, BAGGAGE B 
+                                where B.I_ID = I.I_ID and S.I_ID = I.I_ID and S.F_ID = %d """ % int(flight_id)
+        cursor=db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_baggage_query)
+            print("query executed")
+            baggage = cursor.fetchall()
+            for bag in baggage:
+                bag_object = {
+                    'bag_id': bag[0],
+                    'itinerary_id': bag[1],
+                    'weight': str(bag[2])
+                }
+                dataList.append(bag_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Baggage Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: delete_baggage
+#   description: deletes baggage
+#   return: nothing
+#==============================================================================
+    def delete_baggage(self, b_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        delete_baggage_query = """DELETE FROM BAGGAGE WHERE B_ID = %d""" % int(b_id)
+        cursor = db.cursor()
+        deleted_baggage = {
+            'baggage_id' : int(b_id)
+        }
+        try:
+            cursor.execute(delete_baggage_query)
+            db.commit()
+            data = json.dumps(deleted_baggage, sort_keys=True, indent=4, separators=(',', ': '))
+            print(data)
+        except Exception as e:
+            data = ("Delete Baggage Failed with error: {0}").format(e)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: get_customer
@@ -1095,6 +1155,35 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_frequent_flier
+#   description: get miles for customer
+#==============================================================================
+    def get_frequent_flier(self, customer_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_ff_query = """ SELECT FF_MILES FROM FREQUENTFLIER WHERE C_ID = %d """ % (int(customer_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_ff_query)
+            db.commit()
+            ff = cursor.fetchone()
+            ff_object = {'frequentflier_miles': ff[0]}
+            dataList.append(ff_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Frequent Flier Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+            
+            
+#==============================================================================
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
 #   return: returns updated ff object
@@ -1200,6 +1289,80 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_customer_itinerary_info
+#   description: query for Specific Itinerary tab in User UI
+#   return: list of itineraries
+#==============================================================================
+    def get_customer_itinerary_info(self, itinerary_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_itinerary_query = """select F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
+                                  from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2  
+                                  where I.I_ID = S.I_ID and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID 
+                                  and I.I_ID = %d ORDER BY F.F_ARRIVALTIME asc""" % (int(itinerary_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_itinerary_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                it_object = {
+                    'flight_id': itinerary[0],
+                    'departure_city': itinerary[1],
+                    'departure_time': itinerary[2],
+                    'arrival_city': itinerary[3],
+                    'arrival_time': itinerary[4],
+                    'status': itinerary[5]
+                }
+                dataList.append(it_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_schedule_for_employee
+#   description: query for flight schedule table in Employee UI
+#   return: list of flights
+#==============================================================================    
+    def get_schedule_for_employee(self, employee_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+        
+        get_emp_schedule_query = """ SELECT F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
+                                     FROM WORKSON W, FLIGHT F, AIRPORT A1, AIRPORT A2 
+                                     WHERE W.F_ID = F.F_ID and F.F_DEPARTUREAIRPORTID = A1.AP_ID and F.F_ARRIVALAIRPORTID = A2.AP_ID 
+                                     and W.E_ID = %d ORDER BY F.F_DEPARTURETIME """ % (int(employee_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_emp_schedule_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': flight[0],
+                    'departure_city': flight[1],
+                    'departure_time': flight[2],
+                    'arrival_city': flight[3],
+                    'arrival_time': flight[4],
+                    'status': flight[5]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Employee Schedule failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+    
+#==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
 #   return: deleted itinerary id
@@ -1216,7 +1379,6 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
-            data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
@@ -1942,7 +2104,8 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-        
+
+      
 #==============================================================================
 #   function: delete_employee
 #   description: delete an employee from table EMPLOYEE

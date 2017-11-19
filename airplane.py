@@ -1,5 +1,5 @@
 #!~/usr/bin/python
-from flask import Flask, abort, flash, request, render_template, session
+from flask import Flask, flash, abort, request, render_template, session
 from airplanedb import AirplaneDb
 import config
 import hashlib
@@ -20,10 +20,11 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        get_itineraries = json.loads(airdb.get_itinerary(1))
-        return render_template('main.html', type='user', data=get_itineraries)
+        return render_template('main.html', type='user')
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
+    elif session.get('type') == 'employee':
+        return employeeUI(1)
     else:
         return render_template('index.html')
 
@@ -36,9 +37,15 @@ def login():
     elif (request.form['password'] == config.userpwd
         and request.form['username'] == 'user'):
         session['type'] = 'user'
-        return index()
+    elif (request.form['password'] == config.employeepwd
+        and request.form['username'] == 'employee'):
+        session['type'] = 'employee'
     else:
-        flash('wrong password!')
+        session['type'] = 'none'
+        flash('Invalid input')
+        return render_template('index.html')
+
+    return index()
 
 @app.route('/logout')
 def logout():
@@ -46,9 +53,74 @@ def logout():
 
     return index()
 
+# ---------------------------------------------------------
+# USER ENDPOINTS
+# ---------------------------------------------------------    
+@app.route('/mainuser', methods = ['POST'])
+def mainmenuuser():
+    return render_template('main.html', type ='user')
+
+@app.route('/useraccountUI', methods = ['POST', 'GET'])
+def useraccountUI():
+    get_customer = json.loads(airdb.get_customer(1))
+    get_ff = json.loads(airdb.get_frequent_flier(1))
+    if request.method == 'POST':
+        if 'updateemail' in request.form:
+            newemail = '"{}"'.format(request.form['email'])
+            airdb.update_customer(1, 'C_EMAIL', newemail)
+        elif 'updatephone' in request.form:
+            newphone = '"{}"'.format(request.form['phone'])
+            airdb.update_customer(1, 'C_PHONE', newphone)
+        get_customer = json.loads(airdb.get_customer(1))
+    return render_template('db.html', type='user', tab = 'account', data1=get_customer, data2 =get_ff)
+
+@app.route('/useritineraryUI', methods = ['POST', 'GET'])
+def useritineraryUI():
+    get_itineraries = json.loads(airdb.get_itinerary(1))
+    get_ff = json.loads(airdb.get_frequent_flier(1))
+    if request.method == 'POST':
+        itinerary_id = request.form['i_id']
+        if 'updatestatus' in request.form:
+            status = '"{}"'.format('CHECKEDIN')
+            airdb.update_itinerary(1, 'I_STATUS', status)
+        elif 'updateseat' in request.form:
+            seattype = '"{}"'.format(request.form['seat'])
+            airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
+        get_itineraries = json.loads(airdb.get_itinerary(1))    
+    elif request.method == 'GET':
+        should_delete = request.args.get('delete')
+        itinerary_id = request.args.get('i_id')
+        if should_delete is not None:
+            airdb.delete_itinerary(itinerary_id)
+            get_itineraries = json.loads(airdb.get_itinerary(1))
+    return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2 =get_ff)
+    
+@app.route('/userspecificUI', methods=['POST', 'GET'])
+def userspecificUI():
+    if request.method == 'POST':
+        itinerary_id = request.form['i_id']
+        if 'addbaggage' in request.form:
+            airdb.add_baggage(itinerary_id, request.form['b_weight'])
+        elif 'removebaggage' in request.form:
+            airdb.delete_baggage(request.form['b_id'])
+        
+        get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
+        get_bags = json.loads(airdb.get_baggage(itinerary_id))
+
+        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)    
+
+    return render_template('db.html', type='user', tab='specific')
 
 # ---------------------------------------------------------
-# UI ENDPOINTS
+# EMPLOYEE ENDPOINTS
+# --------------------------------------------------------- 
+@app.route('/employeeUI', methods=['POST', 'GET'])
+def employeeUI(id):
+    get_employee = json.loads(airdb.get_employee(id))
+    get_schedule = json.loads(airdb.get_schedule_for_employee(id))
+    return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule)
+# ---------------------------------------------------------
+# ADMIN ENDPOINTS
 # ---------------------------------------------------------    
 @app.route('/main', methods = ['POST'])
 def mainmenu():
@@ -56,9 +128,17 @@ def mainmenu():
     
 @app.route('/flightUI',methods = ['POST', 'GET'])
 def flight():
-   if request.method == 'POST':
-      get_flights = json.loads(airdb.get_flight(None))
-      return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+    get_flights = json.loads(airdb.get_flight(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        get_flights = json.loads(airdb.get_flight(None))
+    elif request.method =='POST':
+        status = '"{}"'.format(request.form['status'])
+        flight_id = request.form['f_id']
+        airdb.update_flight(flight_id, 'F_STATUS', status)
+        get_flights = json.loads(airdb.get_flight(None))
+    return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+
       
 @app.route('/airportUI',methods = ['POST', 'GET'])
 def airport():
@@ -111,30 +191,54 @@ def employee():
 
 @app.route('/baggageUI',methods = ['POST', 'GET'])
 def baggage():
-    if request.method == 'POST':
-      get_bags = json.loads(airdb.get_baggage(None))
-      return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
+    get_bags = json.loads(airdb.get_baggage(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        itinerary_id = request.args.get('i_id')
+        filter_itinerary= request.args.get('filteritinerary')
+        filter_flight = request.args.get('filterflight')
+        if filter_itinerary is not None:
+            get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        elif filter_flight is not None:
+            get_bags = json.loads(airdb.get_baggage_for_flight(flight_id))
+    return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
 
 @app.route('/aircraftUI',methods = ['POST', 'GET'])
 def aircraft():
     get_airplanes = json.loads(airdb.get_aircraft(None))
     if request.method =='GET':
         airport_id = request.args.get('airport_id')
+        aircraft_id = request.args.get('ac_id')
         status = request.args.get('status')
         should_delete = request.args.get('delete')
         if status is not None:
             get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
         elif airport_id is not None:
             get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
-    #elif request.method == 'POST':
+        if should_delete is not None:
+            airdb.delete_aircraft(aircraft_id)
+            get_airplanes = json.loads(airdb.get_aircraft(None))
     return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
 
 @app.route('/customerUI',methods = ['POST', 'GET'])
 def customer():
-    if request.method == 'POST':
-      get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-      return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
-
+    get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        customer_id = request.args.get('c_id')
+        filter_customer= request.args.get('filtercustomer')
+        filter_flight = request.args.get('filterflight')
+        #if filter_flight is not None:
+        #    get_schedule = json.loads(airdb.get_schedule_for_itinerary(itinerary_id))
+        #todo
+        # elif filter_flight is not None:
+            # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
+    elif request.method =='POST':
+        customer_id = request.form['c_id']
+        status = '"{}"'.format('CHECKEDIN')
+        airdb.update_itinerary(customer_id, 'I_STATUS', status)
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+    return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------
@@ -202,7 +306,7 @@ def baggage_route():
         if res_body == 0: abort(404)
     # add a new bag
     elif request.method == 'POST':
-	    res_body = airdb.add_baggage(i_id, request.args.get('weight'))
+        res_body = airdb.add_baggage(i_id, request.args.get('weight'))
         
 # =========
 # /FF
