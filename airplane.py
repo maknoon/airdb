@@ -118,7 +118,8 @@ def userspecificUI():
 def employeeUI(id):
     get_employee = json.loads(airdb.get_employee(id))
     get_schedule = json.loads(airdb.get_schedule_for_employee(id))
-    return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule)
+    get_vip = json.loads(airdb.get_vip())
+    return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule, data3 = get_vip)
 # ---------------------------------------------------------
 # ADMIN ENDPOINTS
 # ---------------------------------------------------------
@@ -131,7 +132,11 @@ def flight():
     get_flights = json.loads(airdb.get_flight(None))
     if request.method == 'GET':
         flight_id = request.args.get('f_id')
-        get_flights = json.loads(airdb.get_flight(None))
+        delayed = request.args.get('delayed')
+        if delayed == 'True':
+            get_flights = json.loads(airdb.get_delayed_flight())
+        else:
+            get_flights = json.loads(airdb.get_flight(None))
     elif request.method =='POST':
         status = '"{}"'.format(request.form['status'])
         flight_id = request.form['f_id']
@@ -559,6 +564,19 @@ def workson_route():
     elif request.method == 'DELETE':
         res_body = airdb.delete_workson(e_id, f_id)
 
+    return res_body
+
+# =========
+# /VIP
+# =========
+@app.route('/vip', methods=['GET'])
+def vip_route():
+    # get all VIPS (customer that flied/flies firstclass)
+    if request.method == 'GET':
+        res_body = airdb.get_vip()
+        if res_body == 0: abort(404)
+    else:
+        abort(400)
     return res_body
 
 # ---------------------------------------------------------
