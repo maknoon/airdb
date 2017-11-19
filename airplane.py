@@ -56,9 +56,17 @@ def mainmenu():
     
 @app.route('/flightUI',methods = ['POST', 'GET'])
 def flight():
-   if request.method == 'POST':
-      get_flights = json.loads(airdb.get_flight(None))
-      return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+    get_flights = json.loads(airdb.get_flight(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        get_flights = json.loads(airdb.get_flight(None))
+    elif request.method =='POST':
+        status = request.form['status']
+        flight_id = request.form['f_id']
+        airdb.update_flight(flight_id, 'F_STATUS', status)
+        get_flights = json.loads(airdb.get_flight(None))
+    return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+
       
 @app.route('/airportUI',methods = ['POST', 'GET'])
 def airport():
@@ -111,9 +119,17 @@ def employee():
 
 @app.route('/baggageUI',methods = ['POST', 'GET'])
 def baggage():
-    if request.method == 'POST':
-      get_bags = json.loads(airdb.get_baggage(None))
-      return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
+    get_bags = json.loads(airdb.get_baggage(None))
+    if request.method == 'GET':
+        flight_id = request.args.get('f_id')
+        itinerary_id = request.args.get('i_id')
+        filter_itinerary= request.args.get('filteritinerary')
+        filter_flight = request.args.get('filterflight')
+        if filter_itinerary is not None:
+            get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        elif filter_flight is not None:
+            get_bags = json.loads(airdb.get_baggage_for_flight(flight_id))
+    return render_template('db.html', type = 'admin',  tab = 'baggage', data = get_bags)
 
 @app.route('/aircraftUI',methods = ['POST', 'GET'])
 def aircraft():

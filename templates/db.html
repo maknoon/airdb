@@ -32,6 +32,18 @@
                 {% endfor %} 
             </table>
             </div>
+            
+            <div class="filter">
+                <form action="/flightUI" method="GET" >
+                    <p>Update Status of Flight 
+                        <input type="text" name="f_id" placeholder="Flight ID" />
+                        To <input type="text" name="status" placeholder="Status"/>
+                        <input type='submit' name="updatestatus" value="Submit"/>
+                    </p>
+                </form>
+            </div>
+            
+            
             {% endif %}
             
             {% if tab == 'airport' %}
@@ -163,6 +175,27 @@
                 {% endfor %} 
             </table>
             </div>
+            
+            <div class="filter">
+                <form action="/baggageUI" method="GET">
+                    <button>Remove Filter</button>
+                </form>
+            
+                <form action="/baggageUI" method="GET" >
+                    <p>Filter by
+                        <input type="text" name="f_id" placeholder="Flight ID" />
+                        <input type='submit' name="filterflight" value="Submit"/>
+                    </p>
+                </form>
+            
+                <form action="/baggageUI" method="GET" >
+                    <p>Filter by
+                        <input type="text" name ="i_id" placeholder="Itinerary ID" />
+                        <input type='submit' name="filteritinerary" value="Submit"/>
+                    </p>
+                </form>
+            </div>
+           
             {% endif %}
 
             {% if tab == 'aircraft' %}
