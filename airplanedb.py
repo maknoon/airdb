@@ -1143,6 +1143,41 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_customer_for_flight
+#   description: returns all customers with an inputted flight_id
+#   return: customer json object(s)
+#==============================================================================
+    def get_customer_for_flight(self, flight_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_customer_query = """SELECT I.C_ID, S.F_ID
+                                FROM ITINERARY I, SCHEDULE S
+                                WHERE S.F_ID = %d AND S.I_ID = I.I_ID""" % (int(flight_id))
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_customer_query)
+            customers = cursor.fetchall()
+            for c in customers:
+                customer = {
+                    'customer_id': c[0],
+                    'flight_id': c[1]
+                }
+                dataList.append(customer)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = ("Get Customers For Flight failed with error: {0}").format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
 #   function: add_customer
 #   description: adds an instance of customer to CUSTOMER table
 #   return: added customer JSON object
@@ -1371,6 +1406,41 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_itinerary_distance
+#   description: get total distance of trip (by itinerary id)
+#   return: float of total trip distance and itinerary id
+#==============================================================================
+    def get_itinerary_distance(self, itinerary_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        get_distance_query = """SELECT SUM(F_DISTANCE), I_ID
+                                FROM FLIGHT F, SCHEDULE S
+                                WHERE S.I_ID = %d and S.F_ID = F.F_ID
+                                GROUP BY I_ID"""
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_distance_query)
+            distance = cursor.fetchone()
+            distance_object = {
+                'total_distance': float(distance[0]),
+                'itinerary_id': int(distance[1])
+            }
+            dataList.append(distance_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = ("Get Total Distance Failed with error: {0}").format(err)
+            print(data)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
 #   function: get_customer_itinerary_info
 #   description: query for Specific Itinerary tab in User UI
 #   return: list of itineraries
@@ -1440,9 +1510,9 @@ class AirplaneDb(object):
             db.rollback()
             data = 0
 
-        cursor.close()
-        db.close()
-        return data
+    cursor.close()
+    db.close()
+    return data
 
 #==============================================================================
 #   function: delete_itinerary
@@ -1630,7 +1700,7 @@ class AirplaneDb(object):
             else:
                 flights = cursor.fetchone()
                 f_object = {
-                    'flight_id': int(flights[0]),
+                        'flight_id': int(flights[0]),
                         'aircraft_id': int(flights[1]),
                         'distance': float(flights[2]),
                         'departtime': flights[3],
@@ -1689,6 +1759,125 @@ class AirplaneDb(object):
             print("Get Delayed Flight Failed with error: {0}").format(e)
             db.rollback()
             data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight_for_day
+#   description: get all the flights for a certain departure/arrival day in
+#               table FLIGHT
+#   returns: the list of all the flights with departure/arrival time including
+#           the inputted day
+#==============================================================================
+    def get_flight_for_day(self, day, dept_or_arrv):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+        if dept_or_arrv == "dept":
+            dept_or_arrv_field = 'F_DEPARTURETIME'
+        elif dept_or_arrv == "arrv":
+            dept_or_arrv_field = 'F_ARRIVALTIME'
+        else:
+            return "Departure or Arrival input is not recognized"
+
+        dept_or_arrv_day = '{0}%'.format(day)
+        get_flight_query = """SELECT *
+                                FROM FLIGHT WHERE %s LIKE
+                                '%s'""" % (dept_or_arrv_field, dept_or_arrv_day)
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights For Day Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight_for_airport
+#   description: get all departing/arriving flights for an aircraft in an airport
+#   returns: the list of all departing/arriving flights based on the inputted
+#        departing/arriving parameter, aircraft id, and airport id
+#==============================================================================
+    def get_flight_for_airport(self, ap_id, dept_or_arrv):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        if dept_or_arrv == "dept":
+            dept_or_arrv_time = 'F_DEPARTURETIME'
+            dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
+            dept_or_arrv_gate = 'F_DEPARTUREGATEID'
+        elif dept_or_arrv == "arrv":
+            dept_or_arrv_time = 'F_ARRIVALTIME'
+            dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
+            dept_or_arrv_gate = 'F_ARRIVALGATEID'
+        else:
+            return "Departure or Arrival input is not recognized"
+
+        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, %s, %s, %s, F_STATUS
+                            FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_time,
+                            dept_or_arrv_airport, dept_or_arrv_gate, dept_or_arrv_airport,
+                            ap_id)
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                if dept_or_arrv == "dept":
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'departtime': flight[3],
+                        'departairport': flight[4],
+                        'departgate': flight[5],
+                        'status': flight[6]
+                    }
+                else:
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'arrivetime': flight[3],
+                        'arriveairport': flight[4],
+                        'arrivegate': flight[5],
+                        'status': flight[6]
+                    }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights For Airport Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
 
         cursor.close()
         db.close()
@@ -2034,6 +2223,32 @@ class AirplaneDb(object):
         db.close()
         return data
 
+    def get_aircraft_by_airport_total(self, airport_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_total_query = """SELECT COUNT(AC_ID), AP_ID FROM AIRCRAFT
+                                    WHERE AP_ID = '%s'""" % (airport_id)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_total_query)
+            total = cursor.fetchone()
+            total_object = {
+                'total_aircraft': int(total[0]),
+                'airport_id': total[1]
+            }
+            dataList.append(total_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Total Aircraft by Airport Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
 
     def get_aircraft_by_status(self, status):
         db = MySQLdb.connect(host=self.host,
@@ -2070,7 +2285,48 @@ class AirplaneDb(object):
         db.close()
         return data
 
+#==============================================================================
+#   function: get_aircraft_last_maintained
+#   description: get all the aircrafts sorted by date last maintained
+#   returns: the list of all aircrafts sorted by AC_LAST_MAINTAINED
+#==============================================================================
+
+    def get_aircraft_last_maintained(self):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_query = """SELECT * FROM AIRCRAFT
+                                ORDER BY STR_TO_DATE(AC_LAST_MAINTAINED, '%m-%d-%Y') ASC"""
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_query)
+            aircrafts = cursor.fetchall()
+            for aircraft in aircrafts:
+                ac_object = {
+                    'id': aircraft[0],
+                    'status': aircraft[1],
+                    'make': aircraft[2],
+                    'mileage': float(aircraft[3]),
+                    'date_created': aircraft[4],
+                    'last_maintained': aircraft[5],
+                    'num_economy': aircraft[6],
+                    'num_business': aircraft[7],
+                    'number_firstclass': aircraft[8],
+                    'airport_id': aircraft[9]
+                }
+                dataList.append(ac_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Aircraft sorted by Last Maintained Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
         return data
+
 #==============================================================================
 #   function: update_aircraft
 #   description: update an aircraft's status in table AIRCRAFT
@@ -2393,7 +2649,7 @@ class AirplaneDb(object):
                              passwd=self.pw,
                              db=self.db)
         if e_id is None:
-            return "Employeesss ID is NULL"
+            return "Employee ID is NULL"
         else:
             get_flight_query = """SELECT W.E_ID, F.F_ID
                                     FROM FLIGHT F, WORKSON W WHERE
