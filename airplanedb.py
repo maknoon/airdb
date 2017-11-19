@@ -1706,6 +1706,48 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_delayed_flight
+#   description: get all flights that are delayed
+#   returns: the list of all flights where status = 'delayed'
+#==============================================================================
+    def get_delayed_flight(self):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+
+        get_delayed_flight_query = """SELECT * FROM DELAYED_FLIGHT"""
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_delayed_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
+        except Exception as e:
+            print("Get Delayed Flight Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
 #   function: get_flight_for_day
 #   description: get all the flights for a certain departure/arrival day in
 #               table FLIGHT
