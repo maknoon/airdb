@@ -234,22 +234,22 @@ def aircraft():
 
 @app.route('/admin-customer-view',methods = ['POST', 'GET'])
 def customer():
-    get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
     if request.method == 'GET':
         flight_id = request.args.get('f_id')
         customer_id = request.args.get('c_id')
         filter_customer= request.args.get('filtercustomer')
         filter_flight = request.args.get('filterflight')
-        #if filter_flight is not None:
-        #    get_schedule = json.loads(airdb.get_schedule_for_itinerary(itinerary_id))
-        #todo
-        # elif filter_flight is not None:
-            # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
+        if filter_flight is not None and flight_id is not None and flight_id != '':
+            get_schedule = json.loads(airdb.get_schedule_for_itinerary(None, None, flight_id))
+        elif filter_customer is not None and customer_id is not None and customer_id != '':
+            get_schedule = json.loads(airdb.get_schedule_for_itinerary(None, customer_id, None))
+        else:
+            get_schedule = json.loads(airdb.get_schedule_for_itinerary(None, None, None))
     elif request.method =='POST':
         customer_id = request.form['c_id']
         status = '"{}"'.format('CHECKEDIN')
         airdb.update_itinerary(customer_id, 'I_STATUS', status)
-        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None, None, None))
     return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
@@ -478,7 +478,7 @@ def schedule_route():
 
     # Get schedule of itinerary
     if request.method == 'GET':
-        res_body = airdb.get_schedule_for_itinerary(iid)
+        res_body = airdb.get_schedule_for_itinerary(iid, None, None)
 
     # Add schedule for itinerary
     elif request.method == 'POST':

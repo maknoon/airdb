@@ -2566,14 +2566,19 @@ class AirplaneDb(object):
 #   description: get all the schedules with itinerary ID
 #   returns: the list of all the schedules with a specified itinerary ID
 #==============================================================================
-    def get_schedule_for_itinerary(self, i_id):
+    def get_schedule_for_itinerary(self, i_id, c_id, f_id):
          db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
 
          if i_id is None:
-             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
+             if c_id is not None:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND C_ID = %d""" % (int(c_id))
+             elif f_id is not None:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND F_ID = %d""" % (int(f_id))
+             else:
+                 get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
          else:
              get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND I_ID = %d""" % (int(i_id))
          cursor = db.cursor()
