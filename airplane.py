@@ -55,7 +55,7 @@ def logout():
 
 # ---------------------------------------------------------
 # USER ENDPOINTS
-# ---------------------------------------------------------    
+# ---------------------------------------------------------
 @app.route('/mainuser', methods = ['POST'])
 def mainmenuuser():
     return render_template('main.html', type ='user')
@@ -86,7 +86,7 @@ def useritineraryUI():
         elif 'updateseat' in request.form:
             seattype = '"{}"'.format(request.form['seat'])
             airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
-        get_itineraries = json.loads(airdb.get_itinerary(1))    
+        get_itineraries = json.loads(airdb.get_itinerary(1))
     elif request.method == 'GET':
         should_delete = request.args.get('delete')
         itinerary_id = request.args.get('i_id')
@@ -94,7 +94,7 @@ def useritineraryUI():
             airdb.delete_itinerary(itinerary_id)
             get_itineraries = json.loads(airdb.get_itinerary(1))
     return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2 =get_ff)
-    
+
 @app.route('/userspecificUI', methods=['POST', 'GET'])
 def userspecificUI():
     if request.method == 'POST':
@@ -103,17 +103,17 @@ def userspecificUI():
             airdb.add_baggage(itinerary_id, request.form['b_weight'])
         elif 'removebaggage' in request.form:
             airdb.delete_baggage(request.form['b_id'])
-        
+
         get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
         get_bags = json.loads(airdb.get_baggage(itinerary_id))
 
-        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)    
+        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)
 
     return render_template('db.html', type='user', tab='specific')
 
 # ---------------------------------------------------------
 # EMPLOYEE ENDPOINTS
-# --------------------------------------------------------- 
+# ---------------------------------------------------------
 @app.route('/employeeUI', methods=['POST', 'GET'])
 def employeeUI(id):
     get_employee = json.loads(airdb.get_employee(id))
@@ -121,11 +121,11 @@ def employeeUI(id):
     return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule)
 # ---------------------------------------------------------
 # ADMIN ENDPOINTS
-# ---------------------------------------------------------    
+# ---------------------------------------------------------
 @app.route('/main', methods = ['POST'])
 def mainmenu():
     return render_template('main.html', type='admin')
-    
+
 @app.route('/flightUI',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
@@ -139,7 +139,7 @@ def flight():
         get_flights = json.loads(airdb.get_flight(None))
     return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
 
-      
+
 @app.route('/airportUI',methods = ['POST', 'GET'])
 def airport():
     if request.method == 'POST':
@@ -163,7 +163,7 @@ def workschedule():
         if should_delete is not None:
             airdb.delete_workson(employee_id, flight_id)
             get_work_schedule = json.loads(airdb.get_workson())
-    
+
     elif request.method == 'POST':
         employee_id = request.form['e_id']
         flight_id = request.form['f_id']
@@ -186,7 +186,7 @@ def employee():
         wage = request.form['wage']
         airdb.add_employee(0, type, wage)
         get_employees = json.loads(airdb.get_employee(None))
-        
+
     return render_template('db.html', type = 'admin',  tab = 'employee', data = get_employees)
 
 @app.route('/baggageUI',methods = ['POST', 'GET'])
@@ -307,7 +307,7 @@ def baggage_route():
     # add a new bag
     elif request.method == 'POST':
         res_body = airdb.add_baggage(i_id, request.args.get('weight'))
-        
+
 # =========
 # /FF
 # =========
@@ -524,7 +524,7 @@ def employee_route():
     # add a new employee
     if request.method == 'POST':
         req_body = request.get_json()
-        res_body = airdb.add_employee(req_body['hours'],  req_body['type'],
+        res_body = airdb.add_employee(req_body['hours'],  req_body['type'], req_body['name'],
                  req_body['wage'])
 
     # delete an employee

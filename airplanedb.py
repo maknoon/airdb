@@ -2092,15 +2092,15 @@ class AirplaneDb(object):
 #   description: add an employee instance to table EMPLOYEE
 #   returns: the added employee json object
 #==============================================================================
-    def add_employee(self, hours, emp_type, wage):
+    def add_employee(self, hours, emp_type, emp_name, wage):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
                             passwd=self.pw,
                             db=self.db)
 
-        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                                VALUES (%.2f, '%s', %.2f)""" % (float(hours),
-                                emp_type, float(wage))
+        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                                VALUES (%.2f, '%s', '%s', %.2f)""" % (float(hours),
+                                emp_type, emp_name, float(wage))
 
         cursor = db.cursor()
         try:
@@ -2109,6 +2109,7 @@ class AirplaneDb(object):
                 'id': cursor.lastrowid,
                 'hours': float(hours),
                 'type': emp_type,
+                'name': emp_name,
                 'wage': float(wage)
             }
             db.commit()
@@ -2148,7 +2149,8 @@ class AirplaneDb(object):
                         'id': emp[0],
                         'hours': emp[1],
                         'type': emp[2],
-                        'wage': emp[3]
+                        'name': emp[3],
+                        'wage': emp[4]
                     }
                     dataList.append(emp_object)
             else:
@@ -2157,7 +2159,8 @@ class AirplaneDb(object):
                     'id': emps[0],
                     'hours': emps[1],
                     'type': emps[2],
-                    'wage': emps[3]
+                    'name': emps[3],
+                    'wage': emps[4]
                 }
                 dataList.append(emp_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
