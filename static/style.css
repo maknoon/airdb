@@ -1,19 +1,123 @@
+:root {
+    --bg-color: #D6EAF8;
+    --accent-color: #2874A6;
+}
+
 body {
-    padding: 100px;
-    margin: 100px;
+    padding: 2%;
+    margin: 2%;
     font-size: 14px;
-    font-family: 'Calibri', sans-serif;
-    /* text-transform: uppercase; */
-    background-color: #D6EAF8;
+    font-family: 'Helvetica', sans-serif;
+    background-color: var(--bg-color);
+}
+
+a:visited {
+    color: var(--accent-color);
+}
+
+a:hover {
+    color: white;
+    background-color: var(--accent-color);
+}
+
+p {
+    display: flex;
+    flex-direction: column;
+    padding: 0.25em;
+    border-radius: 0.25em;
+    border: 2px dashed var(--accent-color);
 }
 
 img {
     margin: 25px;
 }
 
+h1,h2,label {
+    color: var(--accent-color);
+}
+
+h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+input,input:focus,input[type=select] {
+    padding: 4pt 4pt;
+    margin: 0.25em 1em;
+    background-color: var(--bg-color);
+    border: none;
+    border-bottom: 2px solid var(--accent-color);
+    outline: none;
+}
+
+button,input[type=submit] {
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    margin: 1em 1em;
+    padding: 5px;
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    text-transform: uppercase;
+}
+
+button:hover, input[type=submit]:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+table {
+    width: 75%;
+    border: 2px solid var(--accent-color);
+    background-color: white;
+}
+
+th {
+    text-transform: uppercase;
+}
+
+th,td {
+    border: 2px solid var(--accent-color);
+    width: 20%;
+    padding: 0.40em;
+    background-color: #93c0f2;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.menu-item {
+    margin: 1em;
+    margin-left: 0em;
+}
+
+.container {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: top;
+}
+
+.container-item {
+    align-items: center;
+    margin: 1em 0em;
+}
+
+.filter {
+    width: 20%;
+    margin-left: 1.75em;
+    padding-left: 0.75em;
+    display: flex;
+    flex-direction: column;
+}
+
 .wrapper {
-    margin: 20px;
-    padding: 50px;
+    margin: 10% 18%;
+    padding: 10%;
+    border: 2px dashed var(--accent-color);
+    border-radius: 0.25em;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -21,26 +125,11 @@ img {
 }
 
 .form {
-    margin: 10px 0px;
+    margin: 0.25em 0.25em;
     display: flex;
     flex-direction: column;
 }
 
-h1,h2,label {
-    color: #2874A6;
-}
-
-input {
-    padding: 4pt 4pt;
-    margin: 2px;
-}
-
-table {
-    width: 75%;
-}
-
-table,th,td {
-    border: 2px solid #2874A6;
-    padding: 2px;
-    margin: 5px;
+.selector {
+    width: 15%;
 }
