@@ -20,9 +20,7 @@ airdb = AirplaneDb(host=config.host,
 @app.route('/')
 def index():
     if session.get('type') == 'user':
-        get_itineraries = json.loads(airdb.get_itinerary(1))
-        get_ff = json.loads(airdb.get_frequent_flier(1))
-        return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
+        return render_template('main.html', type='user')
     elif session.get('type') == 'admin':
         return render_template('main.html', type='admin')
     elif session.get('type') == 'employee':
@@ -56,8 +54,26 @@ def logout():
 # ---------------------------------------------------------
 # USER ENDPOINTS
 # ---------------------------------------------------------    
-@app.route('/userUI', methods = ['POST', 'GET'])
-def user():
+@app.route('/mainuser', methods = ['POST'])
+def mainmenuuser():
+    return render_template('main.html', type ='user')
+
+@app.route('/useraccountUI', methods = ['POST', 'GET'])
+def useraccountUI():
+    get_customer = json.loads(airdb.get_customer(1))
+    get_ff = json.loads(airdb.get_frequent_flier(1))
+    if request.method == 'POST':
+        if 'updateemail' in request.form:
+            newemail = '"{}"'.format(request.form['email'])
+            airdb.update_customer(1, 'C_EMAIL', newemail)
+        elif 'updatephone' in request.form:
+            newphone = '"{}"'.format(request.form['phone'])
+            airdb.update_customer(1, 'C_PHONE', newphone)
+        get_customer = json.loads(airdb.get_customer(1))
+    return render_template('db.html', type='user', tab = 'account', data1=get_customer, data2 =get_ff)
+
+@app.route('/useritineraryUI', methods = ['POST', 'GET'])
+def useritineraryUI():
     get_itineraries = json.loads(airdb.get_itinerary(1))
     get_ff = json.loads(airdb.get_frequent_flier(1))
     if request.method == 'POST':
@@ -75,7 +91,20 @@ def user():
         if should_delete is not None:
             airdb.delete_itinerary(itinerary_id)
             get_itineraries = json.loads(airdb.get_itinerary(1))
-    return render_template('main.html', type='user', data=get_itineraries, data2 =get_ff)
+    return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2 =get_ff)
+    
+@app.route('/userspecificUI', methods=['POST', 'GET'])
+def userspecificUI():
+    if request.method == 'POST':
+        if 'chooseitinerary' in request.form:
+            itinerary_id = request.form['i_id']
+            get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
+            get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        #if 'addbaggage' in request.form:
+        #    airdb.add_baggage(itinerary_id, NULL)
+        #    get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)    
+    return render_template('db.html', type='user', tab='specific')
 
 # ---------------------------------------------------------
 # ADMIN ENDPOINTS

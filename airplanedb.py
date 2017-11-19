@@ -1259,6 +1259,43 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_customer_itinerary_info
+#   description: query for Specific Itinerary tab in User UI
+#   return: list of itineraries
+#==============================================================================
+    def get_customer_itinerary_info(self, itinerary_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_itinerary_query = """select F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
+                                  from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2  
+                                  where I.I_ID = S.I_ID and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID 
+                                  and I.I_ID = %d ORDER BY F.F_ARRIVALTIME asc""" % (int(itinerary_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_itinerary_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                it_object = {
+                    'flight_id': itinerary[0],
+                    'departure_city': itinerary[1],
+                    'departure_time': itinerary[2],
+                    'arrival_city': itinerary[3],
+                    'arrival_time': itinerary[4],
+                    'status': itinerary[5]
+                }
+                dataList.append(it_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+    
+#==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
 #   return: deleted itinerary id
