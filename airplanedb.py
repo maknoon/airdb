@@ -105,6 +105,7 @@ class AirplaneDb(object):
                                 E_ID INT AUTO_INCREMENT,
                                 E_HOURS FLOAT NOT NULL,
                                 E_TYPE VARCHAR(32) NOT NULL,
+                                E_NAME VARCHAR(32) NOT NULL,
                                 E_WAGE FLOAT NOT NULL,
                                 PRIMARY KEY (E_ID)
                                 )"""
@@ -204,43 +205,43 @@ class AirplaneDb(object):
 
         ''' insert test customers'''
         insert_customer_1 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer1', 20, 'check@test.com', '6041111111')
+                            VALUES ('Eveline Christa', 20, 'check@test.com', '6041111111')
                             """
 
         insert_customer_2 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer2', 30, 'check2@test.com', '6042222222')
+                            VALUES ('Anastasios Cardea', 30, 'check2@test.com', '6042222222')
                             """
 
         insert_customer_3 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer3', 40, 'check3@test.com', '6043333333')
+                            VALUES ('Roparzh Theodosios', 40, 'check3@test.com', '6043333333')
                             """
 
         insert_customer_4 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer4', 50, 'check4@test.com', '6044444444')
+                            VALUES ('Renate Kamilla', 50, 'check4@test.com', '6044444444')
                             """
 
         insert_customer_5 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer5', 55, 'check5@test.com', '6045555555')
+                            VALUES ('Kelleigh Floriano', 55, 'check5@test.com', '6045555555')
                             """
 
         insert_customer_6 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer6', 60, 'check6@test.com', '6046666666')
+                            VALUES ('Gyongyi Elvis', 60, 'check6@test.com', '6046666666')
                             """
 
         insert_customer_7 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer7', 70, 'check7@test.com', '6047777777')
+                            VALUES ('Prasanna Rachel', 70, 'check7@test.com', '6047777777')
                             """
 
         insert_customer_8 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer8', 73, 'check8@test.com', '6048888888')
+                            VALUES ('Adrastea Agamemnon', 73, 'check8@test.com', '6048888888')
                             """
 
         insert_customer_9 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer9', 28, 'check9@test.com', '6049999999')
+                            VALUES ('Stephane Freyja', 28, 'check9@test.com', '6049999999')
                             """
 
         insert_customer_10 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer10', 19, 'check10@test.com', '6041010101')
+                            VALUES ('Erwin Gaius', 19, 'check10@test.com', '6041010101')
                             """
 
         try:
@@ -489,36 +490,36 @@ class AirplaneDb(object):
             print(e)
 
         ''' insert test employees '''
-        insert_employee_1 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (70.2, "CAPTAIN", 53)
+        insert_employee_1 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (70.2, "CAPTAIN", "Heino Amir", 53)
                             """
-        insert_employee_2 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (86.3, "CAPTAIN", 63)
+        insert_employee_2 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (86.3, "CAPTAIN", "Caleb Priska", 63)
                             """
-        insert_employee_3 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (92, "CAPTAIN", 80)
+        insert_employee_3 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (92, "CAPTAIN", "Ralf Jordana", 80)
                             """
-        insert_employee_4 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (41.4, "CAPTAIN", 90)
+        insert_employee_4 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (41.4, "CAPTAIN", "Bahadur Lyubov", 90)
                             """
-        insert_employee_5 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (00, "CAPTAIN", 105)
+        insert_employee_5 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (00, "CAPTAIN", "Gervasio Qasim", 105)
                             """
 
-        insert_employee_6 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (90.5, "ATTENDANT", 35)
+        insert_employee_6 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (90.5, "ATTENDANT", "Mahalia Reka", 35)
                             """
-        insert_employee_7 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (124.3, "ATTENDANT", 36)
+        insert_employee_7 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (124.3, "ATTENDANT", "Klara Maire", 36)
                             """
-        insert_employee_8 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (89.4, "ATTENDANT", 30)
+        insert_employee_8 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (89.4, "ATTENDANT", "Gwallter Elaine", 30)
                             """
-        insert_employee_9 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (109.0, "ATTENDANT", 29)
+        insert_employee_9 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (109.0, "ATTENDANT", "Eluned Helge", 29)
                             """
-        insert_employee_10 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (84.2, "ATTENDANT", 38)
+        insert_employee_10 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (84.2, "ATTENDANT", "Tamara Shantanu", 38)
                             """
         try:
             cursor.execute(insert_employee_1)
