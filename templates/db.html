@@ -132,6 +132,7 @@
             <div class="container">
             <table>
                 <tr>
+                    <th>Employee Name</th>
                     <th>Employee ID</th>
                     <th>Hours</th>
                     <th>Type</th>
@@ -139,6 +140,7 @@
                 </tr>
                 {% for row in data %}
                 <tr>
+                    <td>{{ row['name']}}</td>
                     <td>{{ row['id'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['type'] }}</td>
@@ -500,12 +502,14 @@
         <div><h1> Employee Info </h1>
             <table>
                 <tr>
+                    <th>Name </th>
                     <th>Employee Type</th>
                     <th>Hours</th>
                     <th>Wage</th>
                 </tr>
                 {% for row in data1 %}
                 </tr>
+                    <td>{{row['name'] }}</td>
                     <td>{{ row['type'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['wage'] }}</td>
