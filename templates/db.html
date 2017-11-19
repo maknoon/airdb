@@ -311,7 +311,6 @@
     {% endif %} <!-- end admin -->       
     {% if type == 'user' %}
         {% if tab == 'account' %}
-<<<<<<< HEAD
         <h2>Customer Info</h2>
         <div class="container">
             <div>
@@ -322,18 +321,6 @@
                     <th>Email</th>
                     <th>Phone Number</th>
                 </tr>
-=======
-        <div>
-            <p> 
-            <h2> Customer Info </h2>
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                    </tr>
->>>>>>> d69d3bd214558ae8047945a918f5335dd535bc76
                 {% for row in data1 %}
                 <tr>
                     <td>{{ row['customer_name'] }}</td>
