@@ -123,7 +123,6 @@ def employeeUI(id):
 # ---------------------------------------------------------
 # ADMIN ENDPOINTS
 # ---------------------------------------------------------
-
 @app.route('/main', methods = ['POST'])
 def mainmenu():
     return render_template('main.html', type='admin')
@@ -134,17 +133,19 @@ def flight():
     if request.method == 'GET':
         flight_id = request.args.get('f_id')
         delayed = request.args.get('delayed')
-        airport_id = request.args.get('ac_id')
+        airport_id = request.args.get('ap_id')
+        filterarrv = request.args.get('filterarriving')
+        filterdept = request.args.get('filterdeparting')
         if delayed == 'True':
             get_flights = json.loads(airdb.get_delayed_flight())
         else:
             get_flights = json.loads(airdb.get_flight(None))
-        #if 'filterarriving' in request.args:
-            #todo get_flights = json.loads(airdb.get
-            #return render_template('db.html', type = 'admin', tab = 'flight', data2 = get_flights)
-        #elif 'filterdeparting' in request.args:
-            #todo get_flights = 
-            #return render_template('db.html', type = 'admin', tab = 'flight', data3 = get_flights)
+        if filterarrv is not None:
+            get_flights = json.loads(airdb.get_flight_for_airport(airport_id, 'arrv'))
+            return render_template('db.html', type = 'admin', tab = 'flight', data2 = get_flights)
+        elif filterdept is not None:
+            get_flights = json.loads(airdb.get_flight_for_airport(airport_id, 'dept'))
+            return render_template('db.html', type = 'admin', tab = 'flight', data3 = get_flights)
     elif request.method =='POST':
         status = '"{}"'.format(request.form['status'])
         flight_id = request.form['f_id']
@@ -274,12 +275,10 @@ def wrapper(str_db_value):
 @app.route('/customer', methods=['POST','PATCH','GET'])
 def customer_route():
     cust_id = request.args.get('id')
-    flight_id = request.args.get('f_id')
 
     # fetch a customer by id
     if request.method == 'GET':
-        if flight_id and cust_id is None: res_body = airdb.get_customer_for_flight(flight_id)
-        else: res_body = airdb.get_customer(cust_id)
+        res_body = airdb.get_customer(cust_id)
         if res_body == 0: abort(404)
 
     # add a new customer
@@ -350,13 +349,10 @@ def itinerary_route():
                                         req_body['seatcost'],
                                         req_body['status'],
                                         req_body['customer_id'])
-    # Get total distance on trip if given itinerary id; itinerary if customer id
+
     elif request.method == 'GET':
-        if i_id:
-            res_body = get_itinerary_distance(i_id)
-        else:
-            cust_id = request.args.get('c_id')
-            res_body = airdb.get_itinerary(cust_id)
+        cust_id = request.args.get('id')
+        res_body = airdb.get_itinerary(cust_id)
         if res_body == 0: abort(404)
 
     elif request.method == 'PATCH':
@@ -412,18 +408,7 @@ def flight_route():
             res_body = airdb.update_flight(f_id, 'F_STATUS', wrapper(req_body['status']))
     elif request.method == 'GET':
         f_id = request.args.get('id')
-        ap_id = request.args.get('ap_id')
-        dept_or_arrv = request.args.get('dept_or_arrv')
-        day = request.args.get('day')
-        delayed = request.args.get('delayed')
-        if ap_id and dept_or_arrv:
-            res_body = airdb.get_flight_for_airport(ap_id, dept_or_arrv)
-        elif day and dept_or_arrv:
-            res_body = airdb.get_flight_for_day(day, dept_or_arrv)
-        elif delayed:
-            res_body = airdb.get_flight_delayed()
-        else:
-            res_body = airdb.get_flight(f_id)
+        res_body = airdb.get_flight(f_id)
         if res_body == 0: abort(404)
     return res_body
 
@@ -525,15 +510,7 @@ def aircraft_route():
 
     # fetch an aircraft by aircraft id
     elif request.method == 'GET':
-        ap_id = request.args.get('ap_id')
-        get_total = request.args.get('get_total')
-        get_sorted_by_last_maintained = request.args.get('get_sorted_by_last_maintained')
-        if ap_id and get_total:
-            res_body = airdb.get_aircraft_by_airport_total(ap_id)
-        elif get_sorted_by_last_maintained:
-            res_body = airdb.get_aircraft_last_maintained()
-        else:
-            res_body = airdb.get_aircraft(ac_id)
+        res_body = airdb.get_aircraft(ac_id)
         if res_body == 0: abort(404)
 
     # update an aircraft's status

@@ -1509,10 +1509,10 @@ class AirplaneDb(object):
             print("Get Employee Schedule failed with error: {0}").format(e)
             db.rollback()
             data = 0
-
-    cursor.close()
-    db.close()
-    return data
+            
+        cursor.close()
+        db.close()
+        return data
 
 #==============================================================================
 #   function: delete_itinerary
