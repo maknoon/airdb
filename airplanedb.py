@@ -445,7 +445,7 @@ class AirplaneDb(object):
         insert_flight_5 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (5, 2345, '01-20-2018:05:23', '01-22-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
+                            VALUES (5, 2345, '01-24-2018:05:23', '01-25-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
                             """
         insert_flight_6 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
