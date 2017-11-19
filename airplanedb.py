@@ -919,7 +919,6 @@ class AirplaneDb(object):
         try:
             dataList = []
             cursor.execute(get_baggage_query)
-            print("query executed")
             if i_id is None:
                 baggage = cursor.fetchall()
                 for bag in baggage:
@@ -930,15 +929,14 @@ class AirplaneDb(object):
                     }
                     dataList.append(bag_object)
             else:
-                baggage = cursor.fetchone()
-                bag_object = {
+                baggage = cursor.fetchall()
+                for bag in baggage:
+                    bag_object = {
                         'bag_id': bag[0],
                         'itinerary_id': bag[1],
-                        'weight': bag[2]
+                        'weight': str(bag[2])
                     }
-                dataList.append(bag_object)
-                print(baggage)
-
+                    dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Get Baggage Failed with error: {0}").format(e)
@@ -948,8 +946,40 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
+#==============================================================================
+#   function: get_baggage for flight
+#   description: returns all baggage on flight id
+#   return: baggage json object
+#==============================================================================
+    def get_baggage_for_flight(self, flight_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_baggage_query = """ Select I.I_ID, B.B_ID, S.F_ID from ITINERARY I, SCHEDULE S, BAGGAGE B 
+                                where B.I_ID = I.I_ID and S.I_ID = I.I_ID and S.F_ID = %d """ % int(flight_id)
+        cursor=db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_baggage_query)
+            print("query executed")
+            baggage = cursor.fetchall()
+            for bag in baggage:
+                bag_object = {
+                    'bag_id': bag[0],
+                    'itinerary_id': bag[1],
+                    'weight': str(bag[2])
+                }
+                dataList.append(bag_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            data = ("Get Baggage Failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
 
-
+        cursor.close()
+        db.close()
+        return data
 #==============================================================================
 #   function: get_customer
 #   description: returns an instance of customer based on customer_id

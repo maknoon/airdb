@@ -10,7 +10,7 @@
     <div class="menu">    
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
-            <form action="/flightUI" method="post">
+            <form action="/flightUI" method="GET">
                 <button class="menu-item">Flights</button>
             </form>
         
@@ -26,7 +26,7 @@
                 <button class="menu-item">Airports</button>
             </form>
         
-            <form action="/baggageUI" method="post">
+            <form action="/baggageUI" method="GET">
                 <button class="menu-item">Baggage</button>
             </form>
         
@@ -34,7 +34,7 @@
                 <button class="menu-item">Aircraft Fleet</button>
             </form>
         
-            <form action="/customerUI" method="post">
+            <form action="/customerUI" method="GET">
                 <button class="menu-item">Customer Flight Information</button>
             </form>
            
@@ -57,6 +57,7 @@
                 </tr>
             {% endfor %}
             </table>
+            
         {% endif %}
 
     {% if type == 'none' %}
