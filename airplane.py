@@ -133,10 +133,17 @@ def flight():
     if request.method == 'GET':
         flight_id = request.args.get('f_id')
         delayed = request.args.get('delayed')
+        airport_id = request.args.get('ac_id')
         if delayed == 'True':
             get_flights = json.loads(airdb.get_delayed_flight())
         else:
             get_flights = json.loads(airdb.get_flight(None))
+        #if 'filterarriving' in request.args:
+            #todo get_flights = json.loads(airdb.get
+            #return render_template('db.html', type = 'admin', tab = 'flight', data2 = get_flights)
+        #elif 'filterdeparting' in request.args:
+            #todo get_flights = 
+            #return render_template('db.html', type = 'admin', tab = 'flight', data3 = get_flights)
     elif request.method =='POST':
         status = '"{}"'.format(request.form['status'])
         flight_id = request.form['f_id']

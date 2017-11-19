@@ -2,11 +2,13 @@
 {% block body %}
 
     {% if type == 'admin' %}
-        {% if data %}
+        
 
             {% if tab == 'flight' %}
+            
             <h2>Flights</h2>
             <div class="container">
+            {% if data %}
             <table>
                 <tr>
                     <th>Flight ID</th>
@@ -31,7 +33,49 @@
                 </tr>
                 {% endfor %}
             </table>
-
+            {% endif %}
+            {% if data2 %}
+            <table>
+                <tr>
+                    <th>Flight ID</th>
+                    <th>Arrival Airport</th>
+                    <th>Arrival Gate</th>
+                    <th>Arrival Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in data2 %}
+                </tr>
+                    <td>{{ row['flight_id'] }}</td>
+                    <td>{{ row['arriveairport'] }}</td>
+                    <td>{{ row['arrivegate'] }}</td>
+                    <td>{{ row['arrivetime'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
+            {% if data3 %}
+            <table>
+                <tr>
+                    <th>Flight ID</th>
+                    <th>Departure Airport</th>
+                    <th>Departure Gate</th>
+                    <th>Departure Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in data3 %}
+                </tr>
+                    <td>{{ row['flight_id'] }}</td>
+                    <td>{{ row['departairport'] }}</td>
+                    <td>{{ row['departgate'] }}</td>
+                    <td>{{ row['departtime'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
             <div class="filter">
                 <form action="/flightUI" method="POST">
                     <p> <label>Update</label>
@@ -47,6 +91,18 @@
                 <form action="/flightUI" method="GET">
                     <input type="hidden" name="delayed" value=True />
                     <button>Get Delayed Flights</button>
+                </form>
+                <form action="/flightUI" method="GET">
+                <p> <label>Filter by Arriving Flights to Airport</label>
+                    <input type="text" name="ap_id" placeholder="Airport_ID" />
+                    <input type='submit' name="filterarriving" value="Submit" />
+                </p>
+                </form>
+                <form action="/flightUI" method="GET">
+                <p> <label>Filter by Departing Flights from Airport</label>
+                    <input type="text" name="ap_id" placeholder="Airport_ID" />
+                    <input type='submit' name="filterdeparting" value="Submit" />
+                </p>
                 </form>
             </div>
             </div>
@@ -132,7 +188,6 @@
             <div class="container">
             <table>
                 <tr>
-                    <th>Employee Name</th>
                     <th>Employee ID</th>
                     <th>Hours</th>
                     <th>Type</th>
@@ -140,7 +195,6 @@
                 </tr>
                 {% for row in data %}
                 <tr>
-                    <td>{{ row['name']}}</td>
                     <td>{{ row['id'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['type'] }}</td>
@@ -312,7 +366,7 @@
             </div>
             {% endif %}
 
-        {% endif %} <!-- end data -->
+         <!-- end data -->
 
          <form action="/main" method="post">
             <button>Clear</button>
@@ -502,14 +556,12 @@
         <div><h1> Employee Info </h1>
             <table>
                 <tr>
-                    <th>Name </th>
                     <th>Employee Type</th>
                     <th>Hours</th>
                     <th>Wage</th>
                 </tr>
                 {% for row in data1 %}
                 </tr>
-                    <td>{{row['name'] }}</td>
                     <td>{{ row['type'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['wage'] }}</td>
