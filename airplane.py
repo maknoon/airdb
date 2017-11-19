@@ -114,7 +114,7 @@ def userspecificUI():
 # ---------------------------------------------------------
 # EMPLOYEE ENDPOINTS
 # --------------------------------------------------------- 
-@app.route('/employeeUI', methods=['POST', 'GET'])
+@app.route('/useremployeeUI', methods=['POST'])
 def employeeUI(id):
     get_employee = json.loads(airdb.get_employee(id))
     get_schedule = json.loads(airdb.get_schedule_for_employee(id))
