@@ -311,6 +311,7 @@
     {% endif %} <!-- end admin -->       
     {% if type == 'user' %}
         {% if tab == 'account' %}
+<<<<<<< HEAD
         <h2>Customer Info</h2>
         <div class="container">
             <div>
@@ -321,6 +322,18 @@
                     <th>Email</th>
                     <th>Phone Number</th>
                 </tr>
+=======
+        <div>
+            <p> 
+            <h2> Customer Info </h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                    </tr>
+>>>>>>> d69d3bd214558ae8047945a918f5335dd535bc76
                 {% for row in data1 %}
                 <tr>
                     <td>{{ row['customer_name'] }}</td>
@@ -485,8 +498,54 @@
         </div> <!-- end container -->
         {% endif %}         
     {% endif %} <!-- end tab -->
+    {% endif %} <!-- end user -->
+
+    {% if type=='employee' %}
+        {% if data1 %}
+        <div><h1> Employee Info </h1>
+            <table>
+                <tr>
+                    <th>Employee Type</th>
+                    <th>Hours</th>
+                    <th>Wage</th>
+                </tr>
+                {% for row in data1 %}
+                </tr>
+                    <td>{{ row['type'] }}</td>
+                    <td>{{ row['hours'] }}</td>
+                    <td>{{ row['wage'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
     
-    {% endif %} <!-- end type -->
+        {% if data2 %}
+    <div><h1> Assigned Flights </h1>
+         <table>
+              <tr>
+                  <th>Flight ID</th>
+                  <th>Departure City </th>
+                  <th>Departure Time </th>
+                  <th>Arrival City </th>
+                  <th>Arrival Time </th>
+                  <th>Status </th>
+              </tr>
+              {% for row in data2 %}
+              <tr>
+                  <td>{{row['flight_id']}}</td>
+                  <td>{{row['departure_city']}}</td>
+                  <td>{{row['departure_time']}}</td>
+                  <td>{{row['arrival_city']}}</td>
+                  <td>{{row['arrival_time']}}</td>
+                  <td>{{row['status']}}</td>
+              </tr>
+              {% endfor %}
+         </table>
+    </div>
+        {% endif %}
+
+    {% endif %}   <!-- end employee -->
 
     {% if type == 'none' %}
         <h1>403 FORBIDDEN</h1>
