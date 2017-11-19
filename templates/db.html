@@ -307,7 +307,45 @@
     {% if type == 'user' %}
         {% if tab == 'account' %}
         <div>
-            <p>
+        
+            <p> 
+            <h2> Customer Info </h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                    </tr>
+                {% for row in data1 %}
+                    <tr>
+                        <td>{{ row['customer_name'] }}</td>
+                        <td>{{ row['customer_age'] }}</td>
+                        <td>{{ row['customer_email'] }}</td>
+                        <td>{{ row['customer_phone'] }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </p>
+            </div>
+            
+            <div class="filter">
+                <form action="/useraccountUI" method="POST">
+                    <p>Update Email
+                        <input type="text" name="email" placeholder="Email" />
+                        <input type='submit' name="updateemail" value="Submit" />
+                    </p>
+                </form>
+                
+                <form action="/useraccountUI" method="POST">
+                    <p>Update Phone Number
+                        <input type="text" name="phone" placeholder="Phone #" />
+                        <input type='submit' name="updatephone" value="Submit" />
+                    </p>
+                </form>
+            </div>
+            
+            </div>
             <h2> Frequent Flier Information </h2>
                 <table>
                     <tr>
@@ -319,12 +357,9 @@
                     </tr>
                 {% endfor %}
                 </table>
-            </p>
         </div>
         
         {% endif %}
-        
-        
         
         {% if tab == 'itinerary' %}
         <div>
@@ -386,6 +421,58 @@
                     </p>
             </form>
          </div>
+         
+         {% if data1 %}
+         <div>
+         <h2> Itinerary Information </h2>
+         <table>
+              <tr>
+                  <th>Flight ID</th>
+                  <th>Departure City </th>
+                  <th>Departure Time </th>
+                  <th>Arrival City </th>
+                  <th>Arrival Time </th>
+                  <th>Status </th>
+              </tr>
+              {% for row in data1 %}
+              <tr>
+                  <td>{{row['flight_id']}}</td>
+                  <td>{{row['departure_city']}}</td>
+                  <td>{{row['departure_time']}}</td>
+                  <td>{{row['arrival_city']}}</td>
+                  <td>{{row['arrival_time']}}</td>
+                  <td>{{row['status']}}</td>
+              </tr>
+              {% endfor %}
+         </table>
+         </div>
+    
+         <div>
+         <h2> Baggage on Itinerary </h2>
+         <table>
+                <tr>
+                    <th>Itinerary ID</th>
+                    <th>Bag ID</th>
+                    <th>Weight</th>
+                </tr>
+                {% for row in data2 %}
+                </tr>
+                    <td>{{ row['itinerary_id'] }}</td>
+                    <td>{{ row['bag_id'] }}</td>
+                    <td>{{ row['weight'] }}</td>
+                </tr>
+                {% endfor %} 
+         </table>
+         </div>
+         <div class="filter">
+         <form action="/useritineraryUI" method="POST">
+            <p>Add bag to itinerary
+               <input type='submit' name="addbaggage" value="Submit" />
+            </p>
+         </form>
+         </div>
+         {% endif %}
+         
         {% endif %}
     
     
