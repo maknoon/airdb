@@ -4,13 +4,13 @@
     <link rel="stylesheet" type="text/css" href="../static/style.css" />
 </head>
 {% if type %}
-    <div class="container">
+    <div class="menu" id="header">
         <h3>You are logged in as {{ type }}, <a href="/logout">click here</a> to logout</h3>
     </div>
     <div class="menu">    
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
-            <form action="/flightUI" method="post">
+            <form action="/flightUI" method="GET">
                 <button class="menu-item">Flights</button>
             </form>
         
@@ -26,7 +26,7 @@
                 <button class="menu-item">Airports</button>
             </form>
         
-            <form action="/baggageUI" method="post">
+            <form action="/baggageUI" method="GET">
                 <button class="menu-item">Baggage</button>
             </form>
         
@@ -34,35 +34,34 @@
                 <button class="menu-item">Aircraft Fleet</button>
             </form>
         
-            <form action="/customerUI" method="post">
+            <form action="/customerUI" method="GET">
                 <button class="menu-item">Customer Flight Information</button>
             </form>
            
         {% endif %}
         
         {% if type == 'user' %}
-            <table>
-                <tr>
-                    <th>Itinerary #</th>
-                    <th>Seat Type</th>
-                    <th>Seat Cost</th>
-                    <th>Status</th>
-                </tr>
-            {% for row in data %}
-                <tr>
-                    <td>{{ row['itinerary_id'] }}</td>
-                    <td>{{ row['seattype'] }}</td>
-                    <td>{{ row['seatcost'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-            {% endfor %}
-            </table>
+            <h2 class="menu-item">Main Menu &#9992;</h2>
+            <form action="/useraccountUI" method="GET">
+                <button class="menu-item">Account Info</button>
+            </form>
+        
+            <form action="/useritineraryUI" method="GET">
+                <button class="menu-item">All Itineraries</button>
+            </form>
+        
+            <form action="/userspecificUI" method="GET">
+                <button class="menu-item">Specific Itinerary Detail</button>
+            </form>
         {% endif %}
 
-    {% if type == 'none' %}
-        <h1>403 FORBIDDEN</h1>
-        <p>Please login!</p>
-    {% endif %}
+        {% if type == 'employee' %}            
+        {% endif %}
+
+        {% if type == 'none' %}
+            <h1>403 FORBIDDEN</h1>
+            <p>Please login!</p>
+        {% endif %}
     
     </div>
 {% endif %}
