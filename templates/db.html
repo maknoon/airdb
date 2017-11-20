@@ -54,47 +54,6 @@
                 {% endfor %}
             </table>
             {% endif %}
-            {% if data2 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Arrival Airport</th>
-                    <th>Arrival Gate</th>
-                    <th>Arrival Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data2 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['arriveairport'] }}</td>
-                    <td>{{ row['arrivegate'] }}</td>
-                    <td>{{ row['arrivetime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
-            
-            {% if data3 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Departure Airport</th>
-                    <th>Departure Gate</th>
-                    <th>Departure Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data3 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['departairport'] }}</td>
-                    <td>{{ row['departgate'] }}</td>
-                    <td>{{ row['departtime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
             
             <div class="filter">
                 <form action="/admin-flight-view" method="GET">

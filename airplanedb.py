@@ -1872,21 +1872,12 @@ class AirplaneDb(object):
                             passwd=self.pw,
                             db=self.db)
 
-        if dept_or_arrv == "dept":
-            dept_or_arrv_time = 'F_DEPARTURETIME'
-            dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
-            dept_or_arrv_gate = 'F_DEPARTUREGATEID'
-        elif dept_or_arrv == "arrv":
-            dept_or_arrv_time = 'F_ARRIVALTIME'
-            dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
-            dept_or_arrv_gate = 'F_ARRIVALGATEID'
-        else:
-            return "Departure or Arrival input is not recognized"
+        if dept_or_arrv == 'dept': dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
+        else: dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
 
-        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, %s, %s, %s, F_STATUS
-                            FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_time,
-                            dept_or_arrv_airport, dept_or_arrv_gate, dept_or_arrv_airport,
-                            ap_id)
+        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, F_DEPARTURETIME, F_DEPARTUREAIRPORTID,
+                              F_DEPARTUREGATEID, F_ARRIVALTIME, F_ARRIVALAIRPORTID, F_ARRIVALGATEID,
+                              F_STATUS FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_airport, ap_id)
 
         cursor = db.cursor()
         try:
@@ -1894,32 +1885,24 @@ class AirplaneDb(object):
             cursor.execute(get_flight_query)
             flights = cursor.fetchall()
             for flight in flights:
-                if dept_or_arrv == "dept":
-                    f_object = {
-                        'flight_id': int(flight[0]),
-                        'aircraft_id': int(flight[1]),
-                        'distance': float(flight[2]),
-                        'departtime': flight[3],
-                        'departairport': flight[4],
-                        'departgate': flight[5],
-                        'status': flight[6]
-                    }
-                else:
-                    f_object = {
-                        'flight_id': int(flight[0]),
-                        'aircraft_id': int(flight[1]),
-                        'distance': float(flight[2]),
-                        'arrivetime': flight[3],
-                        'arriveairport': flight[4],
-                        'arrivegate': flight[5],
-                        'status': flight[6]
-                    }
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'departairport': flight[4],
+                    'departgate': flight[5],
+                    'arrivetime': flight[6],
+                    'arriveairport': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
                 dataList.append(f_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Get Flights For Airport Failed with error: {0}'.format(err)
+            print('Get Flights For Airport Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
