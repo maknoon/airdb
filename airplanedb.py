@@ -120,6 +120,8 @@ class AirplaneDb(object):
                                 FOREIGN KEY (C_ID) REFERENCES CUSTOMER(C_ID) ON DELETE CASCADE ON UPDATE CASCADE
                                 )"""
 
+
+
         create_baggage_table = """CREATE TABLE BAGGAGE (
                                 B_ID INT AUTO_INCREMENT,
                                 I_ID INT NOT NULL,
@@ -973,10 +975,9 @@ class AirplaneDb(object):
                 }
             data = json.dumps(bag_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            print("Add Baggage Failed with error: {0}".format(e))
+            data = ("Add Baggage Failed with error: {0}").format(e)
             db.rollback()
             print(data)
-            data = 0
 
         cursor.close()
         db.close()
@@ -1020,9 +1021,9 @@ class AirplaneDb(object):
                     dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            print("Get Baggage Failed with error: {0}".format(e))
+            data = ("Get Baggage Failed with error: {0}").format(e)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -1055,9 +1056,9 @@ class AirplaneDb(object):
                 dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            print("Get Baggage Failed with error: {0}".format(e))
+            data = ("Get Baggage Failed with error: {0}").format(e)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -1084,9 +1085,8 @@ class AirplaneDb(object):
             data = json.dumps(deleted_baggage, sort_keys=True, indent=4, separators=(',', ': '))
             print(data)
         except Exception as e:
-            print("Delete Baggage Failed with error: {0}".format(e))
+            data = ("Delete Baggage Failed with error: {0}").format(e)
             db.rollback()
-            data = 0
 
         cursor.close()
         db.close()
@@ -1231,13 +1231,13 @@ class AirplaneDb(object):
             db.commit()
             print('Update Customer Success')
             db.close()
-            return 200
+            return
 
         except:
             print('Update Customer Failed')
             db.close()
 
-            return 500
+            return 0
 
 #==============================================================================
 #   function: add_frequent_flier
@@ -1440,6 +1440,29 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: check_itinerary
+#   description: check if itinerary_id exists for customer_id
+#   return: yes or no
+#==============================================================================
+    def check_itinerary(self, customer_id, itinerary_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_itinerary_query = """SELECT * FROM ITINERARY WHERE C_ID = %d""" % (int(customer_id))
+        cursor = db.cursor()
+        try:
+            cursor.execute(get_itinerary_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                if itinerary[0] == int(itinerary_id):
+                    return 1
+        except Exception as e:
+            print("Check Itinerary failed with error: {0}").format(e)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return 0
+#==============================================================================
 #   function: get_itinerary_distance
 #   description: get total distance of trip (by customer id)
 #   return: itinerary table and float of total trip distance
@@ -1571,16 +1594,15 @@ class AirplaneDb(object):
             cursor.execute(get_itinerary_query)
             check_itinerary = cursor.fetchone()
             if check_itinerary[3] == 'DONE':
-                data = 1
-            else:
-                cursor.execute(delete_itinerary_query)
-                db.commit()
-                data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
+                data = 0
+                return data
+            cursor.execute(delete_itinerary_query)
+            db.commit()
+            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
             print(data)
-            data = 0
 
         cursor.close()
         db.close()
@@ -1602,11 +1624,12 @@ class AirplaneDb(object):
 
         cursor = db.cursor()
         try:
-            get_itinerary_query = """SELECT I_STATUS FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
+            get_itinerary_query = """SELECT * FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
             cursor.execute(get_itinerary_query)
             check_itinerary = cursor.fetchone()
-            if check_itinerary[0] == 'DONE':
-                data = 1
+            if check_itinerary[3] == 'DONE':
+                data = 0
+                return data
             else:
                 cursor.execute(update_itinerary_query)
                 db.commit()
@@ -1620,9 +1643,9 @@ class AirplaneDb(object):
                 }
                 data = json.dumps(updated_itinerary_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            print("Update Itinerary Failed with error: {0}".format(e))
+            data = ("Update Itinerary Failed with error: {0}").format(e)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -1703,10 +1726,9 @@ class AirplaneDb(object):
             }
             data = json.dumps(updated_flight_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            print("Update Flight Failed with error: {0}".format(e))
+            data = ("Update Flight Failed with error: {0}").format(e)
             db.rollback()
             print(data)
-            data = 0
 
         cursor.close()
         db.close()
@@ -1882,12 +1904,21 @@ class AirplaneDb(object):
                             passwd=self.pw,
                             db=self.db)
 
-        if dept_or_arrv == 'dept': dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
-        else: dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
+        if dept_or_arrv == "dept":
+            dept_or_arrv_time = 'F_DEPARTURETIME'
+            dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
+            dept_or_arrv_gate = 'F_DEPARTUREGATEID'
+        elif dept_or_arrv == "arrv":
+            dept_or_arrv_time = 'F_ARRIVALTIME'
+            dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
+            dept_or_arrv_gate = 'F_ARRIVALGATEID'
+        else:
+            return "Departure or Arrival input is not recognized"
 
-        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, F_DEPARTURETIME, F_DEPARTUREAIRPORTID,
-                              F_DEPARTUREGATEID, F_ARRIVALTIME, F_ARRIVALAIRPORTID, F_ARRIVALGATEID,
-                              F_STATUS FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_airport, ap_id)
+        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, %s, %s, %s, F_STATUS
+                            FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_time,
+                            dept_or_arrv_airport, dept_or_arrv_gate, dept_or_arrv_airport,
+                            ap_id)
 
         cursor = db.cursor()
         try:
@@ -1895,24 +1926,32 @@ class AirplaneDb(object):
             cursor.execute(get_flight_query)
             flights = cursor.fetchall()
             for flight in flights:
-                f_object = {
-                    'flight_id': int(flight[0]),
-                    'aircraft_id': int(flight[1]),
-                    'distance': float(flight[2]),
-                    'departtime': flight[3],
-                    'departairport': flight[4],
-                    'departgate': flight[5],
-                    'arrivetime': flight[6],
-                    'arriveairport': flight[7],
-                    'arrivegate': flight[8],
-                    'status': flight[9]
-                }
+                if dept_or_arrv == "dept":
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'departtime': flight[3],
+                        'departairport': flight[4],
+                        'departgate': flight[5],
+                        'status': flight[6]
+                    }
+                else:
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'arrivetime': flight[3],
+                        'arriveairport': flight[4],
+                        'arrivegate': flight[5],
+                        'status': flight[6]
+                    }
                 dataList.append(f_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Get Flights For Airport Failed with error: {0}'.format(err))
+            data = 'Get Flights For Airport Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2250,9 +2289,9 @@ class AirplaneDb(object):
                 dataList.append(ac_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Get Aircraft by Airport ID Failed with error: {0}'.format(err))
+            data = 'Get Aircraft by Airport ID Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2316,9 +2355,9 @@ class AirplaneDb(object):
                 dataList.append(ac_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Get Aircraft by Status Failed with error: {0}'.format(err))
+            data = 'Get Aircraft by Status Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2371,14 +2410,18 @@ class AirplaneDb(object):
 #   description: update an aircraft's status in table AIRCRAFT
 #   returns: the updated aircraft object in table AIRCRAFT
 #==============================================================================
-    def update_aircraft(self, ac_id, status):
+    def update_aircraft(self, ac_id, status, new_status):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
 
-        update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
-                                   WHERE AC_ID = %d""" % (status, int(ac_id))
+        if new_status is None:
+            update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
+                                        WHERE AC_ID = %d""" % (status, int(ac_id))
+        else:
+            update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
+                                        WHERE AC_ID = %d""" % (new_status, int(ac_id))
         cursor = db.cursor()
         try:
             cursor.execute(update_aircraft_query)
@@ -2400,9 +2443,9 @@ class AirplaneDb(object):
             }
             data = json.dumps(ac_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Update Aircraft Failed with error: {0}'.format(err))
+            data = 'Update Aircraft Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2430,9 +2473,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_aircraft_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Delete Aircraft Failed with error: {0}'.format(err))
+            data = 'Delete Aircraft Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2466,9 +2509,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(employee, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Add Employee Failed with error: {0}'.format(err))
+            data = 'Add Employee Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2545,9 +2588,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_employee_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Delete Employee Failed with error: {0}'.format(err))
+            data = 'Delete Employee Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2559,23 +2602,22 @@ class AirplaneDb(object):
 #   returns: the list of all the schedules with a specified itinerary ID
 #==============================================================================
     def get_schedule_for_itinerary(self, i_id):
-        db = MySQLdb.connect(host=self.host,
+         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
 
-        if i_id is None:
-            get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY
-                                     WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
-        else:
-            get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY 
-                                     WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND ITINERARY.I_ID = %d""" % (int(i_id))
-        cursor = db.cursor()
-        try:
-            dataList = []
-            cursor.execute(get_schedule_query)
-            schedules = cursor.fetchall()
-            for schedule in schedules:
+         if i_id is None:
+             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID"""
+         else:
+             get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND I_ID = %d""" % (int(i_id))
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_schedule_query)
+             if i_id is None:
+                entireschedule = cursor.fetchall()
+                for schedule in entireschedule:
                     s_object = {
                         'flight_id': schedule[0],
                         'itinerary_id': schedule[1],
@@ -2584,15 +2626,25 @@ class AirplaneDb(object):
                         'status': schedule[4]
                     }
                     dataList.append(s_object)
-            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
-        except Exception as e:
-            print("Get Schedules Failed with error: {0}".format(e))
-            db.rollback()
-            data = 0
+             else:
+                 schedule = cursor.fetchone()
+                 s_object = {
+                    'flight_id': schedule[0],
+                     'itinerary_id': schedule[1],
+                     'customer_id': schedule[2],
+                     'seattype': schedule[3],
+                     'status': schedule[4]
+                 }
+                 dataList.append(s_object)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+         except Exception as e:
+             data = ("Get Schedules Failed with error: {0}").format(e)
+             db.rollback()
+             print(data)
 
-        cursor.close()
-        db.close()
-        return data
+         cursor.close()
+         db.close()
+         return data
 
 
 #==============================================================================
@@ -2619,9 +2671,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Add Workson Failed with error: {0}'.format(err))
+            data = 'Add Workson Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
@@ -2757,9 +2809,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            print('Delete Workson Failed with error: {0}'.format(err))
+            data = 'Delete Workson Failed with error: {0}'.format(err)
             db.rollback()
-            data = 0
+            print(data)
 
         cursor.close()
         db.close()
