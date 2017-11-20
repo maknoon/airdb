@@ -3,9 +3,29 @@
 
     {% if type == 'admin' %}
         
+            {% if tab == 'airport' %}
+            <h2>Airports</h2>
+            <div class="container">
+            <table>
+                <tr>
+                    <th>Airport</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Number of Aircraft Maintained</th>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['airport_id'] }}</td>
+                    <td>{{ row['city'] }}</td>
+                    <td>{{ row['country'] }}</td>
+                    <td>{{ row['total_aircraft'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+            {% endif %}
 
             {% if tab == 'flight' %}
-            
             <h2>Flights</h2>
             <div class="container">
             {% if data %}
@@ -29,47 +49,6 @@
                     <td>{{ row['arriveairport'] }}</td>
                     <td>{{ row['arrivegate'] }}</td>
                     <td>{{ row['arrivetime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
-            {% if data2 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Arrival Airport</th>
-                    <th>Arrival Gate</th>
-                    <th>Arrival Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data2 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['arriveairport'] }}</td>
-                    <td>{{ row['arrivegate'] }}</td>
-                    <td>{{ row['arrivetime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
-            
-            {% if data3 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Departure Airport</th>
-                    <th>Departure Gate</th>
-                    <th>Departure Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data3 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['departairport'] }}</td>
-                    <td>{{ row['departgate'] }}</td>
-                    <td>{{ row['departtime'] }}</td>
                     <td>{{ row['status'] }}</td>
                 </tr>
                 {% endfor %}
@@ -109,28 +88,6 @@
 
             {% endif %}
 
-            {% if tab == 'airport' %}
-            <h2>Airports</h2>
-            <div class="container">
-            <table>
-                <tr>
-                    <th>Airport</th>
-                    <th>City</th>
-                    <th>Country</th>
-                    <th>Number of Aircraft Maintained</th>
-                </tr>
-                {% for row in data %}
-                <tr>
-                    <td>{{ row['airport_id'] }}</td>
-                    <td>{{ row['city'] }}</td>
-                    <td>{{ row['country'] }}</td>
-                    <td>{{ row['total_aircraft'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            </div>
-            {% endif %}
-
             {% if tab == 'workschedule' %}
             <h2>Work Schedule</h2>
             <div class="container">
@@ -151,14 +108,14 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-work-schedule-view" method="GET" >
+                <form action="/admin-work-schedule-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type='submit' name="filteremp" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-work-schedule-view" method="GET" >
+                <form action="/admin-work-schedule-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name ="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
@@ -173,7 +130,7 @@
                     </p>
                 </form>
 
-                 <form action="/admin-work-schedule-view" method="GET">
+                 <form action="/admin-work-schedule-view" method="POST">
                     <p> <label>Remove</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <label>from</label>
@@ -250,14 +207,14 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-baggage-view" method="GET" >
+                <form action="/admin-baggage-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-baggage-view" method="GET" >
+                <form action="/admin-baggage-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name ="i_id" placeholder="Itinerary ID" />
                         <input type='submit' name="filteritinerary" value="Submit"/>
@@ -292,24 +249,25 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET" >
+                <form action="/admin-aircraft-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="airport_id" placeholder="Airport ID" />
                         <input type='submit' name="filterairport" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET" >
+                <form action="/admin-aircraft-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET">
-                    <p> <label>Delete</label>
+                <form action="/admin-aircraft-view" method="POST">
+                    <p> <label>Update</label>
                         <input type="text" name="ac_id" placeholder="Aircraft ID" />
-                        <input type='submit' name="delete" value="Submit"/>
+                        <input type="text" name="status" placeholder="Aircraft Status" />
+                        <input type='submit' name="updatestatus" value="Submit"/>
                     </p>
                 </form>
             </div>
@@ -343,19 +301,22 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-customer-view" method="GET" >
+                <form action="/admin-customer-view" method="POST" >
                     <p> <label>Filter</label>
-                        <input type="text" name="f_id" placeholder="Flight ID" />
-                        <input type='submit' name="filterflight" value="Submit"/>
+                        <input type="text" name="i_id" placeholder="Itinerary ID" />
+                        <input type='submit' name="filteritinerary" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-customer-view" method="GET" >
+                <!--
+                <form action="/admin-customer-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="filtercustomer" value="Submit"/>
                     </p>
                 </form>
+                NOT IMPLEMENTED
+                -->
 
                 <form action="/admin-customer-view" method="POST">
                     <p> <label>Check In Customer</label>
@@ -416,7 +377,6 @@
                         <input type='submit' name="updateemail" value="Submit" />
                     </p>
                 </form>
-
                 <form action="/user-account-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="phone" placeholder="Phone #" />
@@ -482,7 +442,7 @@
                 </p>
             </form>
 
-            <form action="/user-itinerary-view" method="GET">
+            <form action="/user-itinerary-view" method="POST">
                 <p> <label>Cancel a trip</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type='submit' name="delete" value="Submit"/>
@@ -652,4 +612,8 @@
         <h1>403 FORBIDDEN</h1>
     {% endif %}
 
+<!-- for alert passing -->
+    {% block message %}
+    {% endblock %}
+<!-- -->
 {% endblock %}
