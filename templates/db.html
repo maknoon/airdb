@@ -2,7 +2,7 @@
 {% block body %}
 
     {% if type == 'admin' %}
-        
+
             {% if tab == 'airport' %}
             <h2>Airports</h2>
             <div class="container">
@@ -28,11 +28,7 @@
             {% if tab == 'flight' %}
             <h2>Flights</h2>
             <div class="container">
-<<<<<<< HEAD
             {% if data %}
-=======
-            {% if flights %}
->>>>>>> finished fetching flight for a day
             <table>
                 <tr>
                     <th>Flight ID</th>
@@ -57,10 +53,6 @@
                 </tr>
                 {% endfor %}
             </table>
-<<<<<<< HEAD
-            {% endif %}
-            
-=======
 
             {% else %}
             <div style="width:75%">
@@ -68,7 +60,6 @@
             </div>
             {% endif %}
 
->>>>>>> finished fetching flight for a day
             <div class="filter">
                 <form action="/admin-flight-view" method="GET">
                     <input type="hidden" name="delayed" value=False />
@@ -454,7 +445,7 @@
                 {% endfor %}
             </table>
             </div>
-            
+
          <div class="filter">
             <form action="/user-itinerary-view" method="POST">
                 <p> <label>Check in to your trip</label>
