@@ -198,7 +198,8 @@ def employee():
     elif request.method == 'POST':
         type = request.form['type']
         wage = request.form['wage']
-        airdb.add_employee(0, type, wage)
+        name = request.form['name']
+        airdb.add_employee(0, type, name, wage)
         get_employees = json.loads(airdb.get_employee(None))
 
     return render_template('db.html', type = 'admin',  tab = 'employee', data = get_employees)
