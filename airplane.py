@@ -157,7 +157,7 @@ def flight():
 @app.route('/airportUI',methods = ['POST', 'GET'])
 def airport():
     if request.method == 'POST':
-      get_airports = json.loads(airdb.get_airport(None))
+      get_airports = json.loads(airdb.get_aircraft_by_airport_total())
       return render_template('db.html', type = 'admin', tab = 'airport', data = get_airports)
 
 @app.route('/workscheduleUI', methods=['GET', 'POST', 'DELETE'])

@@ -2262,23 +2262,27 @@ class AirplaneDb(object):
         db.close()
         return data
 
-    def get_aircraft_by_airport_total(self, airport_id):
+    def get_aircraft_by_airport_total(self):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        get_aircraft_total_query = """SELECT COUNT(AC_ID), AP_ID FROM AIRCRAFT
-                                    WHERE AP_ID = '%s'""" % (airport_id)
+        get_aircraft_total_query = """ SELECT AIRPORT.*, COUNT(AIRCRAFT.AC_ID)
+                                       FROM AIRPORT, AIRCRAFT
+                                       WHERE AIRCRAFT.AP_ID = AIRPORT.AP_ID GROUP BY AIRPORT.AP_ID """
         cursor = db.cursor()
         try:
             dataList = []
             cursor.execute(get_aircraft_total_query)
-            total = cursor.fetchone()
-            total_object = {
-                'total_aircraft': int(total[0]),
-                'airport_id': total[1]
-            }
-            dataList.append(total_object)
+            total = cursor.fetchall()
+            for t in total:
+                total_object = {
+                    'airport_id': t[0],
+                    'city': t[1],
+                    'country': t[2],
+                    'total_aircraft': int(t[3])
+                }
+                dataList.append(total_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
             data = 'Get Total Aircraft by Airport Failed with error: {0}'.format(err)

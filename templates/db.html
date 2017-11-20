@@ -117,12 +117,14 @@
                     <th>Airport</th>
                     <th>City</th>
                     <th>Country</th>
+                    <th>Number of Aircraft Maintained</th>
                 </tr>
                 {% for row in data %}
                 <tr>
                     <td>{{ row['airport_id'] }}</td>
                     <td>{{ row['city'] }}</td>
                     <td>{{ row['country'] }}</td>
+                    <td>{{ row['total_aircraft'] }}</td>
                 </tr>
                 {% endfor %}
             </table>
