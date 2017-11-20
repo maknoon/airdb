@@ -208,13 +208,9 @@
             </table>
 
             <div class="filter">
-                <form action="/admin-employee-view" method="GET">
-                    <button>Remove Filter</button>
-                </form>
-
                 <form action="/admin-employee-view" method="POST">
                     <p> <label>Add</label>
-                        <input type="text" name="name" placeholder="Employee Name" />
+                        <input type="text" name="name" placeholder="Name" />
                         <input type="text" name="type" placeholder="Employee Type" />
                         <input type="text" name="wage" placeholder="Wage" />
                         <input type='submit' name="add" value="Submit"/>

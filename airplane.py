@@ -197,7 +197,6 @@ def employee():
         elif 'delete' in request.form:
             employee_to_delete = request.form['e_id']
             airdb.delete_employee(employee_to_delete)
-
         get_employees = json.loads(airdb.get_employee(None))
 
     return render_template('db.html', type='admin', tab='employee', data=get_employees)
