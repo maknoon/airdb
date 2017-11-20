@@ -10,31 +10,31 @@
     <div class="menu">
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
-            <form action="/flightUI" method="GET">
+            <form action="/admin-flight-view" method="GET">
                 <button class="menu-item">Flights</button>
             </form>
 
-            <form action="/workscheduleUI" method="GET">
+            <form action="/admin-work-schedule-view" method="GET">
                 <button class="menu-item">Work Schedule</button>
             </form>
 
-            <form action="/employeeUI" method="GET">
+            <form action="/admin-employee-view" method="GET">
                 <button class="menu-item">Employees</button>
             </form>
 
-            <form action="/airportUI" method="post">
+            <form action="/admin-airport-view" method="post">
                 <button class="menu-item">Airports</button>
             </form>
 
-            <form action="/baggageUI" method="GET">
+            <form action="/admin-baggage-view" method="GET">
                 <button class="menu-item">Baggage</button>
             </form>
 
-            <form action="/aircraftUI" method="GET">
+            <form action="/admin-aircraft-view" method="GET">
                 <button class="menu-item">Aircraft Fleet</button>
             </form>
 
-            <form action="/customerUI" method="GET">
+            <form action="/admin-customer-view" method="GET">
                 <button class="menu-item">Customer Flight Information</button>
             </form>
 
@@ -42,15 +42,15 @@
 
         {% if type == 'user' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
-            <form action="/useraccountUI" method="GET">
+            <form action="/user-account-view" method="GET">
                 <button class="menu-item">Account Info</button>
             </form>
 
-            <form action="/useritineraryUI" method="GET">
+            <form action="/user-itinerary-view" method="GET">
                 <button class="menu-item">All Itineraries</button>
             </form>
 
-            <form action="/userspecificUI" method="GET">
+            <form action="/user-specific-view" method="GET">
                 <button class="menu-item">Specific Itinerary Detail</button>
             </form>
         {% endif %}
