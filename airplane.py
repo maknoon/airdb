@@ -150,6 +150,11 @@ def employeeUI(id):
 def mainmenu():
     return render_template('main.html', type='admin')
 
+@app.route('/admin-airport-view',methods = ['GET'])
+def airport():
+    get_airports = json.loads(airdb.get_aircraft_by_airport_total())
+    return render_template('db.html', type='admin', tab='airport', data=get_airports)
+
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
@@ -183,13 +188,6 @@ def flight():
         return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
  
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
-
-
-@app.route('/admin-airport-view',methods = ['POST', 'GET'])
-def airport():
-    if request.method == 'POST':
-      get_airports = json.loads(airdb.get_aircraft_by_airport_total())
-      return render_template('db.html', type = 'admin', tab = 'airport', data = get_airports)
 
 @app.route('/admin-work-schedule-view', methods=['GET', 'POST', 'DELETE'])
 def workschedule():

@@ -3,9 +3,29 @@
 
     {% if type == 'admin' %}
         
+            {% if tab == 'airport' %}
+            <h2>Airports</h2>
+            <div class="container">
+            <table>
+                <tr>
+                    <th>Airport</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Number of Aircraft Maintained</th>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['airport_id'] }}</td>
+                    <td>{{ row['city'] }}</td>
+                    <td>{{ row['country'] }}</td>
+                    <td>{{ row['total_aircraft'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+            {% endif %}
 
             {% if tab == 'flight' %}
-            
             <h2>Flights</h2>
             <div class="container">
             {% if data %}
@@ -107,28 +127,6 @@
             </div>
             </div>
 
-            {% endif %}
-
-            {% if tab == 'airport' %}
-            <h2>Airports</h2>
-            <div class="container">
-            <table>
-                <tr>
-                    <th>Airport</th>
-                    <th>City</th>
-                    <th>Country</th>
-                    <th>Number of Aircraft Maintained</th>
-                </tr>
-                {% for row in data %}
-                <tr>
-                    <td>{{ row['airport_id'] }}</td>
-                    <td>{{ row['city'] }}</td>
-                    <td>{{ row['country'] }}</td>
-                    <td>{{ row['total_aircraft'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            </div>
             {% endif %}
 
             {% if tab == 'workschedule' %}

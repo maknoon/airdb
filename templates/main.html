@@ -10,6 +10,10 @@
     <div class="menu">
         {% if type == 'admin' %}
             <h2 class="menu-item">Main Menu &#9992;</h2>
+            <form action="/admin-airport-view" method="GET">
+                <button class="menu-item">Airports</button>
+            </form>
+
             <form action="/admin-flight-view" method="GET">
                 <button class="menu-item">Flights</button>
             </form>
@@ -20,10 +24,6 @@
 
             <form action="/admin-employee-view" method="GET">
                 <button class="menu-item">Employees</button>
-            </form>
-
-            <form action="/admin-airport-view" method="post">
-                <button class="menu-item">Airports</button>
             </form>
 
             <form action="/admin-baggage-view" method="GET">
