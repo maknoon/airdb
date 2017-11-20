@@ -105,6 +105,7 @@ class AirplaneDb(object):
                                 E_ID INT AUTO_INCREMENT,
                                 E_HOURS FLOAT NOT NULL,
                                 E_TYPE VARCHAR(32) NOT NULL,
+                                E_NAME VARCHAR(32) NOT NULL,
                                 E_WAGE FLOAT NOT NULL,
                                 PRIMARY KEY (E_ID)
                                 )"""
@@ -204,43 +205,43 @@ class AirplaneDb(object):
 
         ''' insert test customers'''
         insert_customer_1 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer1', 20, 'check@test.com', '6041111111')
+                            VALUES ('Eveline Christa', 20, 'check@test.com', '6041111111')
                             """
 
         insert_customer_2 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer2', 30, 'check2@test.com', '6042222222')
+                            VALUES ('Anastasios Cardea', 30, 'check2@test.com', '6042222222')
                             """
 
         insert_customer_3 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer3', 40, 'check3@test.com', '6043333333')
+                            VALUES ('Roparzh Theodosios', 40, 'check3@test.com', '6043333333')
                             """
 
         insert_customer_4 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer4', 50, 'check4@test.com', '6044444444')
+                            VALUES ('Renate Kamilla', 50, 'check4@test.com', '6044444444')
                             """
 
         insert_customer_5 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer5', 55, 'check5@test.com', '6045555555')
+                            VALUES ('Kelleigh Floriano', 55, 'check5@test.com', '6045555555')
                             """
 
         insert_customer_6 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer6', 60, 'check6@test.com', '6046666666')
+                            VALUES ('Gyongyi Elvis', 60, 'check6@test.com', '6046666666')
                             """
 
         insert_customer_7 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer7', 70, 'check7@test.com', '6047777777')
+                            VALUES ('Prasanna Rachel', 70, 'check7@test.com', '6047777777')
                             """
 
         insert_customer_8 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer8', 73, 'check8@test.com', '6048888888')
+                            VALUES ('Adrastea Agamemnon', 73, 'check8@test.com', '6048888888')
                             """
 
         insert_customer_9 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer9', 28, 'check9@test.com', '6049999999')
+                            VALUES ('Stephane Freyja', 28, 'check9@test.com', '6049999999')
                             """
 
         insert_customer_10 = """ INSERT INTO CUSTOMER (C_NAME, C_AGE, C_EMAIL, C_PHONE)
-                            VALUES ('TestCustomer10', 19, 'check10@test.com', '6041010101')
+                            VALUES ('Erwin Gaius', 19, 'check10@test.com', '6041010101')
                             """
 
         try:
@@ -444,7 +445,7 @@ class AirplaneDb(object):
         insert_flight_5 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
                             F_DEPARTUREGATEID, F_ARRIVALGATEID, F_STATUS)
-                            VALUES (5, 2345, '01-20-2018:05:23', '01-22-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
+                            VALUES (5, 2345, '01-24-2018:05:23', '01-25-2018:17:23', 'LAX', 'PEK', 'D2', 'A1', 'DELAYED')
                             """
         insert_flight_6 = """ INSERT INTO FLIGHT (AC_ID, F_DISTANCE,
                             F_DEPARTURETIME, F_ARRIVALTIME, F_DEPARTUREAIRPORTID, F_ARRIVALAIRPORTID,
@@ -489,36 +490,36 @@ class AirplaneDb(object):
             print(e)
 
         ''' insert test employees '''
-        insert_employee_1 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (70.2, "CAPTAIN", 53)
+        insert_employee_1 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (70.2, "CAPTAIN", "Heino Amir", 53)
                             """
-        insert_employee_2 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (86.3, "CAPTAIN", 63)
+        insert_employee_2 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (86.3, "CAPTAIN", "Caleb Priska", 63)
                             """
-        insert_employee_3 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (92, "CAPTAIN", 80)
+        insert_employee_3 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (92, "CAPTAIN", "Ralf Jordana", 80)
                             """
-        insert_employee_4 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (41.4, "CAPTAIN", 90)
+        insert_employee_4 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (41.4, "CAPTAIN", "Bahadur Lyubov", 90)
                             """
-        insert_employee_5 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (00, "CAPTAIN", 105)
+        insert_employee_5 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (00, "CAPTAIN", "Gervasio Qasim", 105)
                             """
 
-        insert_employee_6 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (90.5, "ATTENDANT", 35)
+        insert_employee_6 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (90.5, "ATTENDANT", "Mahalia Reka", 35)
                             """
-        insert_employee_7 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (124.3, "ATTENDANT", 36)
+        insert_employee_7 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (124.3, "ATTENDANT", "Klara Maire", 36)
                             """
-        insert_employee_8 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (89.4, "ATTENDANT", 30)
+        insert_employee_8 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (89.4, "ATTENDANT", "Gwallter Elaine", 30)
                             """
-        insert_employee_9 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (109.0, "ATTENDANT", 29)
+        insert_employee_9 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (109.0, "ATTENDANT", "Eluned Helge", 29)
                             """
-        insert_employee_10 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                            VALUES (84.2, "ATTENDANT", 38)
+        insert_employee_10 = """ INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                            VALUES (84.2, "ATTENDANT", "Tamara Shantanu", 38)
                             """
         try:
             cursor.execute(insert_employee_1)
@@ -566,6 +567,33 @@ class AirplaneDb(object):
         insert_itinerary_10 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
                              VALUES ('ECONOMY', 7.3, 'DONE', 10)
                              """
+        insert_itinerary_11 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 24.7, 'CHECKEDIN', 1)
+                             """
+        insert_itinerary_12 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 3.5, 'DONE', 1)
+                             """
+        insert_itinerary_13 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 50.3, 'CANCELED', 1)
+                             """
+        insert_itinerary_14 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('FIRSTCLASS', 54.2, 'PAID', 1)
+                             """
+        insert_itinerary_15 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('BUSINESS', 24.2, 'CHECKEDIN', 1)
+                             """
+        insert_itinerary_16 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.5, 'DONE', 1)
+                             """
+        insert_itinerary_17 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 2.3, 'CANCELED', 1)
+                             """
+        insert_itinerary_18 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 4.4, 'PAID', 1)
+                             """
+        insert_itinerary_19 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
+                             VALUES ('ECONOMY', 7.3, 'DONE', 1)
+                             """
 
 
         try:
@@ -579,6 +607,15 @@ class AirplaneDb(object):
             cursor.execute(insert_itinerary_8)
             cursor.execute(insert_itinerary_9)
             cursor.execute(insert_itinerary_10)
+            cursor.execute(insert_itinerary_11)
+            cursor.execute(insert_itinerary_12)
+            cursor.execute(insert_itinerary_13)
+            cursor.execute(insert_itinerary_14)
+            cursor.execute(insert_itinerary_15)
+            cursor.execute(insert_itinerary_16)
+            cursor.execute(insert_itinerary_17)
+            cursor.execute(insert_itinerary_18)
+            cursor.execute(insert_itinerary_19)
             db.commit()
         except Exception as e:
             print(e)
@@ -597,22 +634,22 @@ class AirplaneDb(object):
                            VALUES (2, 125.67)
                            """
         insert_baggage_5 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (3, 125.67)
+                           VALUES (3, 70.44)
                            """
         insert_baggage_6 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (5, 125.67)
+                           VALUES (5, 88.75)
                            """
         insert_baggage_7 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (7, 125.67)
+                           VALUES (7, 55.85)
                            """
         insert_baggage_8 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (7, 125.67)
+                           VALUES (7, 122.94)
                            """
         insert_baggage_9 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (9, 125.67)
+                           VALUES (9, 25.23)
                            """
         insert_baggage_10 = """ INSERT INTO BAGGAGE (I_ID, B_WEIGHT)
-                           VALUES (10, 125.67)
+                           VALUES (10, 93.47)
                            """
 
         try:
@@ -846,6 +883,27 @@ class AirplaneDb(object):
         insert_schedule_9 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
                             VALUES (9, 7)
                             """
+        insert_schedule_10 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 3)
+                            """
+        insert_schedule_11 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 4)
+                            """
+        insert_schedule_12 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (11, 5)
+                            """
+        insert_schedule_13 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (14, 3)
+                            """
+        insert_schedule_14 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (15, 8)
+                            """
+        insert_schedule_15 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (18, 6)
+                            """
+        insert_schedule_16 = """ INSERT INTO SCHEDULE(I_ID, F_ID)
+                            VALUES (18, 7)
+                            """
 
         try:
             cursor.execute(insert_schedule_1)
@@ -857,13 +915,37 @@ class AirplaneDb(object):
             cursor.execute(insert_schedule_7)
             cursor.execute(insert_schedule_8)
             cursor.execute(insert_schedule_9)
+            cursor.execute(insert_schedule_10)
+            cursor.execute(insert_schedule_11)
+            cursor.execute(insert_schedule_12)
+            cursor.execute(insert_schedule_13)
+            cursor.execute(insert_schedule_14)
+            cursor.execute(insert_schedule_15)
+            cursor.execute(insert_schedule_16)
             print(('populated schedule table'))
             db.commit()
         except Exception as e:
             print(e)
             db.rollback()
-        print(('{0} POPULATE COMPLETE').format(self.db))
 
+        ''' CREATE VIEWS '''
+        create_vip_view = """ CREATE OR REPLACE VIEW VIP AS
+                          SELECT DISTINCT C.C_ID, C_NAME, C_AGE, C_EMAIL, C_PHONE
+                          FROM CUSTOMER C, ITINERARY I
+                          WHERE C.C_ID = I.C_ID AND I.I_SEATTYPE = 'FIRSTCLASS'"""
+
+        create_delayed_flight_view = """ CREATE OR REPLACE VIEW DELAYED_FLIGHT AS
+                                     SELECT * FROM FLIGHT
+                                     WHERE F_STATUS = 'DELAYED'"""
+        try:
+            cursor.execute(create_vip_view)
+            cursor.execute(create_delayed_flight_view)
+            db.commit()
+        except Exception as e:
+            print(e)
+            db.rollback()
+
+        print(('{0} POPULATE COMPLETE').format(self.db))
         cursor.close()
         db.close()
         return 0
@@ -900,7 +982,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-    
+
 #==============================================================================
 #   function: get_baggage
 #   description: returns an instance of baggage based on itinerary ID
@@ -957,7 +1039,7 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        get_baggage_query = """ Select I.I_ID, B.B_ID, S.F_ID from ITINERARY I, SCHEDULE S, BAGGAGE B 
+        get_baggage_query = """ Select I.I_ID, B.B_ID, S.F_ID from ITINERARY I, SCHEDULE S, BAGGAGE B
                                 where B.I_ID = I.I_ID and S.I_ID = I.I_ID and S.F_ID = %d """ % int(flight_id)
         cursor=db.cursor()
         try:
@@ -1053,6 +1135,41 @@ class AirplaneDb(object):
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Get Customer failed with error: {0}").format(e)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_customer_for_flight
+#   description: returns all customers with an inputted flight_id
+#   return: customer json object(s)
+#==============================================================================
+    def get_customer_for_flight(self, flight_id):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_customer_query = """SELECT I.C_ID, S.F_ID
+                                FROM ITINERARY I, SCHEDULE S
+                                WHERE S.F_ID = %d AND S.I_ID = I.I_ID""" % (int(flight_id))
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_customer_query)
+            customers = cursor.fetchall()
+            for c in customers:
+                customer = {
+                    'customer_id': c[0],
+                    'flight_id': c[1]
+                }
+                dataList.append(customer)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = ("Get Customers For Flight failed with error: {0}").format(err)
             db.rollback()
             print(data)
 
@@ -1181,8 +1298,8 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-            
-            
+
+
 #==============================================================================
 #   function: update_frequent_flier
 #   description: updates miles on frequent flier account
@@ -1256,6 +1373,40 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_old_itinerary
+#   description: get itinerary by customer ID that are 'DONE'
+#   return: list of itineraries
+#==============================================================================
+    def get_old_itinerary(self, customer_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_itinerary_query = """SELECT * FROM ITINERARY WHERE C_ID = %s AND I_STATUS = 'DONE' """ % customer_id
+        cursor = db.cursor()
+
+        try:
+            dataList = []
+            cursor.execute(get_itinerary_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                it_object = {
+                    'itinerary_id': itinerary[0],
+                    'seattype': itinerary[1],
+                    'seatcost': itinerary[2],
+                    'status': itinerary[3]
+                }
+                dataList.append(it_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+   
+    
+#==============================================================================
 #   function: get_itinerary
 #   description: get itinerary by customer ID
 #   return: list of itineraries
@@ -1289,6 +1440,45 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_itinerary_distance
+#   description: get total distance of trip (by customer id)
+#   return: itinerary table and float of total trip distance
+#==============================================================================
+    def get_itinerary_with_distance(self, customer_id):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        get_distance_query = """SELECT I.*, SUM(F_DISTANCE)
+                                FROM FLIGHT F, SCHEDULE S, ITINERARY I
+                                WHERE I.C_ID = %d and I.I_ID = S.I_ID and S.F_ID = F.F_ID
+                                GROUP BY I.I_ID""" % (int(customer_id))
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_distance_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                distance_object = {
+                    'itinerary_id': int(itinerary[0]),
+                    'seattype': itinerary[1],
+                    'seatcost': itinerary[2],
+                    'status': itinerary[3],
+                    'total_distance': float(itinerary[5]),
+                }
+                dataList.append(distance_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = ("Get Total Distance Failed with error: {0}").format(err)
+            print(data)
+            db.rollback()
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
 #   function: get_customer_itinerary_info
 #   description: query for Specific Itinerary tab in User UI
 #   return: list of itineraries
@@ -1296,9 +1486,9 @@ class AirplaneDb(object):
     def get_customer_itinerary_info(self, itinerary_id):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
 
-        get_itinerary_query = """select F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
-                                  from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2  
-                                  where I.I_ID = S.I_ID and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID 
+        get_itinerary_query = """select F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS
+                                  from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2
+                                  where I.I_ID = S.I_ID and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID
                                   and I.I_ID = %d ORDER BY F.F_ARRIVALTIME asc""" % (int(itinerary_id))
         cursor = db.cursor()
         try:
@@ -1329,13 +1519,13 @@ class AirplaneDb(object):
 #   function: get_schedule_for_employee
 #   description: query for flight schedule table in Employee UI
 #   return: list of flights
-#==============================================================================    
+#==============================================================================
     def get_schedule_for_employee(self, employee_id):
         db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
-        
-        get_emp_schedule_query = """ SELECT F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS 
-                                     FROM WORKSON W, FLIGHT F, AIRPORT A1, AIRPORT A2 
-                                     WHERE W.F_ID = F.F_ID and F.F_DEPARTUREAIRPORTID = A1.AP_ID and F.F_ARRIVALAIRPORTID = A2.AP_ID 
+
+        get_emp_schedule_query = """ SELECT F.F_ID, A1.AP_CITY, F.F_DEPARTURETIME, A2.AP_CITY, F.F_ARRIVALTIME, F.F_STATUS
+                                     FROM WORKSON W, FLIGHT F, AIRPORT A1, AIRPORT A2
+                                     WHERE W.F_ID = F.F_ID and F.F_DEPARTUREAIRPORTID = A1.AP_ID and F.F_ARRIVALAIRPORTID = A2.AP_ID
                                      and W.E_ID = %d ORDER BY F.F_DEPARTURETIME """ % (int(employee_id))
         cursor = db.cursor()
         try:
@@ -1361,7 +1551,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-    
+
 #==============================================================================
 #   function: delete_itinerary
 #   description: delete itinerary given itinerary ID
@@ -1379,6 +1569,7 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
+            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
@@ -1513,7 +1704,7 @@ class AirplaneDb(object):
 #   description: get all flights or a given flight ID
 #   returns: the list of all flights if there are no specified Flight_id
 #        or: the flight corresponding to the given Flight_id
-#==============================================================================      
+#==============================================================================
     def get_flight(self, f_id):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
@@ -1548,7 +1739,7 @@ class AirplaneDb(object):
             else:
                 flights = cursor.fetchone()
                 f_object = {
-                    'flight_id': int(flights[0]),
+                        'flight_id': int(flights[0]),
                         'aircraft_id': int(flights[1]),
                         'distance': float(flights[2]),
                         'departtime': flights[3],
@@ -1565,10 +1756,172 @@ class AirplaneDb(object):
             print("Get Flight Failed with error: {0}").format(e)
             db.rollback()
             data = 0
-            
+
         cursor.close()
         db.close()
         return data
+
+#==============================================================================
+#   function: get_delayed_flight
+#   description: get all flights that are delayed
+#   returns: the list of all flights where status = 'delayed'
+#==============================================================================
+    def get_delayed_flight(self):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+
+        get_delayed_flight_query = """SELECT * FROM DELAYED_FLIGHT"""
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_delayed_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
+        except Exception as e:
+            print("Get Delayed Flight Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight_for_day
+#   description: get all the flights for a certain departure/arrival day in
+#               table FLIGHT
+#   returns: the list of all the flights with departure/arrival time including
+#           the inputted day
+#==============================================================================
+    def get_flight_for_day(self, day, dept_or_arrv):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+        if dept_or_arrv == "dept":
+            dept_or_arrv_field = 'F_DEPARTURETIME'
+        elif dept_or_arrv == "arrv":
+            dept_or_arrv_field = 'F_ARRIVALTIME'
+        else:
+            return "Departure or Arrival input is not recognized"
+
+        dept_or_arrv_day = '{0}%'.format(day)
+        get_flight_query = """SELECT *
+                                FROM FLIGHT WHERE %s LIKE
+                                '%s'""" % (dept_or_arrv_field, dept_or_arrv_day)
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights For Day Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight_for_airport
+#   description: get all departing/arriving flights for an aircraft in an airport
+#   returns: the list of all departing/arriving flights based on the inputted
+#        departing/arriving parameter, aircraft id, and airport id
+#==============================================================================
+    def get_flight_for_airport(self, ap_id, dept_or_arrv):
+        db = MySQLdb.connect(host=self.host,
+                            user=self.user,
+                            passwd=self.pw,
+                            db=self.db)
+
+        if dept_or_arrv == "dept":
+            dept_or_arrv_time = 'F_DEPARTURETIME'
+            dept_or_arrv_airport = 'F_DEPARTUREAIRPORTID'
+            dept_or_arrv_gate = 'F_DEPARTUREGATEID'
+        elif dept_or_arrv == "arrv":
+            dept_or_arrv_time = 'F_ARRIVALTIME'
+            dept_or_arrv_airport = 'F_ARRIVALAIRPORTID'
+            dept_or_arrv_gate = 'F_ARRIVALGATEID'
+        else:
+            return "Departure or Arrival input is not recognized"
+
+        get_flight_query = """SELECT F_ID, AC_ID, F_DISTANCE, %s, %s, %s, F_STATUS
+                            FROM FLIGHT WHERE %s = '%s'""" % (dept_or_arrv_time,
+                            dept_or_arrv_airport, dept_or_arrv_gate, dept_or_arrv_airport,
+                            ap_id)
+
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                if dept_or_arrv == "dept":
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'departtime': flight[3],
+                        'departairport': flight[4],
+                        'departgate': flight[5],
+                        'status': flight[6]
+                    }
+                else:
+                    f_object = {
+                        'flight_id': int(flight[0]),
+                        'aircraft_id': int(flight[1]),
+                        'distance': float(flight[2]),
+                        'arrivetime': flight[3],
+                        'arriveairport': flight[4],
+                        'arrivegate': flight[5],
+                        'status': flight[6]
+                    }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Flights For Airport Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
 #==============================================================================
 #   function: get_airport
 #   description: get all the airports
@@ -1904,12 +2257,42 @@ class AirplaneDb(object):
             data = 'Get Aircraft by Airport ID Failed with error: {0}'.format(err)
             db.rollback()
             print(data)
-        
+
         cursor.close()
         db.close()
         return data
-        
-        
+
+    def get_aircraft_by_airport_total(self):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_total_query = """ SELECT AIRPORT.*, COUNT(AIRCRAFT.AC_ID)
+                                       FROM AIRPORT, AIRCRAFT
+                                       WHERE AIRCRAFT.AP_ID = AIRPORT.AP_ID GROUP BY AIRPORT.AP_ID """
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_total_query)
+            total = cursor.fetchall()
+            for t in total:
+                total_object = {
+                    'airport_id': t[0],
+                    'city': t[1],
+                    'country': t[2],
+                    'total_aircraft': int(t[3])
+                }
+                dataList.append(total_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Total Aircraft by Airport Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
+        return data
+
     def get_aircraft_by_status(self, status):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
@@ -1940,12 +2323,53 @@ class AirplaneDb(object):
             data = 'Get Aircraft by Status Failed with error: {0}'.format(err)
             db.rollback()
             print(data)
-        
+
         cursor.close()
         db.close()
         return data
-    
+
+#==============================================================================
+#   function: get_aircraft_last_maintained
+#   description: get all the aircrafts sorted by date last maintained
+#   returns: the list of all aircrafts sorted by AC_LAST_MAINTAINED
+#==============================================================================
+
+    def get_aircraft_last_maintained(self):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        get_aircraft_query = """SELECT * FROM AIRCRAFT
+                                ORDER BY STR_TO_DATE(AC_LAST_MAINTAINED, '%m-%d-%Y') ASC"""
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_aircraft_query)
+            aircrafts = cursor.fetchall()
+            for aircraft in aircrafts:
+                ac_object = {
+                    'id': aircraft[0],
+                    'status': aircraft[1],
+                    'make': aircraft[2],
+                    'mileage': float(aircraft[3]),
+                    'date_created': aircraft[4],
+                    'last_maintained': aircraft[5],
+                    'num_economy': aircraft[6],
+                    'num_business': aircraft[7],
+                    'number_firstclass': aircraft[8],
+                    'airport_id': aircraft[9]
+                }
+                dataList.append(ac_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as err:
+            data = 'Get Aircraft sorted by Last Maintained Failed with error: {0}'.format(err)
+            db.rollback()
+            print(data)
+
+        cursor.close()
+        db.close()
         return data
+
 #==============================================================================
 #   function: update_aircraft
 #   description: update an aircraft's status in table AIRCRAFT
@@ -2027,15 +2451,15 @@ class AirplaneDb(object):
 #   description: add an employee instance to table EMPLOYEE
 #   returns: the added employee json object
 #==============================================================================
-    def add_employee(self, hours, emp_type, wage):
+    def add_employee(self, hours, emp_type, emp_name, wage):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
                             passwd=self.pw,
                             db=self.db)
 
-        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_WAGE)
-                                VALUES (%.2f, '%s', %.2f)""" % (float(hours),
-                                emp_type, float(wage))
+        add_employee_query = """INSERT INTO EMPLOYEE (E_HOURS, E_TYPE, E_NAME, E_WAGE)
+                                VALUES (%.2f, '%s', '%s', %.2f)""" % (float(hours),
+                                emp_type, emp_name, float(wage))
 
         cursor = db.cursor()
         try:
@@ -2044,6 +2468,7 @@ class AirplaneDb(object):
                 'id': cursor.lastrowid,
                 'hours': float(hours),
                 'type': emp_type,
+                'name': emp_name,
                 'wage': float(wage)
             }
             db.commit()
@@ -2056,7 +2481,7 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-        
+
 #==============================================================================
 #   function: get_employee
 #   description: get_employee by e_id or if e_id is None, return all employees
@@ -2071,7 +2496,7 @@ class AirplaneDb(object):
             get_employee_query = """ SELECT * FROM EMPLOYEE """
         else:
             get_employee_query = """ SELECT * FROM EMPLOYEE WHERE E_ID = '%s' """ % (e_id)
-  
+
         cursor = db.cursor()
         try:
             dataList = []
@@ -2083,7 +2508,8 @@ class AirplaneDb(object):
                         'id': emp[0],
                         'hours': emp[1],
                         'type': emp[2],
-                        'wage': emp[3]
+                        'name': emp[3],
+                        'wage': emp[4]
                     }
                     dataList.append(emp_object)
             else:
@@ -2092,7 +2518,8 @@ class AirplaneDb(object):
                     'id': emps[0],
                     'hours': emps[1],
                     'type': emps[2],
-                    'wage': emps[3]
+                    'name': emps[3],
+                    'wage': emps[4]
                 }
                 dataList.append(emp_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
@@ -2105,7 +2532,6 @@ class AirplaneDb(object):
         db.close()
         return data
 
-      
 #==============================================================================
 #   function: delete_employee
 #   description: delete an employee from table EMPLOYEE
@@ -2165,7 +2591,7 @@ class AirplaneDb(object):
                         'status': schedule[4]
                     }
                     dataList.append(s_object)
-             else: 
+             else:
                  schedule = cursor.fetchone()
                  s_object = {
                     'flight_id': schedule[0],
@@ -2266,7 +2692,7 @@ class AirplaneDb(object):
                              passwd=self.pw,
                              db=self.db)
         if e_id is None:
-            return "Employeesss ID is NULL"
+            return "Employee ID is NULL"
         else:
             get_flight_query = """SELECT W.E_ID, F.F_ID
                                     FROM FLIGHT F, WORKSON W WHERE
@@ -2411,6 +2837,42 @@ class AirplaneDb(object):
              data = ("Delete Schedule Failed with error: {0}").format(e)
              print(data)
              db.rollback()
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
+#   function: get_vip
+#   description: gets the view VIP
+#   returns: all the vip
+#==============================================================================
+    def get_vip(self):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         get_vip_query = """SELECT * FROM VIP"""
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_vip_query)
+             vips = cursor.fetchall()
+             for v in vips:
+                 vip = {
+                    'id': v[0],
+                    'name': v[1],
+                    'age': v[2],
+                    'email': v[3],
+                    'phone': v[4]
+                 }
+                 dataList.append(vip)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+         except Exception as err:
+             data = ("Get VIP Failed with error: {0}").format(err)
+             db.rollback()
+             print(data)
 
          cursor.close()
          db.close()
