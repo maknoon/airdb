@@ -106,8 +106,9 @@ def userspecificUI():
 
         get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
         get_bags = json.loads(airdb.get_baggage(itinerary_id))
+        get_destination = json.loads(airdb.get_destination_for_itinerary(itinerary_id))
 
-        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)
+        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags, data3 = get_destination)
 
     return render_template('db.html', type='user', tab='specific')
 
