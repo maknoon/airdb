@@ -75,7 +75,7 @@ def useraccountUI():
             else:
                 newphone = '"{}"'.format(request.form['phone'])
                 res = airdb.update_customer(1, 'C_PHONE', newphone)
-        
+
         flash(res)
         get_customer = json.loads(airdb.get_customer(1))
     return render_template('alerts.html', type='user', tab='account',
@@ -221,7 +221,7 @@ def flight():
             flash(500)
             get_flights = original
         return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
- 
+
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
 
 @app.route('/admin-baggage-view',methods = ['POST', 'GET'])
@@ -277,7 +277,7 @@ def workschedule():
 def employee():
     if request.method == 'GET':
         get_employees = json.loads(airdb.get_employee(None))
-    
+
     elif request.method == 'POST':
         alert_t = 'insert'
         if 'add' in request.form:
@@ -302,34 +302,6 @@ def employee():
 
 @app.route('/admin-customer-view',methods = ['POST', 'GET'])
 def customer():
-<<<<<<< HEAD
-    get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-
-    if request.method =='POST':
-        alert_t = 'update'
-        # if 'filtercustomer' in request.form:
-        #     if request.form['c_id'] == '': flash(500)
-        #     else:
-        #         get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
-        #         if get_schedule == 0: flash(500)
-        if 'filteritinerary' in request.form:
-            if request.form['i_id'] == '': flash(500)
-            else:
-                get_schedule = json.loads(airdb.get_schedule_for_itinerary(request.form['i_id']))
-                if get_schedule == 0: flash(500)
-        elif 'updatestatus' in request.form:
-            if request.form['c_id'] == '': flash(500)
-            elif airdb.update_itinerary(request.form['c_id'], 'I_STATUS', '"CHECKEDIN"') == 0: flash(500)
-            else:
-                flash(200)
-                get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-        return render_template('alerts.html', type='admin', tab='customer',
-            data=get_schedule, alert_t=alert_t)
-
-    return render_template('db.html', type='admin',  tab='customer', data=get_schedule)
-
-
-=======
     if request.method == 'GET':
         flight_id = request.args.get('f_id')
         customer_id = request.args.get('c_id')
@@ -347,7 +319,6 @@ def customer():
         airdb.update_itinerary(customer_id, 'I_STATUS', status)
         get_schedule = json.loads(airdb.get_schedule_for_itinerary(None, None, None))
     return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
->>>>>>> finished filtering customer flight information with customer id and flight id
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------
