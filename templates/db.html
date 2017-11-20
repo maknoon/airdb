@@ -422,8 +422,6 @@
                         <input type='submit' name="updatephone" value="Submit" />
                     </p>
                 </form>
-                {% block message %}
-                {% endblock %}
             </div>
 
         </div>
@@ -483,7 +481,7 @@
                 </p>
             </form>
 
-            <form action="/user-itinerary-view" method="GET">
+            <form action="/user-itinerary-view" method="POST">
                 <p> <label>Cancel a trip</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type='submit' name="delete" value="Submit"/>
@@ -653,4 +651,8 @@
         <h1>403 FORBIDDEN</h1>
     {% endif %}
 
+<!-- for alert passing -->
+    {% block message %}
+    {% endblock %}
+<!-- -->
 {% endblock %}

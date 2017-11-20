@@ -1569,11 +1569,12 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
-            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
+            data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
             print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -1611,6 +1612,7 @@ class AirplaneDb(object):
             data = ("Update Itinerary Failed with error: {0}").format(e)
             db.rollback()
             print(data)
+            return 0
 
         cursor.close()
         db.close()

@@ -66,14 +66,12 @@ def useraccountUI():
     get_ff = json.loads(airdb.get_frequent_flier(1))
     if request.method == 'POST':
         if 'updateemail' in request.form:
-            if request.form['email'] == '':
-                res = 500
+            if request.form['email'] == '': res = 500
             else:
                 newemail = '"{}"'.format(request.form['email'])
                 res = airdb.update_customer(1, 'C_EMAIL', newemail)
         elif 'updatephone' in request.form:
-            if request.form['phone'] == '':
-                res = 500
+            if request.form['phone'] == '': res = 500
             else:
                 newphone = '"{}"'.format(request.form['phone'])
                 res = airdb.update_customer(1, 'C_PHONE', newphone)
@@ -87,22 +85,27 @@ def useraccountUI():
 def useritineraryUI():
     get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
     get_old = json.loads(airdb.get_old_itinerary(1))
+    alert_t = 'update'
+
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
-        if 'updatestatus' in request.form:
-            status = '"{}"'.format('CHECKEDIN')
-            airdb.update_itinerary(1, 'I_STATUS', status)
-        elif 'updateseat' in request.form:
-            seattype = '"{}"'.format(request.form['seat'])
-            airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
-        get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
-    elif request.method == 'GET':
-        should_delete = request.args.get('delete')
-        itinerary_id = request.args.get('i_id')
-        if should_delete is not None:
-            airdb.delete_itinerary(itinerary_id)
+        if itinerary_id == '': flash(500)
+        else:
+            if 'updatestatus' in request.form:
+                status = '"{}"'.format('CHECKEDIN')
+                res = airdb.update_itinerary(itinerary_id, 'I_STATUS', status)
+            elif 'updateseat' in request.form:
+                seattype = '"{}"'.format(request.form['seat'])
+                res = airdb.update_itinerary(itinerary_id, 'I_SEATTYPE', seattype)
+            elif 'delete' in request.form:
+                res = airdb.delete_itinerary(itinerary_id)
+                alert_t = 'delete'
             get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
-    return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2=get_old)
+            if res == 0: flash(500)
+            else: flash(200)
+
+    return render_template('alerts.html', type='user', tab = 'itinerary',
+        data=get_itineraries, data2=get_old, alert_t=alert_t)
 
 @app.route('/user-specific-view', methods=['POST', 'GET'])
 def userspecificUI():
