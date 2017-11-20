@@ -89,7 +89,10 @@ def useritineraryUI():
 
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
-        if itinerary_id == '': flash(500)
+        if itinerary_id == '':
+            flash(500)
+            return render_template('alerts.html', type='user', tab='itinerary',
+                data=get_itineraries, data2=get_old, alert_t=alert_t)
         else:
             if 'updatestatus' in request.form:
                 if airdb.update_itinerary(itinerary_id, 'I_STATUS', '"CHECKEDIN"') == 1:
