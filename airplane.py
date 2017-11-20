@@ -109,19 +109,29 @@ def useritineraryUI():
 
 @app.route('/user-specific-view', methods=['POST', 'GET'])
 def userspecificUI():
+    alert_t = 'insert'
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
-        if 'addbaggage' in request.form:
-            airdb.add_baggage(itinerary_id, request.form['b_weight'])
-        elif 'removebaggage' in request.form:
-            airdb.delete_baggage(request.form['b_id'])
+        if itinerary_id == '': flash(500)
+        else:
+            if 'addbaggage' in request.form:
+                if request.form['b_weight'] == '': flash(500)
+                else:
+                    if airdb.add_baggage(itinerary_id, request.form['b_weight']) == 0: flash(500)
+                    else: flash(200)
+            elif 'removebaggage' in request.form:
+                if request.form['b_id'] == '': flash(500)
+                else:
+                    alert_t = 'delete'
+                    if airdb.delete_baggage(request.form['b_id']) == 0: flash(500)
+                    else: flash(200)
+            get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
+            get_bags = json.loads(airdb.get_baggage(itinerary_id))
 
-        get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
-        get_bags = json.loads(airdb.get_baggage(itinerary_id))
+            return render_template('alerts.html', type='user', tab='specific',
+                data1=get_itinerary, data2=get_bags, alert_t=alert_t)
 
-        return render_template('db.html', type='user', tab = 'specific', data1= get_itinerary, data2 = get_bags)
-
-    return render_template('db.html', type='user', tab='specific')
+    return render_template('alerts.html', type='user', tab='specific', alert_t=alert_t)
 
 # ---------------------------------------------------------
 # EMPLOYEE ENDPOINTS
