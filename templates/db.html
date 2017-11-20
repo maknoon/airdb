@@ -2,11 +2,13 @@
 {% block body %}
 
     {% if type == 'admin' %}
-        {% if data %}
+        
 
             {% if tab == 'flight' %}
+            
             <h2>Flights</h2>
             <div class="container">
+            {% if data %}
             <table>
                 <tr>
                     <th>Flight ID</th>
@@ -31,22 +33,76 @@
                 </tr>
                 {% endfor %}
             </table>
-
+            {% endif %}
+            {% if data2 %}
+            <table>
+                <tr>
+                    <th>Flight ID</th>
+                    <th>Arrival Airport</th>
+                    <th>Arrival Gate</th>
+                    <th>Arrival Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in data2 %}
+                </tr>
+                    <td>{{ row['flight_id'] }}</td>
+                    <td>{{ row['arriveairport'] }}</td>
+                    <td>{{ row['arrivegate'] }}</td>
+                    <td>{{ row['arrivetime'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
+            {% if data3 %}
+            <table>
+                <tr>
+                    <th>Flight ID</th>
+                    <th>Departure Airport</th>
+                    <th>Departure Gate</th>
+                    <th>Departure Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in data3 %}
+                </tr>
+                    <td>{{ row['flight_id'] }}</td>
+                    <td>{{ row['departairport'] }}</td>
+                    <td>{{ row['departgate'] }}</td>
+                    <td>{{ row['departtime'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+            
             <div class="filter">
-                <form action="/flightUI" method="POST">
+                <form action="/admin-flight-view" method="GET">
+                    <input type="hidden" name="delayed" value=False />
+                    <button>Show All Flights</button>
+                </form>
+                <form action="/admin-flight-view" method="GET">
+                    <input type="hidden" name="delayed" value=True />
+                    <button>Show All Delayed Flights</button>
+                </form>
+                <form action="/admin-flight-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="updatestatus" value="Submit" />
                     </p>
                 </form>
-                <form action="/flightUI" method="GET">
-                    <input type="hidden" name="delayed" value=False />
-                    <button>Get All Flights</button>
+                <form action="/admin-flight-view" method="POST">
+                <p> <label>Filter by Arriving Flights</label>
+                    <input type="text" name="ap_id" placeholder="Airport_ID" />
+                    <input type='submit' name="filterarriving" value="Submit" />
+                </p>
                 </form>
-                <form action="/flightUI" method="GET">
-                    <input type="hidden" name="delayed" value=True />
-                    <button>Get Delayed Flights</button>
+                <form action="/admin-flight-view" method="POST">
+                <p> <label>Filter by Departing Flights</label>
+                    <input type="text" name="ap_id" placeholder="Airport_ID" />
+                    <input type='submit' name="filterdeparting" value="Submit" />
+                </p>
                 </form>
             </div>
             </div>
@@ -61,12 +117,14 @@
                     <th>Airport</th>
                     <th>City</th>
                     <th>Country</th>
+                    <th>Number of Aircraft Maintained</th>
                 </tr>
                 {% for row in data %}
                 <tr>
                     <td>{{ row['airport_id'] }}</td>
                     <td>{{ row['city'] }}</td>
                     <td>{{ row['country'] }}</td>
+                    <td>{{ row['total_aircraft'] }}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -89,25 +147,25 @@
             {% endfor %}
             </table>
             <div class="filter">
-                <form action="/workscheduleUI" method="GET">
+                <form action="/admin-work-schedule-view" method="GET">
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/workscheduleUI" method="GET" >
+                <form action="/admin-work-schedule-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type='submit' name="filteremp" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/workscheduleUI" method="GET" >
+                <form action="/admin-work-schedule-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name ="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/workscheduleUI" method="POST">
+                <form action="/admin-work-schedule-view" method="POST">
                     <p> <label>Add</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type="text" name="f_id" placeholder="Flight ID" />
@@ -115,7 +173,7 @@
                     </p>
                 </form>
 
-                 <form action="/workscheduleUI" method="GET">
+                 <form action="/admin-work-schedule-view" method="GET">
                     <p> <label>Remove</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <label>from</label>
@@ -140,7 +198,7 @@
                 </tr>
                 {% for row in data %}
                 <tr>
-                    <td>{{ row['name']}}</td>
+                    <td>{{ row['name'] }}</td>
                     <td>{{ row['id'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['type'] }}</td>
@@ -150,19 +208,16 @@
             </table>
 
             <div class="filter">
-                <form action="employeeUI" method="GET">
-                    <button>Remove Filter</button>
-                </form>
-
-                <form action="/employeeUI" method="POST">
+                <form action="/admin-employee-view" method="POST">
                     <p> <label>Add</label>
+                        <input type="text" name="name" placeholder="Name" />
                         <input type="text" name="type" placeholder="Employee Type" />
                         <input type="text" name="wage" placeholder="Wage" />
                         <input type='submit' name="add" value="Submit"/>
                     </p>
                 </form>
 
-                 <form action="/employeeUI" method="GET">
+                 <form action="/admin-employee-view" method="POST">
                     <p> <label>Delete</label>
                         <input type="text" name="e_id" placeholder="Employee ID" />
                         <input type='submit' name="delete" value="Submit"/>
@@ -191,18 +246,18 @@
             </table>
 
             <div class="filter">
-                <form action="/baggageUI" method="GET">
+                <form action="/admin-baggage-view" method="GET">
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/baggageUI" method="GET" >
+                <form action="/admin-baggage-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/baggageUI" method="GET" >
+                <form action="/admin-baggage-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name ="i_id" placeholder="Itinerary ID" />
                         <input type='submit' name="filteritinerary" value="Submit"/>
@@ -233,25 +288,25 @@
             </table>
 
             <div class="filter">
-                <form action="/aircraftUI" method="GET">
+                <form action="/admin-aircraft-view" method="GET">
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/aircraftUI" method="GET" >
+                <form action="/admin-aircraft-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="airport_id" placeholder="Airport ID" />
                         <input type='submit' name="filterairport" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/aircraftUI" method="GET" >
+                <form action="/admin-aircraft-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/aircraftUI" method="GET">
+                <form action="/admin-aircraft-view" method="GET">
                     <p> <label>Delete</label>
                         <input type="text" name="ac_id" placeholder="Aircraft ID" />
                         <input type='submit' name="delete" value="Submit"/>
@@ -284,25 +339,25 @@
             </table>
 
             <div class="filter">
-                <form action="/customerUI" method="GET">
+                <form action="/admin-customer-view" method="GET">
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/customerUI" method="GET" >
+                <form action="/admin-customer-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
                         <input type='submit' name="filterflight" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/customerUI" method="GET" >
+                <form action="/admin-customer-view" method="GET" >
                     <p> <label>Filter</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="filtercustomer" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/customerUI" method="POST">
+                <form action="/admin-customer-view" method="POST">
                     <p> <label>Check In Customer</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="updatestatus" value="Submit" />
@@ -312,7 +367,7 @@
             </div>
             {% endif %}
 
-        {% endif %} <!-- end data -->
+         <!-- end data -->
 
          <form action="/main" method="post">
             <button>Clear</button>
@@ -355,14 +410,14 @@
             </div>
 
             <div class="filter">
-                <form action="/useraccountUI" method="POST">
+                <form action="/user-account-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="email" placeholder="Email" />
                         <input type='submit' name="updateemail" value="Submit" />
                     </p>
                 </form>
 
-                <form action="/useraccountUI" method="POST">
+                <form action="/user-account-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="phone" placeholder="Phone #" />
                         <input type='submit' name="updatephone" value="Submit" />
@@ -374,16 +429,39 @@
         {% endif %}
 
         {% if tab == 'itinerary' %}
-        <h2> All Itineraries for Customer </h2>
+        <h2> All Upcoming Itineraries for Customer </h2>
         <div class="container">
-            <table>
+            <div>
+            <table class="container-item">
+                <tr>
+                    <th>Itinerary #</th>
+                    <th>Seat Type</th>
+                    <th>Seat Cost</th>
+                    <th>Status</th>
+                    <th>Total Flight Distance</th>
+                </tr>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['itinerary_id'] }}</td>
+                    <td>{{ row['seattype'] }}</td>
+                    <td>{{ row['seatcost'] }}</td>
+                    <td>{{ row['status'] }}</td>
+                    <td>{{ row['total_distance'] }}</td>
+                </tr>
+                {% else %}
+                <h3>No itinerary found!</h3>
+                {% endfor %}
+            </table>
+
+            <h2> Past Itineraries for Customer </h2>
+            <table class="container-item">
                 <tr>
                     <th>Itinerary #</th>
                     <th>Seat Type</th>
                     <th>Seat Cost</th>
                     <th>Status</th>
                 </tr>
-                {% for row in data %}
+                {% for row in data2 %}
                 <tr>
                     <td>{{ row['itinerary_id'] }}</td>
                     <td>{{ row['seattype'] }}</td>
@@ -394,23 +472,24 @@
                 <h3>No itinerary found!</h3>
                 {% endfor %}
             </table>
-
+            </div>
+            
          <div class="filter">
-            <form action="/useritineraryUI" method="POST">
+            <form action="/user-itinerary-view" method="POST">
                 <p> <label>Check in to your trip</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type='submit' name="updatestatus" value="Submit" />
                 </p>
             </form>
 
-            <form action="/useritineraryUI" method="GET">
+            <form action="/user-itinerary-view" method="GET">
                 <p> <label>Cancel a trip</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type='submit' name="delete" value="Submit"/>
                 </p>
             </form>
 
-            <form action="/useritineraryUI" method="POST">
+            <form action="/user-itinerary-view" method="POST">
                 <p> <label>Upgrade seats</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <select name="seat">
@@ -427,7 +506,7 @@
 
         {% if tab == 'specific' %}
 
-        <form action="/userspecificUI" method="POST">
+        <form action="/user-specific-view" method="POST">
             <p class="selector"> <label>Enter</label>
                 <input type="text" name="i_id" placeholder="Itinerary ID" />
                 <input type='submit' name="chooseitinerary" value="Submit" />
@@ -476,7 +555,7 @@
             </div> <!-- end tables -->
 
             <div class="filter">
-            <form action="/userspecificUI" method="POST">
+            <form action="/user-specific-view" method="POST">
                 <p> <label>Add bag to itinerary</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type="text" name="b_weight" placeholder="Baggage Weight" />
@@ -484,7 +563,7 @@
                 </p>
             </form>
 
-            <form action="/userspecificUI" method="POST">
+            <form action="/user-specific-view" method="POST">
                 <p> <label>Delete bag from itinerary</label>
                     <input type="text" name="i_id" placeholder="Itinerary ID" />
                     <input type="text" name="b_id" placeholder="Baggage ID" />
@@ -502,14 +581,14 @@
         <div><h1> Employee Info </h1>
             <table>
                 <tr>
-                    <th>Name </th>
+                    <th>Name</th>
                     <th>Employee Type</th>
                     <th>Hours</th>
                     <th>Wage</th>
                 </tr>
                 {% for row in data1 %}
                 </tr>
-                    <td>{{row['name'] }}</td>
+                    <td>{{ row['name'] }}</td>
                     <td>{{ row['type'] }}</td>
                     <td>{{ row['hours'] }}</td>
                     <td>{{ row['wage'] }}</td>
