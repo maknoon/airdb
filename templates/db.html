@@ -20,7 +20,7 @@
                     <th>Arrival Time</th>
                     <th>Status</th>
                 </tr>
-                {% for row in flights %}
+                {% for row in data %}
                 </tr>
                     <td>{{ row['flight_id'] }}</td>
                     <td>{{ row['departairport'] }}</td>
@@ -33,7 +33,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            {else}
+            {% else %}
             <div style="width:75%">
                 <span> There are no flights for the selected date! </span>
             </div>
@@ -68,7 +68,7 @@
                 </p>
                 </form>
 
-                <form action="/flightUI" method="GET">
+                <form action="/admin-flight-view" method="GET">
                     <p>
                         <input type="date" name="date"><br>
                         <button>Get for Date</button>

@@ -139,7 +139,7 @@ def flight():
         if (request.args.get('date') is not None):
             if request.args.get('date') == '':
                 get_flights = json.loads(airdb.get_flight(None))
-                return render_template('db.html', type = 'admin', tab = 'flight', data = 'yes', flights = get_flights)
+                return render_template('db.html', type = 'admin', tab = 'flight', data= get_flights)
             date = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
             date_string = date.strftime("%m-%d-%Y")
             get_flights = json.loads(airdb.get_flight_for_a_day(date_string))
