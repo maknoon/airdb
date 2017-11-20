@@ -119,6 +119,7 @@ def userspecificUI():
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
         if itinerary_id == '': flash(500)
+        elif airdb.check_itinerary(1, itinerary_id) == 0: flash(500)
         else:
             if 'addbaggage' in request.form:
                 if request.form['b_weight'] == '': flash(500)
