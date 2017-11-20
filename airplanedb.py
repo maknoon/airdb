@@ -2259,9 +2259,9 @@ class AirplaneDb(object):
                 dataList.append(ac_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Get Aircraft by Airport ID Failed with error: {0}'.format(err)
+            print('Get Aircraft by Airport ID Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -2325,9 +2325,9 @@ class AirplaneDb(object):
                 dataList.append(ac_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Get Aircraft by Status Failed with error: {0}'.format(err)
+            print('Get Aircraft by Status Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -2380,18 +2380,14 @@ class AirplaneDb(object):
 #   description: update an aircraft's status in table AIRCRAFT
 #   returns: the updated aircraft object in table AIRCRAFT
 #==============================================================================
-    def update_aircraft(self, ac_id, status, new_status):
+    def update_aircraft(self, ac_id, status):
         db = MySQLdb.connect(host=self.host,
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
 
-        if new_status is None:
-            update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
-                                        WHERE AC_ID = %d""" % (status, int(ac_id))
-        else:
-            update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
-                                        WHERE AC_ID = %d""" % (new_status, int(ac_id))
+        update_aircraft_query = """UPDATE AIRCRAFT SET AC_STATUS = %s
+                                   WHERE AC_ID = %d""" % (status, int(ac_id))
         cursor = db.cursor()
         try:
             cursor.execute(update_aircraft_query)
@@ -2413,9 +2409,9 @@ class AirplaneDb(object):
             }
             data = json.dumps(ac_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Update Aircraft Failed with error: {0}'.format(err)
+            print('Update Aircraft Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -2443,9 +2439,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_aircraft_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Delete Aircraft Failed with error: {0}'.format(err)
+            print('Delete Aircraft Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()

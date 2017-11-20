@@ -158,19 +158,31 @@ def airport():
 @app.route('/admin-aircraft-view',methods = ['POST', 'GET'])
 def aircraft():
     get_airplanes = json.loads(airdb.get_aircraft(None))
-    if request.method =='GET':
-        airport_id = request.args.get('airport_id')
-        aircraft_id = request.args.get('ac_id')
-        status = request.args.get('status')
-        should_delete = request.args.get('delete')
-        if status is not None:
-            get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
-        elif airport_id is not None:
-            get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
-        if should_delete is not None:
-            airdb.delete_aircraft(aircraft_id)
-            get_airplanes = json.loads(airdb.get_aircraft(None))
-    return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
+
+    if request.method =='POST':
+        alert_t = 'update'
+        if 'filterairport' in request.form:
+            if request.form['airport_id'] == '': flash(500)
+            else:
+                get_airplanes = json.loads(airdb.get_aircraft_by_airport(request.form['airport_id']))
+                if get_airplanes == 0: flash(500)
+        elif 'filterstatus' in request.form:
+            if request.form['status'] == '': flash(500)
+            else:
+                get_airplanes = json.loads(airdb.get_aircraft_by_status(request.form['status']))
+                if get_airplanes == 0: flash(500)
+        elif 'updatestatus' in request.form:
+            if request.form['ac_id'] == '' or request.form['status'] == '': flash(500)
+            else:
+                status = '"{}"'.format(request.form['status'])
+                if airdb.update_aircraft(request.form['ac_id'], status) == 0: flash(500)
+                else:
+                    flash(200)
+                    get_airplanes = json.loads(airdb.get_aircraft(request.form['ac_id']))
+        return render_template('alerts.html', type='admin', tab='aircraft',
+            data=get_airplanes, alert_t=alert_t)
+
+    return render_template('db.html', type='admin', tab='aircraft', data=get_airplanes)
 
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():

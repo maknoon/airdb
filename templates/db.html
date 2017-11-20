@@ -290,24 +290,25 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET" >
+                <form action="/admin-aircraft-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="airport_id" placeholder="Airport ID" />
                         <input type='submit' name="filterairport" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET" >
+                <form action="/admin-aircraft-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="status" placeholder="Status" />
                         <input type='submit' name="filterstatus" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-aircraft-view" method="GET">
-                    <p> <label>Delete</label>
+                <form action="/admin-aircraft-view" method="POST">
+                    <p> <label>Update</label>
                         <input type="text" name="ac_id" placeholder="Aircraft ID" />
-                        <input type='submit' name="delete" value="Submit"/>
+                        <input type="text" name="status" placeholder="Aircraft Status" />
+                        <input type='submit' name="updatestatus" value="Submit"/>
                     </p>
                 </form>
             </div>
