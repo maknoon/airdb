@@ -13,6 +13,9 @@
                 {% if alert_t == 'delete' %}
                     <script>alert("Delete success!");</script>
                 {% endif %}
+                {% if alert_t == 'user_error' %}
+                    <script>alert("Oops, you are not allowed to do that!");</script>
+                {% endif %}
             {% else %}
                 <script>alert("An error occurred, please try again");</script>
             {% endif %}

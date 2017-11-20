@@ -92,20 +92,26 @@ def useritineraryUI():
         if itinerary_id == '': flash(500)
         else:
             if 'updatestatus' in request.form:
-                status = '"{}"'.format('CHECKEDIN')
-                res = airdb.update_itinerary(itinerary_id, 'I_STATUS', status)
+                if airdb.update_itinerary(itinerary_id, 'I_STATUS', '"CHECKEDIN"') == 1:
+                    alert_t = 'user_error'
+                flash(200)
             elif 'updateseat' in request.form:
                 seattype = '"{}"'.format(request.form['seat'])
-                res = airdb.update_itinerary(itinerary_id, 'I_SEATTYPE', seattype)
+                if airdb.update_itinerary(itinerary_id, 'I_SEATTYPE', seattype) == 1:
+                    alert_t = 'user_error'
+                flash(200)
             elif 'delete' in request.form:
-                res = airdb.delete_itinerary(itinerary_id)
                 alert_t = 'delete'
+                if airdb.delete_itinerary(itinerary_id) == 1:
+                    alert_t = 'user_error'
+                flash(200)
             get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
-            if res == 0: flash(500)
-            else: flash(200)
 
-    return render_template('alerts.html', type='user', tab = 'itinerary',
-        data=get_itineraries, data2=get_old, alert_t=alert_t)
+            return render_template('alerts.html', type='user', tab='itinerary',
+                data=get_itineraries, data2=get_old, alert_t=alert_t)
+
+    return render_template('db.html', type='user', tab='itinerary',
+        data=get_itineraries, data2=get_old)
 
 @app.route('/user-specific-view', methods=['POST', 'GET'])
 def userspecificUI():

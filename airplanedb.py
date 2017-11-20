@@ -1547,7 +1547,7 @@ class AirplaneDb(object):
             print("Get Employee Schedule failed with error: {0}").format(e)
             db.rollback()
             data = 0
-
+            
         cursor.close()
         db.close()
         return data
@@ -1567,9 +1567,15 @@ class AirplaneDb(object):
             'itinerary_id': int(itinerary_id)
         }
         try:
-            cursor.execute(delete_itinerary_query)
-            db.commit()
-            data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
+            get_itinerary_query = """SELECT * FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
+            cursor.execute(get_itinerary_query)
+            check_itinerary = cursor.fetchone()
+            if check_itinerary[3] == 'DONE':
+                data = 1
+            else:
+                cursor.execute(delete_itinerary_query)
+                db.commit()
+                data = json.dumps(deleted_itinerary_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
@@ -1589,30 +1595,34 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
+        
         update_itinerary_query = """UPDATE ITINERARY
                                     SET %s = %s
                                     WHERE I_ID = %d """ % (itinerary_field, new_value, int(itinerary_id))
 
         cursor = db.cursor()
         try:
-            cursor.execute(update_itinerary_query)
-            db.commit()
-            get_itinerary_query = """SELECT * FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
+            get_itinerary_query = """SELECT I_STATUS FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
             cursor.execute(get_itinerary_query)
-            updated_itinerary = cursor.fetchone()
-            updated_itinerary_object = {
-                'itinerary_id': updated_itinerary[0],
-                'seattype': updated_itinerary[1],
-                'seatcost': float(updated_itinerary[2]),
-                'status': updated_itinerary[3],
-                'customer_id': updated_itinerary[4]
-            }
-            data = json.dumps(updated_itinerary_object, sort_keys=True, indent=4, separators=(',', ': '))
+            check_itinerary = cursor.fetchone()
+            if check_itinerary[0] == 'DONE':
+                data = 1
+            else:
+                cursor.execute(update_itinerary_query)
+                db.commit()
+                updated_itinerary = cursor.fetchone()
+                updated_itinerary_object = {
+                    'itinerary_id': updated_itinerary[0],
+                    'seattype': updated_itinerary[1],
+                    'seatcost': float(updated_itinerary[2]),
+                    'status': updated_itinerary[3],
+                    'customer_id': updated_itinerary[4]
+                }
+                data = json.dumps(updated_itinerary_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            data = ("Update Itinerary Failed with error: {0}").format(e)
+            print("Update Itinerary Failed with error: {0}".format(e))
             db.rollback()
-            print(data)
-            return 0
+            data = 0
 
         cursor.close()
         db.close()
