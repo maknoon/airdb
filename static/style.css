@@ -1,6 +1,7 @@
 :root {
     --bg-color: #d6eaf8;
     --accent-color: #2874a6;
+    --body-text: #46494f;
 }
 
 body {
@@ -8,6 +9,7 @@ body {
     margin: 2%;
     font-size: 14px;
     font-family: "Helvetica", sans-serif;
+    color: var(--body-text);
     background-color: var(--bg-color);
 }
 
@@ -43,9 +45,17 @@ h3 {
     text-transform: uppercase;
 }
 
+select,
+select:focus {
+    border: 2px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    margin: 0.75em 1em;
+    height: 2.5em;
+}
+
 input,
-input:focus,
-input[type="select"] {
+input:focus {
     padding: 4pt 4pt;
     margin: 0.25em 1em;
     background-color: var(--bg-color);
@@ -78,7 +88,7 @@ table {
 }
 
 th {
-    text-transform: uppercase;
+    color: black;
 }
 
 th,
@@ -87,6 +97,7 @@ td {
     width: 20%;
     padding: 0.4em;
     background-color: #93c0f2;
+    text-transform: uppercase;
 }
 
 .menu {
@@ -139,12 +150,4 @@ td {
 
 .selector {
     width: 15%;
-}
-
-select {
-    margin: 5% 1em 0;
-    width: 90%;
-    height: 2.5em;
-    background-color: var(--bg-color);
-    color: var(--accent-color);
 }

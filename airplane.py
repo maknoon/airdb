@@ -119,6 +119,9 @@ def userspecificUI():
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
         if itinerary_id == '': flash(500)
+        elif airdb.check_itinerary(1, itinerary_id) == 0:
+            alert_t = 'user_error'
+            flash(200)
         else:
             if 'addbaggage' in request.form:
                 if request.form['b_weight'] == '': flash(500)
@@ -306,11 +309,11 @@ def customer():
 
     if request.method =='POST':
         alert_t = 'update'
-        # if 'filtercustomer' in request.form:
-        #     if request.form['c_id'] == '': flash(500)
-        #     else:
-        #         get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
-        #         if get_schedule == 0: flash(500)
+       if 'filtercustomer' in request.form:
+            if request.form['c_id'] == '': flash(500)
+            else:
+                get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
+                if get_schedule == 0: flash(500)
         if 'filteritinerary' in request.form:
             if request.form['i_id'] == '': flash(500)
             else:
