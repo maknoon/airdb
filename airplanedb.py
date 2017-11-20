@@ -1510,6 +1510,39 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_destination_for_itinerary
+#   description: get destination city based on itinerary id
+#   return: a destination city
+#==============================================================================
+    def get_destination_for_itinerary(self, itinerary_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_destination_query = """select A2.AP_CITY from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2 where I.I_ID = S.I_ID and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID and I.I_ID = %d ORDER BY F.F_ARRIVALTIME DESC LIMIT 1;""" % (int(itinerary_id))
+        cursor = db.cursor()
+
+        try:
+            dataList = []
+            cursor.execute(get_destination_query)
+            destination = cursor.fetchone()
+            if destination is not None:
+                data = {
+                    'destination': destination[0]
+                }
+            else :
+                data = {
+                    'destination': 'None'
+                }
+            data = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary destination failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
 #   function: get_customer_itinerary_info
 #   description: query for Specific Itinerary tab in User UI
 #   return: list of itineraries
