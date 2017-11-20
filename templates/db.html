@@ -342,19 +342,22 @@
                     <button>Remove Filter</button>
                 </form>
 
-                <form action="/admin-customer-view" method="GET" >
+                <form action="/admin-customer-view" method="POST" >
                     <p> <label>Filter</label>
-                        <input type="text" name="f_id" placeholder="Flight ID" />
-                        <input type='submit' name="filterflight" value="Submit"/>
+                        <input type="text" name="i_id" placeholder="Itinerary ID" />
+                        <input type='submit' name="filteritinerary" value="Submit"/>
                     </p>
                 </form>
 
-                <form action="/admin-customer-view" method="GET" >
+                <!--
+                <form action="/admin-customer-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="filtercustomer" value="Submit"/>
                     </p>
                 </form>
+                NOT IMPLEMENTED
+                -->
 
                 <form action="/admin-customer-view" method="POST">
                     <p> <label>Check In Customer</label>

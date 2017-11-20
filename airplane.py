@@ -297,22 +297,29 @@ def employee():
 @app.route('/admin-customer-view',methods = ['POST', 'GET'])
 def customer():
     get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-    if request.method == 'GET':
-        flight_id = request.args.get('f_id')
-        customer_id = request.args.get('c_id')
-        filter_customer= request.args.get('filtercustomer')
-        filter_flight = request.args.get('filterflight')
-        #if filter_flight is not None:
-        #    get_schedule = json.loads(airdb.get_schedule_for_itinerary(itinerary_id))
-        #todo
-        # elif filter_flight is not None:
-            # get_schedule = json.loads(airdb.get_schedule_for_customer(customer_id))
-    elif request.method =='POST':
-        customer_id = request.form['c_id']
-        status = '"{}"'.format('CHECKEDIN')
-        airdb.update_itinerary(customer_id, 'I_STATUS', status)
-        get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
-    return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
+
+    if request.method =='POST':
+        alert_t = 'update'
+        # if 'filtercustomer' in request.form:
+        #     if request.form['c_id'] == '': flash(500)
+        #     else:
+        #         get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
+        #         if get_schedule == 0: flash(500)
+        if 'filteritinerary' in request.form:
+            if request.form['i_id'] == '': flash(500)
+            else:
+                get_schedule = json.loads(airdb.get_schedule_for_itinerary(request.form['i_id']))
+                if get_schedule == 0: flash(500)
+        elif 'updatestatus' in request.form:
+            if request.form['c_id'] == '': flash(500)
+            elif airdb.update_itinerary(request.form['c_id'], 'I_STATUS', '"CHECKEDIN"') == 0: flash(500)
+            else:
+                flash(200)
+                get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+        return render_template('alerts.html', type='admin', tab='customer',
+            data=get_schedule, alert_t=alert_t)
+
+    return render_template('db.html', type='admin',  tab='customer', data=get_schedule)
 
 
 # ---------------------------------------------------------
