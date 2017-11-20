@@ -77,6 +77,14 @@
             {% endif %}
             
             <div class="filter">
+                <form action="/admin-flight-view" method="GET">
+                    <input type="hidden" name="delayed" value=False />
+                    <button>Show All Flights</button>
+                </form>
+                <form action="/admin-flight-view" method="GET">
+                    <input type="hidden" name="delayed" value=True />
+                    <button>Show All Delayed Flights</button>
+                </form>
                 <form action="/admin-flight-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="f_id" placeholder="Flight ID" />
@@ -84,22 +92,14 @@
                         <input type='submit' name="updatestatus" value="Submit" />
                     </p>
                 </form>
-                <form action="/admin-flight-view" method="GET">
-                    <input type="hidden" name="delayed" value=False />
-                    <button>Get All Flights</button>
-                </form>
-                <form action="/admin-flight-view" method="GET">
-                    <input type="hidden" name="delayed" value=True />
-                    <button>Get Delayed Flights</button>
-                </form>
-                <form action="/flightUI" method="GET">
-                <p> <label>Filter by Arriving Flights to Airport</label>
+                <form action="/admin-flight-view" method="POST">
+                <p> <label>Filter by Arriving Flights</label>
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterarriving" value="Submit" />
                 </p>
                 </form>
-                <form action="/flightUI" method="GET">
-                <p> <label>Filter by Departing Flights from Airport</label>
+                <form action="/admin-flight-view" method="POST">
+                <p> <label>Filter by Departing Flights</label>
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterdeparting" value="Submit" />
                 </p>

@@ -132,26 +132,22 @@ def mainmenu():
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
     if request.method == 'GET':
-        flight_id = request.args.get('f_id')
         delayed = request.args.get('delayed')
-        airport_id = request.args.get('ap_id')
-        filterarrv = request.args.get('filterarriving')
-        filterdept = request.args.get('filterdeparting')
         if delayed == 'True':
             get_flights = json.loads(airdb.get_delayed_flight())
         else:
             get_flights = json.loads(airdb.get_flight(None))
-        if filterarrv is not None:
-            get_flights = json.loads(airdb.get_flight_for_airport(airport_id, 'arrv'))
-            return render_template('db.html', type = 'admin', tab = 'flight', data2 = get_flights)
-        elif filterdept is not None:
-            get_flights = json.loads(airdb.get_flight_for_airport(airport_id, 'dept'))
-            return render_template('db.html', type = 'admin', tab = 'flight', data3 = get_flights)
+
     elif request.method =='POST':
-        status = '"{}"'.format(request.form['status'])
-        flight_id = request.form['f_id']
-        airdb.update_flight(flight_id, 'F_STATUS', status)
-        get_flights = json.loads(airdb.get_flight(None))
+        if 'filterarriving' in request.form:
+            get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'arrv'))
+        elif 'filterdeparting' in request.form:
+            get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'dept'))
+        elif 'updatestatus' in request.form:
+            status = '"{}"'.format(request.form['status'])
+            airdb.update_flight(request.form['f_id'], 'F_STATUS', status)
+            get_flights = json.loads(airdb.get_flight(None))
+ 
     return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
 
 
