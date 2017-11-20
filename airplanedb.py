@@ -2648,6 +2648,54 @@ class AirplaneDb(object):
 
 
 #==============================================================================
+#   function: get_schedule_for_customer
+#   description: get all the schedules with custoer ID
+#   returns: the list of all the schedules with a specified customer ID
+#==============================================================================
+    def get_schedule_for_customer(self, c_id):
+         db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+
+         get_schedule_query = """SELECT F_ID, ITINERARY.I_ID, C_ID, I_SEATTYPE, I_STATUS FROM SCHEDULE, ITINERARY WHERE ITINERARY.I_ID = SCHEDULE.I_ID AND C_ID = %d""" % (int(c_id))
+         cursor = db.cursor()
+         try:
+             dataList = []
+             cursor.execute(get_schedule_query)
+             if c_id is None:
+                entireschedule = cursor.fetchall()
+                for schedule in entireschedule:
+                    s_object = {
+                        'flight_id': schedule[0],
+                        'itinerary_id': schedule[1],
+                        'customer_id': schedule[2],
+                        'seattype': schedule[3],
+                        'status': schedule[4]
+                    }
+                    dataList.append(s_object)
+             else:
+                 entireschedule = cursor.fetchall()
+                 for schedule in entireschedule:
+                    s_object = {
+                    'flight_id': schedule[0],
+                     'itinerary_id': schedule[1],
+                     'customer_id': schedule[2],
+                     'seattype': schedule[3],
+                     'status': schedule[4]
+                    }
+                    dataList.append(s_object)
+             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+         except Exception as e:
+             data = ("Get Schedules Failed with error: {0}").format(e)
+             db.rollback()
+             print(data)
+
+         cursor.close()
+         db.close()
+         return data
+
+#==============================================================================
 #   function: add_workson
 #   description: add an employee/flight pair instance to table workson
 #   returns: the added workson json object
