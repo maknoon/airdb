@@ -309,11 +309,11 @@ def customer():
 
     if request.method =='POST':
         alert_t = 'update'
-        # if 'filtercustomer' in request.form:
-        #     if request.form['c_id'] == '': flash(500)
-        #     else:
-        #         get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
-        #         if get_schedule == 0: flash(500)
+       if 'filtercustomer' in request.form:
+            if request.form['c_id'] == '': flash(500)
+            else:
+                get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
+                if get_schedule == 0: flash(500)
         if 'filteritinerary' in request.form:
             if request.form['i_id'] == '': flash(500)
             else:
