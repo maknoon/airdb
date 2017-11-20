@@ -2,10 +2,10 @@
 {% block body %}
 
     {% if type == 'admin' %}
-        
+
 
             {% if tab == 'flight' %}
-            
+
             <h2>Flights</h2>
             <div class="container">
             {% if data %}
@@ -20,7 +20,7 @@
                     <th>Arrival Time</th>
                     <th>Status</th>
                 </tr>
-                {% for row in data %}
+                {% for row in flights %}
                 </tr>
                     <td>{{ row['flight_id'] }}</td>
                     <td>{{ row['departairport'] }}</td>
@@ -33,49 +33,12 @@
                 </tr>
                 {% endfor %}
             </table>
+            {else}
+            <div style="width:75%">
+                <span> There are no flights for the selected date! </span>
+            </div>
             {% endif %}
-            {% if data2 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Arrival Airport</th>
-                    <th>Arrival Gate</th>
-                    <th>Arrival Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data2 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['arriveairport'] }}</td>
-                    <td>{{ row['arrivegate'] }}</td>
-                    <td>{{ row['arrivetime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
-            
-            {% if data3 %}
-            <table>
-                <tr>
-                    <th>Flight ID</th>
-                    <th>Departure Airport</th>
-                    <th>Departure Gate</th>
-                    <th>Departure Time</th>
-                    <th>Status</th>
-                </tr>
-                {% for row in data3 %}
-                </tr>
-                    <td>{{ row['flight_id'] }}</td>
-                    <td>{{ row['departairport'] }}</td>
-                    <td>{{ row['departgate'] }}</td>
-                    <td>{{ row['departtime'] }}</td>
-                    <td>{{ row['status'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% endif %}
-            
+
             <div class="filter">
                 <form action="/admin-flight-view" method="GET">
                     <input type="hidden" name="delayed" value=False />
@@ -103,6 +66,13 @@
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterdeparting" value="Submit" />
                 </p>
+                </form>
+
+                <form action="/flightUI" method="GET">
+                    <p>
+                        <input type="date" name="date"><br>
+                        <button>Get for Date</button>
+                    </P>
                 </form>
             </div>
             </div>
@@ -473,7 +443,7 @@
                 {% endfor %}
             </table>
             </div>
-            
+
          <div class="filter">
             <form action="/user-itinerary-view" method="POST">
                 <p> <label>Check in to your trip</label>
