@@ -1405,8 +1405,8 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-   
-    
+
+
 #==============================================================================
 #   function: get_itinerary
 #   description: get itinerary by customer ID
