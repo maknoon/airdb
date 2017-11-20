@@ -1,0 +1,22 @@
+{% extends "db.html" %}
+{% block message %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == 200 %}
+                {% if alert_t == 'update' %}
+                    <script>alert("Update success!");</script>
+                {% endif %}
+                {% if alert_t == 'insert' %}
+                    <script>alert("Insert success!");</script>
+                {% endif %}
+                {% if alert_t == 'delete' %}
+                    <script>alert("Delete success!");</script>
+                {% endif %}
+            {% else %}
+                <script>alert("An error occurred, please try again");</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

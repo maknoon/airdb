@@ -1231,13 +1231,13 @@ class AirplaneDb(object):
             db.commit()
             print('Update Customer Success')
             db.close()
-            return
+            return 200
 
         except:
             print('Update Customer Failed')
             db.close()
 
-            return 0
+            return 500
 
 #==============================================================================
 #   function: add_frequent_flier

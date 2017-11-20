@@ -416,13 +416,14 @@
                         <input type='submit' name="updateemail" value="Submit" />
                     </p>
                 </form>
-
                 <form action="/user-account-view" method="POST">
                     <p> <label>Update</label>
                         <input type="text" name="phone" placeholder="Phone #" />
                         <input type='submit' name="updatephone" value="Submit" />
                     </p>
                 </form>
+                {% block message %}
+                {% endblock %}
             </div>
 
         </div>

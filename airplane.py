@@ -66,13 +66,22 @@ def useraccountUI():
     get_ff = json.loads(airdb.get_frequent_flier(1))
     if request.method == 'POST':
         if 'updateemail' in request.form:
-            newemail = '"{}"'.format(request.form['email'])
-            airdb.update_customer(1, 'C_EMAIL', newemail)
+            if request.form['email'] == '':
+                res = 500
+            else:
+                newemail = '"{}"'.format(request.form['email'])
+                res = airdb.update_customer(1, 'C_EMAIL', newemail)
         elif 'updatephone' in request.form:
-            newphone = '"{}"'.format(request.form['phone'])
-            airdb.update_customer(1, 'C_PHONE', newphone)
+            if request.form['phone'] == '':
+                res = 500
+            else:
+                newphone = '"{}"'.format(request.form['phone'])
+                res = airdb.update_customer(1, 'C_PHONE', newphone)
+        
+        flash(res)
         get_customer = json.loads(airdb.get_customer(1))
-    return render_template('db.html', type='user', tab = 'account', data1=get_customer, data2 =get_ff)
+    return render_template('alerts.html', type='user', tab='account',
+        data1=get_customer, data2=get_ff, alert_t='update')
 
 @app.route('/user-itinerary-view', methods = ['POST', 'GET'])
 def useritineraryUI():
