@@ -76,8 +76,8 @@ def useraccountUI():
 
 @app.route('/useritineraryUI', methods = ['POST', 'GET'])
 def useritineraryUI():
-    get_itineraries = json.loads(airdb.get_itinerary(1))
-    get_ff = json.loads(airdb.get_frequent_flier(1))
+    get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
+    get_old = json.loads(airdb.get_old_itinerary(1))
     if request.method == 'POST':
         itinerary_id = request.form['i_id']
         if 'updatestatus' in request.form:
@@ -86,14 +86,14 @@ def useritineraryUI():
         elif 'updateseat' in request.form:
             seattype = '"{}"'.format(request.form['seat'])
             airdb.update_itinerary(1, 'I_SEATTYPE', seattype)
-        get_itineraries = json.loads(airdb.get_itinerary(1))
+        get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
     elif request.method == 'GET':
         should_delete = request.args.get('delete')
         itinerary_id = request.args.get('i_id')
         if should_delete is not None:
             airdb.delete_itinerary(itinerary_id)
-            get_itineraries = json.loads(airdb.get_itinerary(1))
-    return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2 =get_ff)
+            get_itineraries = json.loads(airdb.get_itinerary_with_distance(1))
+    return render_template('db.html', type='user', tab = 'itinerary', data=get_itineraries, data2=get_old)
 
 @app.route('/userspecificUI', methods=['POST', 'GET'])
 def userspecificUI():

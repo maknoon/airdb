@@ -1373,6 +1373,40 @@ class AirplaneDb(object):
         return data
 
 #==============================================================================
+#   function: get_old_itinerary
+#   description: get itinerary by customer ID that are 'DONE'
+#   return: list of itineraries
+#==============================================================================
+    def get_old_itinerary(self, customer_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+
+        get_itinerary_query = """SELECT * FROM ITINERARY WHERE C_ID = %s AND I_STATUS = 'DONE' """ % customer_id
+        cursor = db.cursor()
+
+        try:
+            dataList = []
+            cursor.execute(get_itinerary_query)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                it_object = {
+                    'itinerary_id': itinerary[0],
+                    'seattype': itinerary[1],
+                    'seatcost': itinerary[2],
+                    'status': itinerary[3]
+                }
+                dataList.append(it_object)
+            data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+   
+    
+#==============================================================================
 #   function: get_itinerary
 #   description: get itinerary by customer ID
 #   return: list of itineraries
@@ -1407,29 +1441,33 @@ class AirplaneDb(object):
 
 #==============================================================================
 #   function: get_itinerary_distance
-#   description: get total distance of trip (by itinerary id)
-#   return: float of total trip distance and itinerary id
+#   description: get total distance of trip (by customer id)
+#   return: itinerary table and float of total trip distance
 #==============================================================================
-    def get_itinerary_distance(self, itinerary_id):
+    def get_itinerary_with_distance(self, customer_id):
         db = MySQLdb.connect(host=self.host,
                             user=self.user,
                             passwd=self.pw,
                             db=self.db)
 
-        get_distance_query = """SELECT SUM(F_DISTANCE), I_ID
-                                FROM FLIGHT F, SCHEDULE S
-                                WHERE S.I_ID = %d and S.F_ID = F.F_ID
-                                GROUP BY I_ID"""
+        get_distance_query = """SELECT I.*, SUM(F_DISTANCE)
+                                FROM FLIGHT F, SCHEDULE S, ITINERARY I
+                                WHERE I.C_ID = %d and I.I_ID = S.I_ID and S.F_ID = F.F_ID
+                                GROUP BY I.I_ID""" % (int(customer_id))
         cursor = db.cursor()
         try:
             dataList = []
             cursor.execute(get_distance_query)
-            distance = cursor.fetchone()
-            distance_object = {
-                'total_distance': float(distance[0]),
-                'itinerary_id': int(distance[1])
-            }
-            dataList.append(distance_object)
+            itineraries = cursor.fetchall()
+            for itinerary in itineraries:
+                distance_object = {
+                    'itinerary_id': int(itinerary[0]),
+                    'seattype': itinerary[1],
+                    'seatcost': itinerary[2],
+                    'status': itinerary[3],
+                    'total_distance': float(itinerary[5]),
+                }
+                dataList.append(distance_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
             data = ("Get Total Distance Failed with error: {0}").format(err)
@@ -1531,6 +1569,7 @@ class AirplaneDb(object):
         try:
             cursor.execute(delete_itinerary_query)
             db.commit()
+            data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
             data = ("Delete Itinerary Failed with error: {0}").format(e)
             db.rollback()
