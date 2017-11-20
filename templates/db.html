@@ -28,7 +28,11 @@
             {% if tab == 'flight' %}
             <h2>Flights</h2>
             <div class="container">
+<<<<<<< HEAD
             {% if data %}
+=======
+            {% if flights %}
+>>>>>>> finished fetching flight for a day
             <table>
                 <tr>
                     <th>Flight ID</th>
@@ -40,7 +44,7 @@
                     <th>Arrival Time</th>
                     <th>Status</th>
                 </tr>
-                {% for row in data %}
+                {% for row in flights %}
                 </tr>
                     <td>{{ row['flight_id'] }}</td>
                     <td>{{ row['departairport'] }}</td>
@@ -53,8 +57,18 @@
                 </tr>
                 {% endfor %}
             </table>
+<<<<<<< HEAD
             {% endif %}
             
+=======
+
+            {% else %}
+            <div style="width:75%">
+                <span> There are no flights today </span>
+            </div>
+            {% endif %}
+
+>>>>>>> finished fetching flight for a day
             <div class="filter">
                 <form action="/admin-flight-view" method="GET">
                     <input type="hidden" name="delayed" value=False />
@@ -82,6 +96,13 @@
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterdeparting" value="Submit" />
                 </p>
+                </form>
+
+                <form action="/flightUI" method="GET">
+                    <p>
+                        <input type="date" name="date"><br>
+                        <button>Get for Date</button>
+                    </P>
                 </form>
             </div>
             </div>

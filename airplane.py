@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 from flask import Flask, flash, abort, request, render_template, session
 from airplanedb import AirplaneDb
+from datetime import datetime
 import config
 import hashlib
 import json
@@ -194,12 +195,27 @@ def aircraft():
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
     original = get_flights
+    today_datestring = datetime.today().strftime('%Y-%m-%d')
     if request.method == 'GET':
         delayed = request.args.get('delayed')
-        if delayed == 'True':
-            get_flights = json.loads(airdb.get_delayed_flight())
+        if (request.args.get('date') is not None):
+            if request.args.get('date') == '':
+                get_flights = json.loads(airdb.get_flight(None))
+                return render_template('db.html', type = 'admin', tab = 'flight', data = 'yes', flights = get_flights)
+            date = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
+            date_string = date.strftime("%m-%d-%Y")
+            get_flights = json.loads(airdb.get_flight_for_a_day(date_string))
         else:
-            get_flights = json.loads(airdb.get_flight(None))
+            if delayed == 'True':
+                get_flights = json.loads(airdb.get_delayed_flight())
+            else:
+                get_flights = json.loads(airdb.get_flight(None))
+    elif request.method =='POST':
+        status = '"{}"'.format(request.form['status'])
+        flight_id = request.form['f_id']
+        airdb.update_flight(flight_id, 'F_STATUS', status)
+        get_flights = json.loads(airdb.get_flight(None))
+    return render_template('db.html', type = 'admin', tab = 'flight', data = 'yes', flights = get_flights)
 
     elif request.method =='POST':
         alert_t = 'update'
