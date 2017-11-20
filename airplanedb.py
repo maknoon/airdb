@@ -1022,9 +1022,9 @@ class AirplaneDb(object):
                     dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            data = ("Get Baggage Failed with error: {0}").format(e)
+            print("Get Baggage Failed with error: {0}".format(e))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -1057,9 +1057,9 @@ class AirplaneDb(object):
                 dataList.append(bag_object)
             data = json.dumps(dataList, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            data = ("Get Baggage Failed with error: {0}").format(e)
+            print("Get Baggage Failed with error: {0}".format(e))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()

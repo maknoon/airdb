@@ -155,6 +155,23 @@ def airport():
     get_airports = json.loads(airdb.get_aircraft_by_airport_total())
     return render_template('db.html', type='admin', tab='airport', data=get_airports)
 
+@app.route('/admin-aircraft-view',methods = ['POST', 'GET'])
+def aircraft():
+    get_airplanes = json.loads(airdb.get_aircraft(None))
+    if request.method =='GET':
+        airport_id = request.args.get('airport_id')
+        aircraft_id = request.args.get('ac_id')
+        status = request.args.get('status')
+        should_delete = request.args.get('delete')
+        if status is not None:
+            get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
+        elif airport_id is not None:
+            get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
+        if should_delete is not None:
+            airdb.delete_aircraft(aircraft_id)
+            get_airplanes = json.loads(airdb.get_aircraft(None))
+    return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
+
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
@@ -188,6 +205,27 @@ def flight():
         return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
  
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
+
+@app.route('/admin-baggage-view',methods = ['POST', 'GET'])
+def baggage():
+    get_bags = json.loads(airdb.get_baggage(None))
+
+    if request.method == 'POST':
+        alert_t = 'insert'
+        if 'filteritinerary' in request.form:
+            if request.form['i_id'] == '': flash(500)
+            else:
+                get_bags = json.loads(airdb.get_baggage(request.form['i_id']))
+                if get_bags == 0: flash(500)
+        elif 'filterflight' in request.form:
+            if request.form['f_id'] == '': flash(500)
+            else:
+                get_bags = json.loads(airdb.get_baggage_for_flight(request.form['f_id']))
+                if get_bags == 0: flash(500)
+        return render_template('alerts.html', type='admin', tab='baggage',
+            data=get_bags, alert_t=alert_t)
+
+    return render_template('db.html', type='admin', tab='baggage', data=get_bags)
 
 @app.route('/admin-work-schedule-view', methods=['GET', 'POST'])
 def workschedule():
@@ -243,37 +281,6 @@ def employee():
             data=get_employees, alert_t=alert_t)
 
     return render_template('db.html', type='admin', tab='employee', data=get_employees)
-
-@app.route('/admin-baggage-view',methods = ['POST', 'GET'])
-def baggage():
-    get_bags = json.loads(airdb.get_baggage(None))
-    if request.method == 'GET':
-        flight_id = request.args.get('f_id')
-        itinerary_id = request.args.get('i_id')
-        filter_itinerary= request.args.get('filteritinerary')
-        filter_flight = request.args.get('filterflight')
-        if filter_itinerary is not None:
-            get_bags = json.loads(airdb.get_baggage(itinerary_id))
-        elif filter_flight is not None:
-            get_bags = json.loads(airdb.get_baggage_for_flight(flight_id))
-    return render_template('db.html', type='admin', tab='baggage', data=get_bags)
-
-@app.route('/admin-aircraft-view',methods = ['POST', 'GET'])
-def aircraft():
-    get_airplanes = json.loads(airdb.get_aircraft(None))
-    if request.method =='GET':
-        airport_id = request.args.get('airport_id')
-        aircraft_id = request.args.get('ac_id')
-        status = request.args.get('status')
-        should_delete = request.args.get('delete')
-        if status is not None:
-            get_airplanes = json.loads(airdb.get_aircraft_by_status(status))
-        elif airport_id is not None:
-            get_airplanes = json.loads(airdb.get_aircraft_by_airport(airport_id))
-        if should_delete is not None:
-            airdb.delete_aircraft(aircraft_id)
-            get_airplanes = json.loads(airdb.get_aircraft(None))
-    return render_template('db.html', type = 'admin', tab = 'aircraft', data = get_airplanes)
 
 @app.route('/admin-customer-view',methods = ['POST', 'GET'])
 def customer():
