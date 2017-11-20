@@ -54,7 +54,7 @@ def logout():
     return index()
 
 # ---------------------------------------------------------
-# USER ENDPOINTS
+# USER UI
 # ---------------------------------------------------------
 @app.route('/mainuser', methods = ['POST'])
 def mainmenuuser():
@@ -134,7 +134,7 @@ def userspecificUI():
     return render_template('alerts.html', type='user', tab='specific', alert_t=alert_t)
 
 # ---------------------------------------------------------
-# EMPLOYEE ENDPOINTS
+# EMPLOYEE UI
 # ---------------------------------------------------------
 @app.route('/employee-view', methods=['POST'])
 def employeeUI(id):
@@ -144,7 +144,7 @@ def employeeUI(id):
     return render_template('db.html', type='employee', data1 = get_employee, data2 = get_schedule, data3 = get_vip)
 
 # ---------------------------------------------------------
-# ADMIN ENDPOINTS
+# ADMIN UI
 # ---------------------------------------------------------
 @app.route('/main', methods = ['POST'])
 def mainmenu():
@@ -153,6 +153,7 @@ def mainmenu():
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
+    original = get_flights
     if request.method == 'GET':
         delayed = request.args.get('delayed')
         if delayed == 'True':
@@ -161,16 +162,27 @@ def flight():
             get_flights = json.loads(airdb.get_flight(None))
 
     elif request.method =='POST':
+        alert_t = 'update'
         if 'filterarriving' in request.form:
-            get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'arrv'))
+            if request.form['ap_id'] == '': flash(500)
+            else: get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'arrv'))
         elif 'filterdeparting' in request.form:
-            get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'dept'))
+            if request.form['ap_id'] == '': flash(500)
+            else: get_flights = json.loads(airdb.get_flight_for_airport(request.form['ap_id'], 'dept'))
         elif 'updatestatus' in request.form:
-            status = '"{}"'.format(request.form['status'])
-            airdb.update_flight(request.form['f_id'], 'F_STATUS', status)
-            get_flights = json.loads(airdb.get_flight(None))
+            if request.form['f_id'] == '' or request.form['status'] == '': flash(500)
+            else:
+                status = '"{}"'.format(request.form['status'])
+                if airdb.update_flight(request.form['f_id'], 'F_STATUS', status) == 0: flash(500)
+                else:
+                    flash(200)
+                    get_flights = json.loads(airdb.get_flight(None))
+        if get_flights == '':
+            flash(500)
+            get_flights = original
+        return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
  
-    return render_template('db.html', type = 'admin', tab = 'flight', data = get_flights)
+    return render_template('db.html', type='admin', tab='flight', data=get_flights)
 
 
 @app.route('/admin-airport-view',methods = ['POST', 'GET'])
@@ -273,6 +285,8 @@ def customer():
         airdb.update_itinerary(customer_id, 'I_STATUS', status)
         get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
     return render_template('db.html', type = 'admin',  tab = 'customer', data = get_schedule)
+
+
 # ---------------------------------------------------------
 # DATABASE ENDPOINTS
 # ---------------------------------------------------------

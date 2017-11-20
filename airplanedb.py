@@ -1695,9 +1695,10 @@ class AirplaneDb(object):
             }
             data = json.dumps(updated_flight_object, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as e:
-            data = ("Update Flight Failed with error: {0}").format(e)
+            print("Update Flight Failed with error: {0}".format(e))
             db.rollback()
             print(data)
+            data = 0
 
         cursor.close()
         db.close()
