@@ -189,29 +189,34 @@ def flight():
  
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
 
-@app.route('/admin-work-schedule-view', methods=['GET', 'POST', 'DELETE'])
+@app.route('/admin-work-schedule-view', methods=['GET', 'POST'])
 def workschedule():
     get_work_schedule = json.loads(airdb.get_workson())
 
-    if request.method == 'GET':
-        employee_id = request.args.get('e_id')
-        flight_id = request.args.get('f_id')
-        filter_emp = request.args.get('filteremp')
-        filter_flight = request.args.get('filterflight')
-        should_delete = request.args.get('delete')
-        if filter_emp is not None:
-            get_work_schedule = json.loads(airdb.get_flight_for_employee(employee_id))
-        elif filter_flight is not None:
-            get_work_schedule = json.loads(airdb.get_employee_for_flight(flight_id))
-        if should_delete is not None:
-            airdb.delete_workson(employee_id, flight_id)
+    if request.method == 'POST':
+        alert_t = 'insert'
+        if 'filteremp' in request.form:
+            if request.form['e_id'] == '': flash(500)
+            else: get_work_schedule = json.loads(airdb.get_flight_for_employee(request.form['e_id']))
+        elif 'filterflight' in request.form:
+            if request.form['f_id'] == '': flash(500)
+            else: get_work_schedule = json.loads(airdb.get_employee_for_flight(request.form['f_id']))
+        elif 'add' in request.form:
+            if request.form['e_id'] == '' or request.form['f_id'] == '': flash(500)
+            else:
+                if airdb.add_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
+                else: flash(200)
+                get_work_schedule = json.loads(airdb.get_workson())
+        elif 'delete' in request.form:
+            if request.form['e_id'] == '' or request.form['f_id'] == '': flash(500)
+            else:
+                alert_t = 'delete'
+                if airdb.delete_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
+                else: flash(200)
+                get_work_schedule = json.loads(airdb.get_workson())
             get_work_schedule = json.loads(airdb.get_workson())
-
-    elif request.method == 'POST':
-        employee_id = request.form['e_id']
-        flight_id = request.form['f_id']
-        airdb.add_workson(employee_id, flight_id)
-        get_work_schedule = json.loads(airdb.get_workson())
+        return render_template('alerts.html', type='admin', tab='workschedule',
+            data=get_work_schedule, alert_t=alert_t)
 
     return render_template('db.html', type='admin', tab='workschedule', data=get_work_schedule)
 

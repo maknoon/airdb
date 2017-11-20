@@ -2641,9 +2641,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Add Workson Failed with error: {0}'.format(err)
+            print('Add Workson Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -2779,9 +2779,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_workson, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Delete Workson Failed with error: {0}'.format(err)
+            print('Delete Workson Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
