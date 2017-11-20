@@ -2479,9 +2479,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(employee, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Add Employee Failed with error: {0}'.format(err)
+            print('Add Employee Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()
@@ -2558,9 +2558,9 @@ class AirplaneDb(object):
             db.commit()
             data = json.dumps(deleted_employee_id, sort_keys=True, indent=4, separators=(',', ': '))
         except Exception as err:
-            data = 'Delete Employee Failed with error: {0}'.format(err)
+            print('Delete Employee Failed with error: {0}'.format(err))
             db.rollback()
-            print(data)
+            data = 0
 
         cursor.close()
         db.close()

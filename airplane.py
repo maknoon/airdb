@@ -203,17 +203,14 @@ def workschedule():
             else: get_work_schedule = json.loads(airdb.get_employee_for_flight(request.form['f_id']))
         elif 'add' in request.form:
             if request.form['e_id'] == '' or request.form['f_id'] == '': flash(500)
-            else:
-                if airdb.add_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
-                else: flash(200)
-                get_work_schedule = json.loads(airdb.get_workson())
+            elif airdb.add_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
+            else: flash(200)
+            get_work_schedule = json.loads(airdb.get_workson())
         elif 'delete' in request.form:
+            alert_t = 'delete'
             if request.form['e_id'] == '' or request.form['f_id'] == '': flash(500)
-            else:
-                alert_t = 'delete'
-                if airdb.delete_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
-                else: flash(200)
-                get_work_schedule = json.loads(airdb.get_workson())
+            elif airdb.delete_workson(request.form['e_id'], request.form['f_id']) == 0: flash(500)
+            else: flash(200)
             get_work_schedule = json.loads(airdb.get_workson())
         return render_template('alerts.html', type='admin', tab='workschedule',
             data=get_work_schedule, alert_t=alert_t)
@@ -226,15 +223,24 @@ def employee():
         get_employees = json.loads(airdb.get_employee(None))
     
     elif request.method == 'POST':
+        alert_t = 'insert'
         if 'add' in request.form:
             employee_type = request.form['type']
             employee_name = request.form['name']
             wage = request.form['wage']
-            airdb.add_employee(0, employee_type, employee_name, wage)
+            if employee_name == '' or employee_type == '' or wage == '': flash(500)
+            elif airdb.add_employee(0, employee_type, employee_name, wage) == 0: flash(500)
+            else: flash(200)
         elif 'delete' in request.form:
+            alert_t = 'delete'
             employee_to_delete = request.form['e_id']
-            airdb.delete_employee(employee_to_delete)
+            if employee_to_delete == '': flash(500)
+            elif airdb.delete_employee(employee_to_delete) == 0: flash(500)
+            else: flash(200)
         get_employees = json.loads(airdb.get_employee(None))
+
+        return render_template('alerts.html', type='admin', tab='employee',
+            data=get_employees, alert_t=alert_t)
 
     return render_template('db.html', type='admin', tab='employee', data=get_employees)
 
