@@ -75,7 +75,7 @@ def useraccountUI():
             else:
                 newphone = '"{}"'.format(request.form['phone'])
                 res = airdb.update_customer(1, 'C_PHONE', newphone)
-        
+
         flash(res)
         get_customer = json.loads(airdb.get_customer(1))
     return render_template('alerts.html', type='user', tab='account',
@@ -139,9 +139,10 @@ def userspecificUI():
                     else: flash(200)
             get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
             get_bags = json.loads(airdb.get_baggage(itinerary_id))
+            get_destination = json.loads(airdb.get_destination_for_itinerary(itinerary_id))
 
             return render_template('alerts.html', type='user', tab='specific',
-                data1=get_itinerary, data2=get_bags, alert_t=alert_t)
+                data1=get_itinerary, data2=get_bags, data3=get_destination, alert_t=alert_t)
 
     return render_template('alerts.html', type='user', tab='specific', alert_t=alert_t)
 
@@ -227,7 +228,7 @@ def flight():
             flash(500)
             get_flights = original
         return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
- 
+
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
 
 @app.route('/admin-baggage-view',methods = ['POST', 'GET'])
@@ -283,7 +284,7 @@ def workschedule():
 def employee():
     if request.method == 'GET':
         get_employees = json.loads(airdb.get_employee(None))
-    
+
     elif request.method == 'POST':
         alert_t = 'insert'
         if 'add' in request.form:
