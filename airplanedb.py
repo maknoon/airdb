@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 import MySQLdb
 from datetime import datetime
+from datetime import timedelta
 from flask import jsonify
 import json
 
@@ -1824,6 +1825,51 @@ class AirplaneDb(object):
             data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
         except Exception as e:
             print("Get Flight Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight
+#   description: get all flights or a given flight ID
+#   returns: the list of all flights if there are no specified Flight_id
+#        or: the flight corresponding to the given Flight_id
+#==============================================================================
+    def get_flight_for_a_day(self, datestring):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        start_date = datetime.strptime(datestring, "%m-%d-%Y")
+        end_date = start_date + timedelta(days=1)
+        end_date_string = end_date.strftime("%m-%d-%Y")
+        get_flight_query = ("""select * from FLIGHT where STR_TO_DATE(F_DEPARTURETIME, '%m-%d-%Y:%H:%i') >= STR_TO_DATE('{0}', '%m-%d-%Y')
+                            and STR_TO_DATE(F_DEPARTURETIME, '%m-%d-%Y:%H:%i') <= STR_TO_DATE('{1}', '%m-%d-%Y')""").format(datestring, end_date_string)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
+        except Exception as e:
+            print("Get Flight of date Failed with error: {0}").format(e)
             db.rollback()
             data = 0
 

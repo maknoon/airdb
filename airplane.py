@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 from flask import Flask, flash, abort, request, render_template, session
 from airplanedb import AirplaneDb
+from datetime import datetime
 import config
 import hashlib
 import json
@@ -200,13 +201,23 @@ def aircraft():
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
+    today_datestring = datetime.today().strftime('%Y-%m-%d')
     original = get_flights
     if request.method == 'GET':
         delayed = request.args.get('delayed')
-        if delayed == 'True':
-            get_flights = json.loads(airdb.get_delayed_flight())
+        query_date = (request.args.get('date'))
+        if query_date is not None:
+            if query_date == '':
+                get_flights = json.loads(airdb.get_flight(None))
+                return render_template('db.html', type = 'admin', tab = 'flight', data=get_flights)
+            date = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
+            date_string = date.strftime("%m-%d-%Y")
+            get_flights = json.loads(airdb.get_flight_for_a_day(date_string))
         else:
-            get_flights = json.loads(airdb.get_flight(None))
+            if delayed == 'True':
+                get_flights = json.loads(airdb.get_delayed_flight())
+            else:
+                get_flights = json.loads(airdb.get_flight(None))
 
     elif request.method =='POST':
         alert_t = 'update'

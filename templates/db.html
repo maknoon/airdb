@@ -53,6 +53,10 @@
                 </tr>
                 {% endfor %}
             </table>
+            {% else %}
+            <div style="width:75%">
+                <span> There are no flights for the selected filters! </span>
+            </div>
             {% endif %}
 
             <div class="filter">
@@ -82,6 +86,12 @@
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterdeparting" value="Submit" />
                 </p>
+                </form>
+                <form action="/admin-flight-view" method="GET">
+                    <p>
+                        <input type="date" name="date" value="2018-01-01"><br>
+                        <button>Get for Date</button>
+                    </p>
                 </form>
             </div>
             </div>
