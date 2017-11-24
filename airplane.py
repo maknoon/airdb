@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 from flask import Flask, flash, abort, request, render_template, session
 from airplanedb import AirplaneDb
+from datetime import datetime
 import config
 import hashlib
 import json
@@ -75,7 +76,7 @@ def useraccountUI():
             else:
                 newphone = '"{}"'.format(request.form['phone'])
                 res = airdb.update_customer(1, 'C_PHONE', newphone)
-        
+
         flash(res)
         get_customer = json.loads(airdb.get_customer(1))
     return render_template('alerts.html', type='user', tab='account',
@@ -139,9 +140,10 @@ def userspecificUI():
                     else: flash(200)
             get_itinerary = json.loads(airdb.get_customer_itinerary_info(itinerary_id))
             get_bags = json.loads(airdb.get_baggage(itinerary_id))
+            get_destination = json.loads(airdb.get_destination_for_itinerary(itinerary_id))
 
             return render_template('alerts.html', type='user', tab='specific',
-                data1=get_itinerary, data2=get_bags, alert_t=alert_t)
+                data1=get_itinerary, data2=get_bags, data3=get_destination, alert_t=alert_t)
 
     return render_template('alerts.html', type='user', tab='specific', alert_t=alert_t)
 
@@ -199,13 +201,23 @@ def aircraft():
 @app.route('/admin-flight-view',methods = ['POST', 'GET'])
 def flight():
     get_flights = json.loads(airdb.get_flight(None))
+    today_datestring = datetime.today().strftime('%Y-%m-%d')
     original = get_flights
     if request.method == 'GET':
         delayed = request.args.get('delayed')
-        if delayed == 'True':
-            get_flights = json.loads(airdb.get_delayed_flight())
+        query_date = (request.args.get('date'))
+        if query_date is not None:
+            if query_date == '':
+                get_flights = json.loads(airdb.get_flight(None))
+                return render_template('db.html', type = 'admin', tab = 'flight', data=get_flights)
+            date = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
+            date_string = date.strftime("%m-%d-%Y")
+            get_flights = json.loads(airdb.get_flight_for_a_day(date_string))
         else:
-            get_flights = json.loads(airdb.get_flight(None))
+            if delayed == 'True':
+                get_flights = json.loads(airdb.get_delayed_flight())
+            else:
+                get_flights = json.loads(airdb.get_flight(None))
 
     elif request.method =='POST':
         alert_t = 'update'
@@ -227,7 +239,7 @@ def flight():
             flash(500)
             get_flights = original
         return render_template('alerts.html', type='admin', tab='flight', data=get_flights, alert_t=alert_t)
- 
+
     return render_template('db.html', type='admin', tab='flight', data=get_flights)
 
 @app.route('/admin-baggage-view',methods = ['POST', 'GET'])
@@ -283,7 +295,7 @@ def workschedule():
 def employee():
     if request.method == 'GET':
         get_employees = json.loads(airdb.get_employee(None))
-    
+
     elif request.method == 'POST':
         alert_t = 'insert'
         if 'add' in request.form:

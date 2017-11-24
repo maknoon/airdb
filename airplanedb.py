@@ -1,6 +1,7 @@
 #!~/usr/bin/python
 import MySQLdb
 from datetime import datetime
+from datetime import timedelta
 from flask import jsonify
 import json
 
@@ -580,7 +581,7 @@ class AirplaneDb(object):
                              VALUES ('FIRSTCLASS', 54.2, 'PAID', 1)
                              """
         insert_itinerary_15 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
-                             VALUES ('BUSINESS', 24.2, 'CHECKEDIN', 1)
+                             VALUES ('BUSINESS', 24.2, 'PAID', 1)
                              """
         insert_itinerary_16 = """ INSERT INTO ITINERARY(I_SEATTYPE, I_SEATCOST, I_STATUS, C_ID)
                              VALUES ('ECONOMY', 2.5, 'DONE', 1)
@@ -1405,8 +1406,8 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return data
-   
-    
+
+
 #==============================================================================
 #   function: get_itinerary
 #   description: get itinerary by customer ID
@@ -1463,6 +1464,41 @@ class AirplaneDb(object):
         cursor.close()
         db.close()
         return 0
+
+#==============================================================================
+#   function: get_destination_for_itinerary
+#   description: get destination city based on itinerary id
+#   return: a destination city
+#==============================================================================
+    def get_destination_for_itinerary(self, itinerary_id):
+        db = MySQLdb.connect(host=self.host, user=self.user, passwd=self.pw, db=self.db)
+        get_destination_query = """select A2.AP_CITY from ITINERARY I, SCHEDULE S, FLIGHT F, AIRPORT A1, AIRPORT A2 where I.I_ID = S.I_ID
+                                and S.F_ID = F.F_ID and A1.AP_ID = F.F_DEPARTUREAIRPORTID and A2.AP_ID = F.F_ARRIVALAIRPORTID
+                                and I.I_ID = %d ORDER BY F.F_ARRIVALTIME DESC LIMIT 1;""" % (int(itinerary_id))
+        cursor = db.cursor()
+
+        try:
+            dataList = []
+            cursor.execute(get_destination_query)
+            destination = cursor.fetchone()
+            if destination is not None:
+                data = {
+                    'destination': destination[0]
+                }
+            else :
+                data = {
+                    'destination': 'None'
+                }
+            data = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+        except Exception as e:
+            print("Get Itinerary destination failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
 #==============================================================================
 #   function: get_itinerary_distance
 #   description: get total distance of trip (by customer id)
@@ -1571,7 +1607,7 @@ class AirplaneDb(object):
             print("Get Employee Schedule failed with error: {0}").format(e)
             db.rollback()
             data = 0
-            
+
         cursor.close()
         db.close()
         return data
@@ -1618,7 +1654,7 @@ class AirplaneDb(object):
                              user=self.user,
                              passwd=self.pw,
                              db=self.db)
-        
+
         update_itinerary_query = """UPDATE ITINERARY
                                     SET %s = %s
                                     WHERE I_ID = %d """ % (itinerary_field, new_value, int(itinerary_id))
@@ -1789,6 +1825,51 @@ class AirplaneDb(object):
             data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
         except Exception as e:
             print("Get Flight Failed with error: {0}").format(e)
+            db.rollback()
+            data = 0
+
+        cursor.close()
+        db.close()
+        return data
+
+#==============================================================================
+#   function: get_flight
+#   description: get all flights or a given flight ID
+#   returns: the list of all flights if there are no specified Flight_id
+#        or: the flight corresponding to the given Flight_id
+#==============================================================================
+    def get_flight_for_a_day(self, datestring):
+        db = MySQLdb.connect(host=self.host,
+                             user=self.user,
+                             passwd=self.pw,
+                             db=self.db)
+        start_date = datetime.strptime(datestring, "%m-%d-%Y")
+        end_date = start_date + timedelta(days=1)
+        end_date_string = end_date.strftime("%m-%d-%Y")
+        get_flight_query = ("""select * from FLIGHT where STR_TO_DATE(F_DEPARTURETIME, '%m-%d-%Y:%H:%i') >= STR_TO_DATE('{0}', '%m-%d-%Y')
+                            and STR_TO_DATE(F_DEPARTURETIME, '%m-%d-%Y:%H:%i') <= STR_TO_DATE('{1}', '%m-%d-%Y')""").format(datestring, end_date_string)
+        cursor = db.cursor()
+        try:
+            dataList = []
+            cursor.execute(get_flight_query)
+            flights = cursor.fetchall()
+            for flight in flights:
+                f_object = {
+                    'flight_id': int(flight[0]),
+                    'aircraft_id': int(flight[1]),
+                    'distance': float(flight[2]),
+                    'departtime': flight[3],
+                    'arrivetime': flight[4],
+                    'departairport': flight[5],
+                    'arriveairport': flight[6],
+                    'departgate': flight[7],
+                    'arrivegate': flight[8],
+                    'status': flight[9]
+                }
+                dataList.append(f_object)
+            data = json.dumps(dataList, sort_keys = True, indent = 4, separators = (',', ': '))
+        except Exception as e:
+            print("Get Flight of date Failed with error: {0}").format(e)
             db.rollback()
             data = 0
 

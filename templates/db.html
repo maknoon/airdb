@@ -2,7 +2,7 @@
 {% block body %}
 
     {% if type == 'admin' %}
-        
+
             {% if tab == 'airport' %}
             <h2>Airports</h2>
             <div class="container">
@@ -53,8 +53,12 @@
                 </tr>
                 {% endfor %}
             </table>
+            {% else %}
+            <div style="width:75%">
+                <span> There are no flights for the selected filters! </span>
+            </div>
             {% endif %}
-            
+
             <div class="filter">
                 <form action="/admin-flight-view" method="GET">
                     <input type="hidden" name="delayed" value=False />
@@ -82,6 +86,12 @@
                     <input type="text" name="ap_id" placeholder="Airport_ID" />
                     <input type='submit' name="filterdeparting" value="Submit" />
                 </p>
+                </form>
+                <form action="/admin-flight-view" method="GET">
+                    <p>
+                        <input type="date" name="date" value="2018-01-01"><br>
+                        <button>Get for Date</button>
+                    </p>
                 </form>
             </div>
             </div>
@@ -308,14 +318,14 @@
                     </p>
                 </form>
 
-                
+
                 <form action="/admin-customer-view" method="POST" >
                     <p> <label>Filter</label>
                         <input type="text" name="c_id" placeholder="Customer ID" />
                         <input type='submit' name="filtercustomer" value="Submit"/>
                     </p>
                 </form>
-                
+
 
                 <form action="/admin-customer-view" method="POST">
                     <p> <label>Check In Customer</label>
@@ -432,7 +442,7 @@
                 {% endfor %}
             </table>
             </div>
-            
+
          <div class="filter">
             <form action="/user-itinerary-view" method="POST">
                 <p> <label>Check in to your trip</label>
@@ -473,7 +483,7 @@
         </form>
 
         {% if data1 %}
-        <h2>Itinerary Information</h2>
+        <h2>Itinerary Information ending in {{data3['destination']}}</h2>
         <div class="container">
             <div>
             <table class="container-item">
