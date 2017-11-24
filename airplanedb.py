@@ -1084,7 +1084,6 @@ class AirplaneDb(object):
             cursor.execute(delete_baggage_query)
             db.commit()
             data = json.dumps(deleted_baggage, sort_keys=True, indent=4, separators=(',', ': '))
-            print(data)
         except Exception as e:
             print("Delete Baggage Failed with error: {0}".format(e))
             db.rollback()
@@ -1661,14 +1660,16 @@ class AirplaneDb(object):
 
         cursor = db.cursor()
         try:
-            get_itinerary_query = """SELECT I_STATUS FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
-            cursor.execute(get_itinerary_query)
+            get_itinerary_status = """SELECT I_STATUS FROM ITINERARY WHERE I_ID = %d""" % (int(itinerary_id))
+            cursor.execute(get_itinerary_status)
             check_itinerary = cursor.fetchone()
             if check_itinerary[0] == 'DONE':
                 data = 1
             else:
                 cursor.execute(update_itinerary_query)
                 db.commit()
+                get_itinerary_query = """SELECT * FROM ITINERARY WHERE I_ID = %s""" % (itinerary_id)
+                cursor.execute(get_itinerary_query)
                 updated_itinerary = cursor.fetchone()
                 updated_itinerary_object = {
                     'itinerary_id': updated_itinerary[0],

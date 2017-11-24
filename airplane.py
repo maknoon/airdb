@@ -329,17 +329,21 @@ def customer():
             else:
                 get_schedule = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
                 if get_schedule == 0: flash(500)
-        if 'filteritinerary' in request.form:
+        elif 'filteritinerary' in request.form:
             if request.form['i_id'] == '': flash(500)
             else:
                 get_schedule = json.loads(airdb.get_schedule_for_itinerary(request.form['i_id']))
                 if get_schedule == 0: flash(500)
         elif 'updatestatus' in request.form:
             if request.form['c_id'] == '': flash(500)
-            elif airdb.update_itinerary(request.form['c_id'], 'I_STATUS', '"CHECKEDIN"') == 0: flash(500)
             else:
-                flash(200)
-                get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
+                customer_schedules = json.loads(airdb.get_schedule_for_customer(request.form['c_id']))
+                error = 0
+                for schedule in customer_schedules:
+                    if airdb.update_itinerary(schedule['itinerary_id'], 'I_STATUS', '"CHECKEDIN"') == 0: error = 1
+                if error == 1: flash(500)
+                else: flash(200)
+            get_schedule = json.loads(airdb.get_schedule_for_itinerary(None))
         return render_template('alerts.html', type='admin', tab='customer',
             data=get_schedule, alert_t=alert_t)
 
